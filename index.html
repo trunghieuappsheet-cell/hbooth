@@ -71,14 +71,14 @@
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
     .gallery-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
     
-    /* CẤU TRÚC 3 CỘT GRID ĐỂ ẢNH NHỎ LẠI VÀ BẢO TOÀN TỈ LỆ */
+    /* CẤU TRÚC GRID 4 CỘT - GIẢM KÍCH THƯỚC ẢNH GỌN NHẸ HƠN */
     .gallery-container { 
         display: grid; 
-        grid-template-columns: repeat(3, 1fr); /* Đổi sang 3 cột để ảnh gọn hơn */
+        grid-template-columns: repeat(4, 1fr); /* Đổi sang 4 cột để hiển thị nhiều ảnh nhỏ hơn */
         grid-auto-rows: max-content; 
-        gap: 10px; 
-        align-content: start; /* Gom các dòng lên trên */
-        align-items: start; /* Cực kỳ quan trọng: Ép ảnh không bị kéo giãn theo chiều dọc */
+        gap: 6px; /* Thu hẹp gap cho vừa vặn */
+        align-content: start; 
+        align-items: start; 
         flex: 1; 
         overflow-y: auto; 
         overflow-x: hidden; 
@@ -127,7 +127,7 @@
     .slot-toolbar { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
     .slot-toolbar.active { visibility: visible; opacity: 1; top: 20px; }
 
-    /* NÚT THAO TÁC */
+    /* NÚT THAO TÁC CAO HƠN */
     .btn-primary-custom { background: var(--accent); color: var(--bg-color); border: none; font-weight: bold; box-shadow: var(--accent-glow); transition: 0.3s; }
     .btn-primary-custom:hover { filter: brightness(1.2); color: var(--bg-color); }
     .btn-outline-custom { background: transparent; border: 1px solid var(--accent); color: var(--text-main); transition: 0.3s; }
@@ -200,7 +200,7 @@
           <video id="videoElement" autoplay playsinline></video>
           <div id="countdownOverlay">3</div>
           
-          <!-- NÚT CHỤP GHI ĐÈ Ở ĐÂY (SIZE LỚN) -->
+          <!-- NÚT CHỤP GHI ĐÈ Ở ĐÂY -->
           <button class="btn-capture-overlay" onclick="app.startCaptureSession()" title="Chụp ảnh">
             <i class="bi bi-camera-fill"></i>
           </button>
@@ -260,7 +260,7 @@
           </label>
         </div>
         
-        <!-- HIỂN THỊ LƯỚI 3 CỘT NHỎ GỌN, BẢO TOÀN TỈ LỆ ẢNH -->
+        <!-- HIỂN THỊ LƯỚI 4 CỘT (HOẶC 3 TÙY THÍCH MÀ VẪN GIỮ TỈ LỆ) -->
         <div class="gallery-container" id="capturedGallery">
           <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Kéo thả ảnh từ thiết bị vào đây hoặc bấm chụp mới</span>
         </div>
@@ -294,7 +294,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHỌN ẢNH VÀO KHUNG (GRID 4 CỘT) -->
+  <!-- MODAL CHỌN ẢNH VÀO KHUNG -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -313,8 +313,8 @@
             <span class="badge bg-secondary" id="modalSelectedCount">0 đã chọn</span>
           </div>
           
-          <!-- Lưới ảnh session trong modal (Grid 4 cột) -->
-          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 40vh; grid-template-columns: repeat(4, 1fr); overflow-x: hidden;">
+          <!-- Lưới ảnh session trong modal -->
+          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 40vh; grid-template-columns: repeat(5, 1fr); gap: 6px; overflow-x: hidden;">
             <!-- Generate bằng JS -->
           </div>
 
