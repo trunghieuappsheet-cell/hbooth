@@ -25,66 +25,68 @@
     body.theme-dark { --bg-color: #121212; --panel-bg: #1e1e1e; --card-bg: #2d2d2d; --accent: #ffffff; --text-main: #ffffff; --border-color: #444444; --accent-glow: none; --input-bg: #333; --input-border: #555; }
     body.theme-bimgroup { --bg-color: #f0fdf4; --panel-bg: #ffffff; --card-bg: #ffffff; --accent: #047857; --text-main: #064e3b; --border-color: #a7f3d0; --accent-glow: 0 0 10px rgba(4,120,87,0.2); --input-bg: #fff; --input-border: #6ee7b7; }
 
-    body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; margin: 0; transition: 0.3s; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; height: 100vh; overflow: hidden; margin: 0; transition: 0.3s; }
     .offcanvas { background-color: var(--panel-bg) !important; color: var(--text-main) !important; border-left: 1px solid var(--border-color); }
     .form-control, .form-select { background-color: var(--input-bg) !important; color: var(--text-main) !important; border: 1px solid var(--input-border) !important; }
     .btn-close-custom { filter: invert(var(--invert-icon, 0)); }
     [data-bs-theme="light"] .btn-close-custom { filter: invert(1); }
 
-    /* HEADER GỌN GÀNG */
-    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    /* HEADER */
+    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 1000; }
     
     /* BỐ CỤC CHÍNH */
     .app-container { display: flex; height: calc(100vh - 60px); }
-    .left-panel { flex: 7; display: flex; flex-direction: column; padding: 15px 25px 15px 15px; border-right: 1px solid var(--border-color); overflow: hidden; background: transparent; }
-    .right-panel { flex: 3; min-width: 380px; display: flex; flex-direction: column; align-items: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; border-left: 1px solid rgba(0,0,0,0.2); }
+    .left-panel { flex: 7; display: flex; flex-direction: column; padding: 15px; overflow: hidden; background: transparent; }
+    .right-panel { flex: 3; min-width: 360px; max-width: 480px; display: flex; flex-direction: column; align-items: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; border-left: 1px solid var(--border-color); }
     
-    /* CAMERA */
-    .viewport-wrapper { position: relative; width: 100%; max-width: 900px; margin: 0 auto; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .viewport-wrapper.vertical { aspect-ratio: 9/16; max-height: 40vh; }
+    /* CỤM ĐIỀU KHIỂN CAMERA (TOP LEFT) */
+    .camera-control-box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    
+    .viewport-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; }
+    .viewport-wrapper.vertical { aspect-ratio: 9/16; max-height: 45vh; }
     #videoElement { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
     .camera-modes { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
-    .btn-cam-mode { background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--accent); padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-    .btn-cam-mode.active { background: var(--accent); }
+    .btn-cam-mode { background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+    .btn-cam-mode.active { background: var(--accent); border-color: var(--accent); }
     
-    /* NỀN TRONG SUỐT CHO ĐẾM NGƯỢC */
+    /* ĐẾM NGƯỢC (TRONG SUỐT) */
     #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 160px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px var(--accent); pointer-events: none; }
 
-    /* GALLERY PHIÊN HIỆN TẠI (FLEX TỰ ĐỘNG LẤY ĐẦY KHÔNG GIAN) */
-    .gallery-section { margin-top: 15px; background: var(--panel-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
+    /* GALLERY PHIÊN HIỆN TẠI (LƯỚI THEO TỶ LỆ) */
+    .gallery-section { background: var(--panel-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
-    .gallery-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
+    .gallery-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
     
-    /* Khung lưới cuộn hình ảnh */
-    .gallery-container { display: flex; flex-wrap: wrap; gap: 10px; flex: 1; overflow-y: auto; padding: 5px; align-content: flex-start; }
+    /* CSS Columns cho lưới 4 ảnh hiển thị giữ nguyên tỷ lệ */
+    .gallery-container { display: block; column-count: 4; column-gap: 12px; flex: 1; overflow-y: auto; padding-right: 5px; }
     .gallery-container::-webkit-scrollbar { width: 6px; }
-    .gallery-container::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    .gallery-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
     
-    .thumb-wrapper { width: calc(20% - 8px); position: relative; aspect-ratio: 2/3; box-shadow: 0 3px 6px rgba(0,0,0,0.3); border-radius: 4px; background: #000; display: flex; justify-content: center; overflow: hidden; }
-    .thumb-wrapper img { width: auto; height: 100%; object-fit: contain; cursor: grab; transition: 0.2s; }
-    .thumb-wrapper:hover { transform: scale(1.05); z-index: 2; box-shadow: var(--accent-glow); border: 1px solid var(--accent); }
+    .thumb-wrapper { break-inside: avoid; margin-bottom: 12px; position: relative; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); background: #000; overflow: hidden; }
+    .thumb-wrapper img { width: 100%; height: auto; display: block; object-fit: contain; cursor: grab; transition: 0.2s; }
+    .thumb-wrapper:hover { transform: scale(1.02); z-index: 2; box-shadow: var(--accent-glow); border: 1px solid var(--accent); }
     .thumb-wrapper img:active { cursor: grabbing; }
 
-    .btn-del-thumb { position: absolute; top: 2px; right: 2px; width: 24px; height: 24px; background: rgba(220, 53, 69, 0.9); color: #fff; border: none; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; opacity: 0; transition: 0.2s; }
+    .btn-del-thumb { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(220, 53, 69, 0.85); color: #fff; border: none; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; opacity: 0; transition: 0.2s; }
     .thumb-wrapper:hover .btn-del-thumb { opacity: 1; }
     .btn-del-thumb:hover { background: #dc3545; transform: scale(1.1); }
 
-    /* UPLOAD PROGRESS */
-    .progress-tiny { height: 4px; background-color: var(--input-bg); flex-grow: 1; margin: 0 10px; border-radius: 2px; display: none; }
-    .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; }
-    .upload-info { font-size: 0.75rem; color: var(--accent); font-weight: normal; display: flex; align-items: center; }
+    /* UPLOAD PROGRESS TÍCH HỢP GỌN */
+    .progress-tiny { height: 4px; background-color: var(--input-bg); width: 120px; border-radius: 2px; overflow: hidden; display: none; margin-right: 10px; }
+    .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; height: 100%; }
 
-    /* CANVAS TRANG IN (GỌN SÁT PHẢI) */
-    .canvas-container { width: 100%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px 0; }
-    .canvas-wrapper { position: relative; max-width: 100%; max-height: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border: 2px solid var(--border-color); background: #fff; display: flex; }
+    /* CANVAS TRANG IN (GỌN GÀNG) */
+    .canvas-container { width: 100%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px 0; }
+    .canvas-wrapper { position: relative; max-width: 100%; max-height: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border: 1px solid var(--border-color); background: #fff; display: flex; }
     #finalCanvas { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; cursor: crosshair; }
 
     /* TOOLBAR TRỰC TIẾP */
-    .slot-toolbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 8px 15px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 8px; align-items: center; width: max-content; }
-    .slot-toolbar.active { visibility: visible; opacity: 1; top: 20px; }
+    .slot-toolbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
+    .slot-toolbar.active { visibility: visible; opacity: 1; top: 15px; }
 
+    /* NÚT THAO TÁC */
     .btn-primary-custom { background: var(--accent); color: var(--bg-color); border: none; font-weight: bold; box-shadow: var(--accent-glow); transition: 0.3s; }
-    .btn-primary-custom:hover { filter: brightness(1.2); color: var(--bg-color); }
+    .btn-primary-custom:hover { filter: brightness(1.1); color: var(--bg-color); }
     .btn-outline-custom { background: transparent; border: 1px solid var(--accent); color: var(--text-main); transition: 0.3s; }
     .btn-outline-custom:hover { background: var(--accent); color: var(--bg-color); }
 
@@ -102,68 +104,75 @@
   <!-- HEADER -->
   <div class="app-header">
     <div class="d-flex align-items-center gap-2">
-      <img id="headerLogo" src="" alt="Logo" style="height: 35px; display: none;">
-      <h4 id="headerTitleText" style="margin:0; font-weight:800; color:var(--accent); letter-spacing: 1px;">PHOTOBOOTH STUDIO</h4>
+      <img id="headerLogo" src="" alt="Logo" style="height: 30px; display: none;">
+      <h5 id="headerTitleText" style="margin:0; font-weight:700; color:var(--accent); letter-spacing: 1px;">STUDIO BOOTH</h5>
     </div>
     <button class="btn btn-outline-custom btn-sm rounded-pill px-4 fw-bold" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas">
       <i class="bi bi-gear-fill"></i> Cài đặt
     </button>
   </div>
 
-  <!-- BỐ CỤC STUDIO -->
   <div class="app-container">
     
-    <!-- CỘT TRÁI: CAMERA VÀ ẢNH PHIÊN HIỆN TẠI -->
+    <!-- CỘT TRÁI: CAMERA & ẢNH -->
     <div class="left-panel">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="fw-bold text-uppercase small" style="color:var(--accent)"><i class="bi bi-webcam"></i> Camera</span>
-        <div class="d-flex gap-2 w-50">
-          <select id="cameraSelect" class="form-select form-select-sm" onchange="app.switchCamera()"></select>
+      
+      <!-- CỤM CAMERA & BỘ ĐẾM -->
+      <div class="camera-control-box">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="fw-bold text-uppercase small" style="color:var(--accent)"><i class="bi bi-webcam"></i> Thiết lập Camera</span>
+          <select id="cameraSelect" class="form-select form-select-sm w-auto" style="max-width: 200px;" onchange="app.switchCamera()"></select>
+        </div>
+
+        <div class="viewport-wrapper mb-3" id="viewport">
+          <div class="camera-modes">
+            <button class="btn-cam-mode active" id="btnModeH" onclick="app.setCameraMode('horizontal')"><i class="bi bi-phone-landscape"></i></button>
+            <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')"><i class="bi bi-phone"></i></button>
+          </div>
+          <video id="videoElement" autoplay playsinline></video>
+          <div id="countdownOverlay">3</div>
+        </div>
+
+        <div class="row g-2 align-items-center">
+          <div class="col-md-3">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-transparent text-muted border-secondary" style="border-right: none;"><i class="bi bi-files"></i> Lần chụp</span>
+              <input type="number" id="photoCount" class="form-control text-center border-secondary" style="border-left: none;" value="1" min="1">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-transparent text-muted border-secondary" style="border-right: none;"><i class="bi bi-stopwatch"></i> Giây</span>
+              <input type="number" id="timerCount" class="form-control text-center border-secondary" style="border-left: none;" value="3" min="0">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <button class="btn btn-primary-custom w-100 rounded-pill shadow-sm" onclick="app.startCaptureSession()">
+              <i class="bi bi-camera-fill me-1"></i> BẤM CHỤP
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Live Camera -->
-      <div class="viewport-wrapper" id="viewport">
-        <div class="camera-modes">
-          <button class="btn-cam-mode active" id="btnModeH" onclick="app.setCameraMode('horizontal')"><i class="bi bi-phone-landscape"></i></button>
-          <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')"><i class="bi bi-phone"></i></button>
-        </div>
-        <video id="videoElement" autoplay playsinline></video>
-        <div id="countdownOverlay">3</div>
-      </div>
-
-      <div class="mt-3">
-        <button class="btn btn-primary-custom btn-lg rounded-pill w-100 shadow" onclick="app.startCaptureSession()">
-          <i class="bi bi-camera-fill me-2"></i> CHỤP ẢNH
-        </button>
-      </div>
-
-      <!-- GALLERY: ẢNH PHIÊN HIỆN TẠI (TỰ CO GIÃN THEO CHIỀU DỌC) -->
+      <!-- GALLERY: ẢNH PHIÊN HIỆN TẠI (LƯỚI MASONRY) -->
       <div class="gallery-section" id="currentSessionZone"
            ondragover="app.handleDragOverSession(event)" ondragleave="app.handleDragLeaveSession(event)" ondrop="app.handleDropSession(event)">
         
         <div class="gallery-title">
-          <span><i class="bi bi-images"></i> Ảnh phiên hiện tại</span>
-          
           <div class="d-flex align-items-center gap-2">
-            <!-- Tiến trình Upload tích hợp ở Header -->
-            <div class="upload-info" id="uploadStatusUI" style="display: none;">
-              <div class="spinner-border spinner-border-sm me-1" role="status"></div>
-              <span>Lưu Drive: <span id="uploadCount" class="fw-bold">0/0</span></span>
+            <i class="bi bi-images"></i> ẢNH PHIÊN HIỆN TẠI
+            <span id="uploadStatusText" class="small text-muted fw-normal ms-2" style="font-size: 0.7rem; display: none;">Lưu: <span id="uploadCount">0/0</span></span>
+            <div class="progress-tiny" id="uploadProgressBarContainer">
+              <div class="progress-bar-tiny" id="uploadProgress" style="width: 0%"></div>
             </div>
-            
-            <label class="btn btn-sm btn-outline-custom m-0 px-2 py-0" style="cursor: pointer;">
-              Thêm <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
-            </label>
           </div>
+          <label class="btn btn-sm btn-outline-custom m-0 px-3 py-1 rounded-pill" style="cursor: pointer; font-size: 0.75rem;">
+            + Thêm ảnh <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
+          </label>
         </div>
         
-        <div class="progress-tiny mb-2" id="uploadProgressBarContainer">
-          <div class="progress-bar-tiny" id="uploadProgress" style="width: 0%"></div>
-        </div>
-
         <div class="gallery-container" id="capturedGallery">
-          <span class="text-muted small w-100 text-center" style="padding: 20px;">Kéo thả ảnh vào đây hoặc chụp mới</span>
+          <span class="text-muted small w-100 text-center" style="padding: 20px;">Kéo thả file vào đây hoặc bấm chụp mới</span>
         </div>
       </div>
     </div>
@@ -172,101 +181,99 @@
     <div class="right-panel">
       <div class="d-flex justify-content-between align-items-center w-100 mb-2">
         <div class="text-start">
-          <span class="fw-bold text-uppercase d-block" style="color:var(--accent)"><i class="bi bi-layout-wtf"></i> Bản In</span>
-          <small class="text-muted" id="orientationBadge">Ngang</small>
+          <span class="fw-bold text-uppercase d-block" style="color:var(--accent); font-size: 0.85rem;"><i class="bi bi-layout-wtf"></i> BẢN IN</span>
+          <small class="text-muted" id="orientationBadge" style="font-size: 0.7rem;">Khổ Ngang</small>
         </div>
-        <div class="d-flex flex-column gap-2 text-end">
-          <button class="btn btn-primary-custom px-4 shadow rounded-pill" onclick="app.print()"><i class="bi bi-printer"></i> IN NGAY</button>
-          <div class="d-flex gap-1 justify-content-end">
-             <button class="btn btn-outline-custom btn-sm px-2" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu</button>
-             <button class="btn btn-outline-danger btn-sm px-2" onclick="app.clearLayout()"><i class="bi bi-trash"></i> Xóa</button>
-          </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-custom btn-sm px-2 rounded-pill" onclick="app.clearLayout()" title="Xóa toàn bộ ảnh trên trang in"><i class="bi bi-trash"></i></button>
+          <button class="btn btn-primary-custom btn-sm px-3 shadow rounded-pill" onclick="app.print()"><i class="bi bi-printer"></i> IN NGAY</button>
         </div>
       </div>
 
       <!-- THANH CÔNG CỤ EDIT TRỰC TIẾP -->
       <div class="slot-toolbar" id="slotToolbar">
-        <span class="badge bg-primary fs-6">#<span id="stIndex">1</span></span>
-        <button class="btn btn-sm btn-outline-info rounded-circle" onclick="document.getElementById('slotFileInput').click()" title="Thay ảnh"><i class="bi bi-image"></i></button>
-        <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="app.rotateActiveSlot()" title="Xoay 90 độ"><i class="bi bi-arrow-clockwise"></i></button>
+        <span class="badge bg-primary rounded-pill">#<span id="stIndex">1</span></span>
+        <button class="btn btn-sm btn-outline-info rounded-circle py-0 px-1" onclick="document.getElementById('slotFileInput').click()" title="Thay ảnh"><i class="bi bi-image"></i></button>
+        <button class="btn btn-sm btn-outline-secondary rounded-circle py-0 px-1" onclick="app.rotateActiveSlot()" title="Xoay 90 độ"><i class="bi bi-arrow-clockwise"></i></button>
         <div class="d-flex align-items-center gap-1 ms-1">
-          <i class="bi bi-brightness-high text-warning"></i>
-          <input type="range" class="form-range" id="stBr" min="50" max="150" value="100" style="width: 50px;" oninput="app.applyDirectEdit()">
+          <i class="bi bi-brightness-high text-warning" style="font-size:0.8rem;"></i>
+          <input type="range" class="form-range" id="stBr" min="50" max="150" value="100" style="width: 40px;" oninput="app.applyDirectEdit()">
         </div>
         <div class="d-flex align-items-center gap-1 ms-1">
-          <i class="bi bi-circle-half text-info"></i>
-          <input type="range" class="form-range" id="stCt" min="50" max="150" value="100" style="width: 50px;" oninput="app.applyDirectEdit()">
+          <i class="bi bi-circle-half text-info" style="font-size:0.8rem;"></i>
+          <input type="range" class="form-range" id="stCt" min="50" max="150" value="100" style="width: 40px;" oninput="app.applyDirectEdit()">
         </div>
-        <button class="btn btn-sm btn-danger rounded-circle ms-1" onclick="app.removeActiveSlot()" title="Xóa khỏi trang in"><i class="bi bi-x-lg"></i></button>
+        <button class="btn btn-sm btn-danger rounded-circle ms-1 py-0 px-1" onclick="app.removeActiveSlot()" title="Xóa ảnh khỏi khung"><i class="bi bi-x-lg"></i></button>
       </div>
 
-      <!-- KHU VỰC CANVAS -->
       <div class="canvas-container">
         <div class="canvas-wrapper">
-          <canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)" title="Click ô trống để chụp ảnh/tải lên"></canvas>
+          <canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)" title="Click để thêm hoặc tương tác ảnh"></canvas>
         </div>
+      </div>
+      
+      <div class="text-center mt-2 w-100">
+        <small class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-mouse"></i> Cuộn: Zoom | Kéo chuột: Di chuyển | Click đúp: Xoay</small>
       </div>
     </div>
   </div>
 
-  <!-- MODAL CHUẨN BỊ ẢNH CHUYÊN SÂU -->
+  <!-- MODAL CHUẨN BỊ ẢNH -->
   <div class="modal fade" id="imagePrepModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
-        <div class="modal-header border-bottom-0">
-          <h5 class="modal-title fw-bold">Chỉnh sửa & Chèn ảnh</h5>
+        <div class="modal-header border-bottom-0 pb-0">
+          <h6 class="modal-title fw-bold">CHỈNH SỬA & CHÈN ẢNH</h6>
           <button type="button" class="btn-close btn-close-custom" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body text-center pt-0">
-          
-          <div id="prepPreviewContainer" style="width:100%; height: 280px; overflow:hidden; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom:15px; background:#000; position:relative; cursor: grab;">
-             <img id="prepPreview" src="" style="width:100%; height:100%; object-fit:cover; pointer-events: none;">
-             <div style="position:absolute; bottom:5px; left:5px; font-size:10px; color:#fff; background:rgba(0,0,0,0.5); padding:4px 8px; border-radius:4px; font-weight:bold;">
-                <i class="bi bi-mouse"></i> Cuộn: Zoom | Kéo: Di chuyển
+        <div class="modal-body text-center pt-2">
+          <div id="prepPreviewContainer" style="width:100%; height: 260px; overflow:hidden; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom:15px; background:#000; position:relative; cursor: grab;">
+             <img id="prepPreview" src="" style="width:100%; height:100%; object-fit:contain; pointer-events: none;">
+             <div style="position:absolute; bottom:5px; left:5px; font-size:9px; color:#fff; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;">
+                Cuộn: Zoom | Kéo: Di chuyển
              </div>
           </div>
           
-          <div class="row g-2 text-start">
-            <div class="col-6"><label class="small text-muted">Xén (Zoom)</label><input type="range" class="form-range" id="prepZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updatePrepPreview()"></div>
-            <div class="col-6"><label class="small text-muted">Xoay (Độ)</label><input type="range" class="form-range" id="prepRot" min="0" max="270" step="90" value="0" oninput="app.updatePrepPreview()"></div>
-            <div class="col-6"><label class="small text-muted">Độ sáng</label><input type="range" class="form-range" id="prepBr" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div>
-            <div class="col-6"><label class="small text-muted">Tương phản</label><input type="range" class="form-range" id="prepCt" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div>
-            
+          <div class="row g-2 text-start align-items-center">
+            <div class="col-6"><label class="small text-muted m-0">Xén (Zoom)</label><input type="range" class="form-range" id="prepZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updatePrepPreview()"></div>
+            <div class="col-6"><label class="small text-muted m-0">Xoay (°)</label><input type="range" class="form-range" id="prepRot" min="0" max="270" step="90" value="0" oninput="app.updatePrepPreview()"></div>
+            <div class="col-6"><label class="small text-muted m-0">Độ sáng</label><input type="range" class="form-range" id="prepBr" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div>
+            <div class="col-6"><label class="small text-muted m-0">Tương phản</label><input type="range" class="form-range" id="prepCt" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div>
             <input type="hidden" id="prepPanX" value="0"> <input type="hidden" id="prepPanY" value="0">
 
-            <div class="col-12 mt-3 text-center">
-              <label class="small text-muted d-block mb-1">Số lượng ô muốn chèn vào trang in</label>
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-secondary" onclick="app.adjustCopies(-1)">-</button>
-                <input type="number" id="prepCopies" value="1" min="1" max="8" class="form-control text-center bg-transparent fw-bold" style="width: 60px; border-radius: 0; color: var(--accent);" readonly>
-                <button type="button" class="btn btn-outline-secondary" onclick="app.adjustCopies(1)">+</button>
+            <div class="col-12 mt-2 d-flex justify-content-between align-items-center bg-dark p-2 rounded">
+              <label class="small text-muted m-0">Số lượng khung chèn:</label>
+              <div class="btn-group input-group-sm" role="group">
+                <button type="button" class="btn btn-outline-secondary py-0" onclick="app.adjustCopies(-1)">-</button>
+                <input type="number" id="prepCopies" value="1" min="1" max="8" class="form-control text-center bg-transparent fw-bold p-0" style="width: 40px; border-radius: 0; color: var(--accent);" readonly>
+                <button type="button" class="btn btn-outline-secondary py-0" onclick="app.adjustCopies(1)">+</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer border-top-0 justify-content-center">
-          <button type="button" class="btn btn-primary-custom w-100 rounded-pill" onclick="app.addToLayout()"><i class="bi bi-check2-circle"></i> Xác nhận & Chèn</button>
+        <div class="modal-footer border-top-0 pt-0 justify-content-center">
+          <button type="button" class="btn btn-primary-custom w-100 rounded-pill" onclick="app.addToLayout()"><i class="bi bi-check2-circle"></i> Đưa vào Trang In</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- OFFCANVAS CÀI ĐẶT HỆ THỐNG -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 380px;">
+  <!-- OFFCANVAS CÀI ĐẶT -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 360px;">
     <div class="offcanvas-header border-bottom" style="border-color: var(--border-color);">
-      <h5 class="offcanvas-title fw-bold">BẢNG ĐIỀU KHIỂN</h5>
+      <h6 class="offcanvas-title fw-bold">CÀI ĐẶT HỆ THỐNG</h6>
       <button type="button" class="btn-close btn-close-custom" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
       
       <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small" style="color:var(--accent)">1. Giao diện (Theme)</h6>
-        <select class="form-select form-select-sm mb-3" onchange="app.changeTheme(this.value)">
-          <option value="tech">Công nghệ (Tech) - Mặc định</option>
+        <label class="small text-muted fw-bold mb-1">Giao diện (Theme)</label>
+        <select class="form-select form-select-sm" onchange="app.changeTheme(this.value)">
+          <option value="tech">Công nghệ (Tech)</option>
           <option value="bimgroup">Xanh BIMGroup</option>
           <option value="professional">Chuyên nghiệp (Trắng)</option>
           <option value="simple">Đơn giản (Xanh dương)</option>
-          <option value="minimalist">Tối giản (Đen Trắng)</option>
+          <option value="minimalist" selected>Tối giản (Đen Trắng)</option>
           <option value="neon">Neon Gaming</option>
           <option value="pastel">Hồng Pastel</option>
           <option value="retro">Cổ điển (Retro)</option>
@@ -275,7 +282,7 @@
       </div>
 
       <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small" style="color:var(--accent)">2. Thiết lập Khổ in</h6>
+        <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Bố cục & Viền ảnh</h6>
         <select id="layoutSelect" class="form-select form-select-sm mb-3" onchange="app.changeLayout()">
           <option value="1">10x15 cm (1 ảnh) - Khổ Ngang</option>
           <option value="2">6x9 cm (2 ô) - Khổ Dọc</option>
@@ -283,18 +290,12 @@
           <option value="8" selected>3x4 cm (8 ô) - Khổ Dọc (Khung nhỏ ngang)</option>
         </select>
         
-        <div class="row g-2 mb-2">
-          <div class="col-6"><label class="small text-muted">Lần chụp</label><input type="number" id="photoCount" class="form-control form-control-sm" value="1"></div>
-          <div class="col-6"><label class="small text-muted">Đếm ngược (s)</label><input type="number" id="timerCount" class="form-control form-control-sm" value="3"></div>
-        </div>
-        <div class="col-12 mt-2">
-          <label class="small text-muted w-100">Độ dày viền trắng khung ảnh <span id="vBorder" class="float-end">0px</span></label>
-          <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="app.renderCanvas(); document.getElementById('vBorder').innerText=this.value+'px'">
-        </div>
+        <label class="small text-muted w-100">Độ dày viền trắng khung ảnh <span id="vBorder" class="float-end text-white">0px</span></label>
+        <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="app.renderCanvas(); document.getElementById('vBorder').innerText=this.value+'px'">
       </div>
 
       <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small" style="color:var(--accent)">3. Watermark Trang In</h6>
+        <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Watermark Trang In</h6>
         <input type="text" id="wmText" class="form-control form-control-sm mb-2" placeholder="Chữ in lên ảnh..." onkeyup="app.renderCanvas()">
         <div class="row g-2 mb-2">
           <div class="col-6">
@@ -312,23 +313,29 @@
             </select>
           </div>
         </div>
-        <div class="row g-2 mb-2">
+        <div class="row g-2 mb-3">
           <div class="col-6 d-flex align-items-center gap-2">
-            <input type="color" id="wmColor" class="form-control form-control-color p-0 border-0" value="#ffffff" onchange="app.renderCanvas()" style="width:25px; height:25px; background:transparent;">
+            <input type="color" id="wmColor" class="form-control form-control-color p-0 border-0" value="#ffffff" onchange="app.renderCanvas()" style="width:20px; height:20px; background:transparent;">
             <span class="small text-muted">Màu chữ</span>
           </div>
           <div class="col-6 d-flex align-items-center gap-2">
-            <input type="color" id="wmOutline" class="form-control form-control-color p-0 border-0" value="#000000" onchange="app.renderCanvas()" style="width:25px; height:25px; background:transparent;">
+            <input type="color" id="wmOutline" class="form-control form-control-color p-0 border-0" value="#000000" onchange="app.renderCanvas()" style="width:20px; height:20px; background:transparent;">
             <span class="small text-muted">Viền chữ</span>
           </div>
         </div>
 
-        <label class="small text-muted mt-2">Logo dán trang in (PNG)</label>
+        <label class="small text-muted">Logo dán góc (Tệp PNG)</label>
         <input type="file" class="form-control form-control-sm mb-2" accept="image/*" onchange="app.loadPrintLogo(event)">
         <div class="row g-2">
-          <div class="col-12"><label class="small text-muted">Kích thước Logo (%)</label><input type="range" class="form-range" id="logoSize" value="20" min="5" max="50" oninput="app.renderCanvas()"></div>
-          <div class="col-6"><label class="small text-muted">Tọa độ X (%)</label><input type="range" class="form-range" id="logoX" value="80" min="0" max="100" oninput="app.renderCanvas()"></div>
-          <div class="col-6"><label class="small text-muted">Tọa độ Y (%)</label><input type="range" class="form-range" id="logoY" value="90" min="0" max="100" oninput="app.renderCanvas()"></div>
+          <div class="col-6">
+            <select id="logoPos" class="form-select form-select-sm" onchange="app.renderCanvas()">
+              <option value="TL">Trái Trên</option>
+              <option value="TR">Phải Trên</option>
+              <option value="BL">Trái Dưới</option>
+              <option value="BR" selected>Phải Dưới</option>
+            </select>
+          </div>
+          <div class="col-6"><input type="number" id="logoSize" class="form-control form-control-sm" value="20" min="5" max="50" placeholder="Size (%)" onchange="app.renderCanvas()"></div>
         </div>
       </div>
       
@@ -336,7 +343,7 @@
   </div>
 
   <script>
-    // URL API Google Apps Script của bạn
+    // URL API CỦA BẠN 
     const API_URL = 'https://script.google.com/macros/s/AKfycby6_-gotKSFnMsAsvC_TXmqCEeibp339208kcTpuKF8c9DsSMH1WQ05U00MwlztEqRfYg/exec'; 
 
     const app = {
@@ -345,14 +352,14 @@
       ctx: document.getElementById('finalCanvas').getContext('2d'),
       stream: null,
       
-      capturedPhotos: [], // { imgObj: Image, driveId: String }
+      capturedPhotos: [], 
       layoutSlots: [], 
       printLogo: null,
       cameraMode: 'horizontal', 
       
       prepState: {}, 
       prepModalInstance: null,
-      dragPayload: null, // img object
+      dragPayload: null,
       
       activeSlotIndex: -1,
       isPanning: false,
@@ -370,7 +377,9 @@
         this.bindCanvasEvents();
         this.bindPrepModalEvents();
         
-        this.changeTheme('tech');
+        // Mặc định giao diện Tối giản (Minimalist) theo ý thích
+        this.changeTheme('minimalist');
+        document.querySelector('select[onchange="app.changeTheme(this.value)"]').value = 'minimalist';
       },
 
       changeTheme: function(themeName) {
@@ -380,7 +389,7 @@
         else { document.documentElement.setAttribute('data-bs-theme', 'dark'); }
       },
 
-      /* --- CAMERA TÍCH HỢP CHỤP VÀO Ô TRỐNG --- */
+      /* --- CAMERA --- */
       loadDeviceList: async function() {
         try {
           await navigator.mediaDevices.getUserMedia({ video: true });
@@ -445,7 +454,7 @@
         const photoRecord = { imgObj: imgObj, driveId: null }; 
 
         imgObj.onload = () => {
-          this.capturedPhotos.push(photoRecord);
+          this.capturedPhotos.unshift(photoRecord); // Thêm lên đầu danh sách
           this.renderCapturedGallery();
           
           if(targetSlot !== -1) {
@@ -459,7 +468,7 @@
           
           if(API_URL) {
             this.totalToUpload++;
-            document.getElementById('uploadStatusUI').style.display = 'flex';
+            document.getElementById('uploadStatusText').style.display = 'inline';
             document.getElementById('uploadProgressBarContainer').style.display = 'block';
             this.updateUploadUI();
             const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Booth_' + new Date().getTime() + '.jpg');
@@ -474,16 +483,16 @@
         document.getElementById('uploadCount').innerText = `${this.totalUploaded}/${this.totalToUpload}`;
         let percent = this.totalToUpload > 0 ? Math.round((this.totalUploaded/this.totalToUpload)*100) : 0;
         document.getElementById('uploadProgress').style.width = percent + '%';
-        if(this.totalUploaded === this.totalToUpload && this.totalToUpload > 0) {
+        if(this.totalUploaded >= this.totalToUpload && this.totalToUpload > 0) {
           setTimeout(() => { 
-             document.getElementById('uploadStatusUI').style.display = 'none'; 
+             document.getElementById('uploadStatusText').style.display = 'none'; 
              document.getElementById('uploadProgressBarContainer').style.display = 'none'; 
              this.totalUploaded = 0; this.totalToUpload = 0; document.getElementById('uploadProgress').style.width = '0%';
           }, 2000);
         }
       },
 
-      /* --- KÉO THẢ & XÓA ẢNH PHIÊN HIỆN TẠI --- */
+      /* --- QUẢN LÝ ẢNH LOCAL (GRID MỚI) --- */
       handleDragOverSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.add('dragover'); },
       handleDragLeaveSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); },
       handleDropSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); this.processLocalFiles(e.dataTransfer.files); },
@@ -495,7 +504,7 @@
           r.onload = (evt) => { 
             const img = new Image(); 
             img.onload = () => { 
-              this.capturedPhotos.push({ imgObj: img, driveId: null }); 
+              this.capturedPhotos.unshift({ imgObj: img, driveId: null }); 
               this.renderCapturedGallery(); 
             }; 
             img.src = evt.target.result; 
@@ -508,7 +517,7 @@
         this.capturedPhotos.forEach((record, index) => {
           const wrapper = document.createElement('div'); wrapper.className = 'thumb-wrapper';
           
-          const img = document.createElement('img'); img.src = record.imgObj.src; img.className = 'thumb-item';
+          const img = document.createElement('img'); img.src = record.imgObj.src; 
           img.draggable = true; img.ondragstart = () => { this.dragPayload = record.imgObj; };
           img.onclick = () => { this.openPrepModal(record.imgObj); };
           
@@ -542,7 +551,7 @@
         });
       },
 
-      /* --- MODAL CHUẨN BỊ ẢNH (Tương tác trực tiếp Zoom/Pan) --- */
+      /* --- MODAL CHUẨN BỊ ẢNH --- */
       bindPrepModalEvents: function() {
         const prepC = document.getElementById('prepPreviewContainer');
         prepC.addEventListener('wheel', (e) => {
@@ -609,12 +618,12 @@
         this.prepModalInstance.hide();
       },
 
-      /* --- BỐ CỤC IN (LAYOUT) & TRỰC TIẾP CHỈNH SỬA CANVAS --- */
+      /* --- BỐ CỤC IN (LAYOUT) --- */
       getLayoutConfig: function() {
         const val = parseInt(document.getElementById('layoutSelect').value);
         if(val === 2) return { cols: 1, rows: 2 };
         if(val === 4) return { cols: 2, rows: 2 };
-        if(val === 8) return { cols: 2, rows: 4 }; // Khổ ĐỨNG: 2 Cột, 4 Dòng -> 8 ô ngang
+        if(val === 8) return { cols: 2, rows: 4 }; 
         return { cols: 1, rows: 1 };
       },
       changeLayout: function() {
@@ -625,11 +634,9 @@
         const ps = document.getElementById('printStyle');
 
         if (val === 2 || val === 8) {
-          // DỌC
           this.canvas.width = 1200; this.canvas.height = 1800;
           badge.innerText = 'Dọc (Portrait)'; ps.innerHTML = `@media print { @page { size: 4in 6in; margin: 0; } }`;
         } else {
-          // NGANG
           this.canvas.width = 1800; this.canvas.height = 1200;
           badge.innerText = 'Ngang (Landscape)'; ps.innerHTML = `@media print { @page { size: 6in 4in; margin: 0; } }`;
         }
@@ -637,6 +644,7 @@
       },
       clearLayout: function() { this.changeLayout(); },
 
+      // THAO TÁC TRỰC TIẾP TRÊN CANVAS
       bindCanvasEvents: function() {
         const cvs = this.canvas;
         cvs.addEventListener('mousedown', (e) => {
@@ -646,9 +654,10 @@
             if (this.layoutSlots[index]) {
                this.isPanning = true; this.startX = e.clientX; this.startY = e.clientY;
             } else {
+               // CLICK Ô TRỐNG
                Swal.fire({
-                 title: 'Thêm ảnh vào khung', icon: 'question', showCancelButton: true, showDenyButton: true,
-                 confirmButtonText: '<i class="bi bi-camera"></i> Chụp', denyButtonText: '<i class="bi bi-folder2-open"></i> Tải file', cancelButtonText: 'Đóng',
+                 title: 'Khung ảnh trống', showCancelButton: true, showDenyButton: true,
+                 confirmButtonText: '<i class="bi bi-camera"></i> Chụp', denyButtonText: '<i class="bi bi-folder2-open"></i> Tải lên', cancelButtonText: 'Đóng',
                  customClass: { confirmButton: 'btn btn-primary-custom mx-1', denyButton: 'btn btn-outline-custom mx-1' }
                }).then((res) => {
                  if(res.isConfirmed) { this.startCaptureSession(index); } 
@@ -780,7 +789,7 @@
             } else {
               this.ctx.fillStyle = "#f1f5f9"; this.ctx.fillRect(x, y, cellW, cellH);
               this.ctx.fillStyle = "#94a3b8"; this.ctx.font = "24px Arial"; this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle";
-              this.ctx.fillText("Click thêm ảnh", x + cellW/2, y + cellH/2);
+              this.ctx.fillText("Bấm để chèn ảnh", x + cellW/2, y + cellH/2);
             }
             
             if (this.activeSlotIndex === index) {
@@ -791,16 +800,16 @@
           }
         }
         
-        // WATERMARK TOÀN TRANG
         if (this.printLogo) { 
           const logoScale = parseInt(document.getElementById('logoSize').value) / 100;
-          const posX = parseInt(document.getElementById('logoX').value) / 100;
-          const posY = parseInt(document.getElementById('logoY').value) / 100;
-          
+          const logoPos = document.getElementById('logoPos').value;
           const logoW = cw * logoScale; 
           const logoH = (this.printLogo.height / this.printLogo.width) * logoW;
-          
-          const lx = (cw - logoW) * posX; const ly = (ch - logoH) * posY;
+          let lx = 0, ly = 0;
+          if(logoPos === 'TL') { lx = 30; ly = 30; }
+          if(logoPos === 'TR') { lx = cw - logoW - 30; ly = 30; }
+          if(logoPos === 'BL') { lx = 30; ly = ch - logoH - 30; }
+          if(logoPos === 'BR') { lx = cw - logoW - 30; ly = ch - logoH - 30; }
           this.ctx.drawImage(this.printLogo, lx, ly, logoW, logoH); 
         }
 
