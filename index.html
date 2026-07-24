@@ -58,7 +58,7 @@
     .btn-cam-mode { background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--accent); padding: 4px 8px; border-radius: 4px; cursor: pointer; backdrop-filter: blur(4px); }
     .btn-cam-mode.active { background: var(--accent); }
 
-    /* NÚT CHỤP ẢNH GHI ĐÈ TRÊN CAMERA (SIZE LỚN) */
+    /* NÚT CHỤP ẢNH GHI ĐÈ TRÊN CAMERA */
     .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 72px; height: 72px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 3px solid #fff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transition: 0.2s; }
     .btn-capture-overlay:hover { background: rgba(255, 255, 255, 0.4); transform: translateX(-50%) scale(1.05); }
     .btn-capture-overlay:active { transform: translateX(-50%) scale(0.95); }
@@ -66,18 +66,19 @@
     /* ĐẾM NGƯỢC NỀN TRONG SUỐT */
     #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 0 10px var(--accent); pointer-events: none; }
 
-    /* GALLERY - HÌNH ẢNH (CSS GRID HOÀN HẢO CHỐNG LỖI OVERLAP) */
+    /* GALLERY - HÌNH ẢNH */
     .gallery-section { background: var(--panel-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
     .gallery-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
     
-    /* FIX LỖI COLLAPSE CHIỀU CAO: Dùng grid-auto-rows max-content */
+    /* CẤU TRÚC 3 CỘT GRID ĐỂ ẢNH NHỎ LẠI VÀ BẢO TOÀN TỈ LỆ */
     .gallery-container { 
         display: grid; 
-        grid-template-columns: repeat(2, 1fr); 
+        grid-template-columns: repeat(3, 1fr); /* Đổi sang 3 cột để ảnh gọn hơn */
         grid-auto-rows: max-content; 
         gap: 10px; 
-        align-content: start; 
+        align-content: start; /* Gom các dòng lên trên */
+        align-items: start; /* Cực kỳ quan trọng: Ép ảnh không bị kéo giãn theo chiều dọc */
         flex: 1; 
         overflow-y: auto; 
         overflow-x: hidden; 
@@ -95,7 +96,7 @@
         display: flex; 
         flex-direction: column; 
         justify-content: center; 
-        min-height: 60px; /* Ngăn container bị 0px khi ảnh chưa load */
+        min-height: 40px; 
     }
     .thumb-wrapper img { 
         width: 100%; 
@@ -126,7 +127,7 @@
     .slot-toolbar { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
     .slot-toolbar.active { visibility: visible; opacity: 1; top: 20px; }
 
-    /* NÚT THAO TÁC CAO HƠN */
+    /* NÚT THAO TÁC */
     .btn-primary-custom { background: var(--accent); color: var(--bg-color); border: none; font-weight: bold; box-shadow: var(--accent-glow); transition: 0.3s; }
     .btn-primary-custom:hover { filter: brightness(1.2); color: var(--bg-color); }
     .btn-outline-custom { background: transparent; border: 1px solid var(--accent); color: var(--text-main); transition: 0.3s; }
@@ -259,7 +260,7 @@
           </label>
         </div>
         
-        <!-- HIỂN THỊ LƯỚI 2 CỘT BẢO TOÀN TỈ LỆ ẢNH -->
+        <!-- HIỂN THỊ LƯỚI 3 CỘT NHỎ GỌN, BẢO TOÀN TỈ LỆ ẢNH -->
         <div class="gallery-container" id="capturedGallery">
           <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Kéo thả ảnh từ thiết bị vào đây hoặc bấm chụp mới</span>
         </div>
