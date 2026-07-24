@@ -58,7 +58,7 @@
     .btn-cam-mode { background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--accent); padding: 4px 8px; border-radius: 4px; cursor: pointer; backdrop-filter: blur(4px); }
     .btn-cam-mode.active { background: var(--accent); }
 
-    /* NÚT CHỤP ẢNH GHI ĐÈ TRÊN CAMERA (LỚN HƠN) */
+    /* NÚT CHỤP ẢNH GHI ĐÈ TRÊN CAMERA (SIZE LỚN) */
     .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 72px; height: 72px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 3px solid #fff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transition: 0.2s; }
     .btn-capture-overlay:hover { background: rgba(255, 255, 255, 0.4); transform: translateX(-50%) scale(1.05); }
     .btn-capture-overlay:active { transform: translateX(-50%) scale(0.95); }
@@ -66,18 +66,28 @@
     /* ĐẾM NGƯỢC NỀN TRONG SUỐT */
     #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 0 10px var(--accent); pointer-events: none; }
 
-    /* GALLERY - HÌNH ẢNH (GRID 3 CỘT - THUMBNAIL NHỎ GỌN) */
+    /* GALLERY - HÌNH ẢNH (FIX LỖI XẾP CHỒNG - CSS GRID CHUẨN) */
     .gallery-section { background: var(--panel-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
     .gallery-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
     
-    /* SỬ DỤNG GRID ĐỂ CHỐNG XẾP CHỒNG, ĐẢM BẢO CUỘN DỌC, KHÔNG CUỘN NGANG */
-    .gallery-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: flex-start; flex: 1; overflow-y: auto; overflow-x: hidden; padding-right: 5px; }
+    /* 2 HÀNG NGANG BẢO TOÀN TỈ LỆ, TỰ ĐỘNG XUỐNG DÒNG */
+    .gallery-container { 
+        display: grid; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
+        align-content: flex-start; 
+        align-items: flex-start; 
+        flex: 1; 
+        overflow-y: auto; 
+        overflow-x: hidden; 
+        padding-right: 5px; 
+    }
     .gallery-container::-webkit-scrollbar { width: 5px; }
     .gallery-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
     
-    .thumb-wrapper { position: relative; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); background: #000; overflow: hidden; align-self: start; }
-    .thumb-wrapper img { width: 100%; height: auto; display: block; cursor: grab; transition: 0.2s; }
+    .thumb-wrapper { position: relative; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); background: #000; overflow: hidden; width: 100%; height: auto; }
+    .thumb-wrapper img { width: 100%; height: auto; display: block; object-fit: contain; cursor: grab; transition: 0.2s; }
     .thumb-wrapper:hover { transform: scale(1.03); z-index: 2; box-shadow: var(--accent-glow); border: 1px solid var(--accent); }
     
     /* Styles for multi-select in Modal */
@@ -191,7 +201,7 @@
           <!-- 3. XÓA TRANG -->
           <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.clearLayout()"><i class="bi bi-trash"></i> Xóa trang</button>
 
-          <!-- 4. BỐ CỤC & VIỀN ẢNH (Đưa từ cài đặt ra đây) -->
+          <!-- 4. BỐ CỤC & VIỀN ẢNH (Đưa ra ngoài) -->
           <div class="w-100 mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
             <label class="small fw-bold mb-1" style="color:var(--accent); font-size: 0.75rem;"><i class="bi bi-grid-1x2"></i> Bố cục in</label>
             <select id="layoutSelect" class="form-select form-select-sm mb-2" style="font-size: 0.75rem;" onchange="app.changeLayout(); app.saveSettings()">
@@ -233,7 +243,7 @@
           </label>
         </div>
         
-        <!-- HIỂN THỊ LƯỚI 3 CỘT GỌN GÀNG HƠN -->
+        <!-- HIỂN THỊ LƯỚI 2 CỘT (FIX XẾP CHỒNG MỚI) -->
         <div class="gallery-container" id="capturedGallery">
           <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Kéo thả ảnh từ thiết bị vào đây hoặc bấm chụp mới</span>
         </div>
@@ -267,7 +277,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHỌN ẢNH VÀO KHUNG (GRID 4 CỘT - THUMBNAIL NHỎ GỌN) -->
+  <!-- MODAL CHỌN ẢNH VÀO KHUNG (GRID 4 CỘT) -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -751,10 +761,10 @@
         });
       },
 
-      /* --- CHỌN NHIỀU ẢNH TRONG MODAL & DÀN TRANG (TỰ ĐỘNG THÊM TRANG) --- */
+      /* --- CHỌN NHIỀU ẢNH TRONG MODAL & DÀN TRANG --- */
       openPhotoSelector: function(index) {
           this.pendingSlotIndex = index;
-          this.selectedModalIndices = []; // Reset lựa chọn
+          this.selectedModalIndices = []; 
           document.getElementById('modalSelectedCount').innerText = '0 đã chọn';
           document.getElementById('modalCopies').value = 1;
           
