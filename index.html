@@ -32,32 +32,47 @@
     [data-bs-theme="light"] .btn-close-custom { filter: invert(1); }
 
     /* HEADER */
-    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 1000; }
+    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); height: 60px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     
     /* BỐ CỤC CHÍNH */
     .app-container { display: flex; height: calc(100vh - 60px); }
-    .left-panel { flex: 7; display: flex; flex-direction: column; padding: 15px; overflow: hidden; background: transparent; }
-    .right-panel { flex: 3; min-width: 360px; max-width: 480px; display: flex; flex-direction: column; align-items: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; border-left: 1px solid var(--border-color); }
+    .left-panel { flex: 7; display: flex; flex-direction: column; padding: 15px 25px 15px 15px; border-right: 1px solid var(--border-color); overflow: hidden; background: transparent; }
+    .right-panel { flex: 3; min-width: 360px; max-width: 480px; display: flex; flex-direction: column; align-items: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; border-left: 1px solid rgba(0,0,0,0.2); }
     
     /* CỤM ĐIỀU KHIỂN CAMERA (TOP LEFT) */
     .camera-control-box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     
-    .viewport-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; }
-    .viewport-wrapper.vertical { aspect-ratio: 9/16; max-height: 45vh; }
+    /* CAMERA VIEWPORT - ĐÃ SỬA LỖI TRÀN MÀN HÌNH */
+    .viewport-wrapper { 
+      position: relative; 
+      height: 35vh; /* Khóa cứng tỷ lệ theo chiều cao màn hình */
+      max-height: 320px; /* Không cho phép vượt quá 320px */
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto; 
+      aspect-ratio: 16/9; 
+      background: #000; 
+      border-radius: 6px; 
+      overflow: hidden; 
+      border: 1px solid var(--border-color); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    .viewport-wrapper.vertical { aspect-ratio: 9/16; }
     #videoElement { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    
     .camera-modes { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
     .btn-cam-mode { background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
     .btn-cam-mode.active { background: var(--accent); border-color: var(--accent); }
     
-    /* ĐẾM NGƯỢC (TRONG SUỐT) */
     #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 160px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px var(--accent); pointer-events: none; }
 
-    /* GALLERY PHIÊN HIỆN TẠI (LƯỚI THEO TỶ LỆ) */
+    /* GALLERY PHIÊN HIỆN TẠI */
     .gallery-section { background: var(--panel-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
     .gallery-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
     
-    /* CSS Columns cho lưới 4 ảnh hiển thị giữ nguyên tỷ lệ */
     .gallery-container { display: block; column-count: 4; column-gap: 12px; flex: 1; overflow-y: auto; padding-right: 5px; }
     .gallery-container::-webkit-scrollbar { width: 6px; }
     .gallery-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -71,11 +86,12 @@
     .thumb-wrapper:hover .btn-del-thumb { opacity: 1; }
     .btn-del-thumb:hover { background: #dc3545; transform: scale(1.1); }
 
-    /* UPLOAD PROGRESS TÍCH HỢP GỌN */
+    /* UPLOAD PROGRESS */
     .progress-tiny { height: 4px; background-color: var(--input-bg); width: 120px; border-radius: 2px; overflow: hidden; display: none; margin-right: 10px; }
     .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; height: 100%; }
+    .upload-info { font-size: 0.75rem; color: var(--accent); font-weight: normal; display: flex; align-items: center; }
 
-    /* CANVAS TRANG IN (GỌN GÀNG) */
+    /* CANVAS TRANG IN */
     .canvas-container { width: 100%; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px 0; }
     .canvas-wrapper { position: relative; max-width: 100%; max-height: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border: 1px solid var(--border-color); background: #fff; display: flex; }
     #finalCanvas { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; cursor: crosshair; }
@@ -84,7 +100,6 @@
     .slot-toolbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
     .slot-toolbar.active { visibility: visible; opacity: 1; top: 15px; }
 
-    /* NÚT THAO TÁC */
     .btn-primary-custom { background: var(--accent); color: var(--bg-color); border: none; font-weight: bold; box-shadow: var(--accent-glow); transition: 0.3s; }
     .btn-primary-custom:hover { filter: brightness(1.1); color: var(--bg-color); }
     .btn-outline-custom { background: transparent; border: 1px solid var(--accent); color: var(--text-main); transition: 0.3s; }
@@ -114,7 +129,7 @@
 
   <div class="app-container">
     
-    <!-- CỘT TRÁI: CAMERA & ẢNH -->
+    <!-- CỘT TRÁI -->
     <div class="left-panel">
       
       <!-- CỤM CAMERA & BỘ ĐẾM -->
@@ -154,7 +169,7 @@
         </div>
       </div>
 
-      <!-- GALLERY: ẢNH PHIÊN HIỆN TẠI (LƯỚI MASONRY) -->
+      <!-- GALLERY: ẢNH PHIÊN HIỆN TẠI -->
       <div class="gallery-section" id="currentSessionZone"
            ondragover="app.handleDragOverSession(event)" ondragleave="app.handleDragLeaveSession(event)" ondrop="app.handleDropSession(event)">
         
@@ -177,7 +192,7 @@
       </div>
     </div>
 
-    <!-- CỘT PHẢI: TRANG IN GỌN GÀNG -->
+    <!-- CỘT PHẢI: TRANG IN -->
     <div class="right-panel">
       <div class="d-flex justify-content-between align-items-center w-100 mb-2">
         <div class="text-start">
@@ -218,7 +233,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHUẨN BỊ ẢNH -->
+  <!-- MODAL CHUẨN BỊ ẢNH CHUYÊN SÂU -->
   <div class="modal fade" id="imagePrepModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -343,7 +358,6 @@
   </div>
 
   <script>
-    // URL API CỦA BẠN 
     const API_URL = 'https://script.google.com/macros/s/AKfycby6_-gotKSFnMsAsvC_TXmqCEeibp339208kcTpuKF8c9DsSMH1WQ05U00MwlztEqRfYg/exec'; 
 
     const app = {
@@ -377,9 +391,7 @@
         this.bindCanvasEvents();
         this.bindPrepModalEvents();
         
-        // Mặc định giao diện Tối giản (Minimalist) theo ý thích
         this.changeTheme('minimalist');
-        document.querySelector('select[onchange="app.changeTheme(this.value)"]').value = 'minimalist';
       },
 
       changeTheme: function(themeName) {
@@ -623,7 +635,7 @@
         const val = parseInt(document.getElementById('layoutSelect').value);
         if(val === 2) return { cols: 1, rows: 2 };
         if(val === 4) return { cols: 2, rows: 2 };
-        if(val === 8) return { cols: 2, rows: 4 }; 
+        if(val === 8) return { cols: 2, rows: 4 }; // Khổ ĐỨNG: 2 Cột, 4 Dòng -> 8 ô ngang
         return { cols: 1, rows: 1 };
       },
       changeLayout: function() {
@@ -644,7 +656,6 @@
       },
       clearLayout: function() { this.changeLayout(); },
 
-      // THAO TÁC TRỰC TIẾP TRÊN CANVAS
       bindCanvasEvents: function() {
         const cvs = this.canvas;
         cvs.addEventListener('mousedown', (e) => {
@@ -652,12 +663,12 @@
           if(index !== -1) {
             this.activeSlotIndex = index;
             if (this.layoutSlots[index]) {
-               this.isPanning = true; this.startX = e.clientX; this.startY = e.clientY;
+               this.isPanning = true;
+               this.startX = e.clientX; this.startY = e.clientY;
             } else {
-               // CLICK Ô TRỐNG
                Swal.fire({
-                 title: 'Khung ảnh trống', showCancelButton: true, showDenyButton: true,
-                 confirmButtonText: '<i class="bi bi-camera"></i> Chụp', denyButtonText: '<i class="bi bi-folder2-open"></i> Tải lên', cancelButtonText: 'Đóng',
+                 title: 'Khung ảnh trống', icon: 'question', showCancelButton: true, showDenyButton: true,
+                 confirmButtonText: '<i class="bi bi-camera"></i> Chụp ngay', denyButtonText: '<i class="bi bi-folder2-open"></i> Tải file', cancelButtonText: 'Đóng',
                  customClass: { confirmButton: 'btn btn-primary-custom mx-1', denyButton: 'btn btn-outline-custom mx-1' }
                }).then((res) => {
                  if(res.isConfirmed) { this.startCaptureSession(index); } 
@@ -749,7 +760,7 @@
         r.readAsDataURL(file); e.target.value = ''; 
       },
 
-      /* --- RENDER CANVAS MASKING --- */
+      /* --- RENDER CANVAS MASKING CHUẨN --- */
       renderCanvas: function() {
         const cw = this.canvas.width; const ch = this.canvas.height;
         this.ctx.clearRect(0, 0, cw, ch);
@@ -785,13 +796,17 @@
               this.ctx.drawImage(slot.img, -drawW / 2, -drawH / 2, drawW, drawH);
               this.ctx.restore(); 
               
-              if(sBorder > 0) { this.ctx.lineWidth = sBorder * 2; this.ctx.strokeStyle = "#ffffff"; this.ctx.strokeRect(x, y, cellW, cellH); }
+              // Vẽ viền trắng ô ảnh
+              if(sBorder > 0) {
+                 this.ctx.lineWidth = sBorder * 2; this.ctx.strokeStyle = "#ffffff"; this.ctx.strokeRect(x, y, cellW, cellH);
+              }
             } else {
               this.ctx.fillStyle = "#f1f5f9"; this.ctx.fillRect(x, y, cellW, cellH);
               this.ctx.fillStyle = "#94a3b8"; this.ctx.font = "24px Arial"; this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle";
               this.ctx.fillText("Bấm để chèn ảnh", x + cellW/2, y + cellH/2);
             }
             
+            // Viền tương tác
             if (this.activeSlotIndex === index) {
               this.ctx.strokeStyle = "rgba(14, 165, 233, 0.8)"; this.ctx.lineWidth = 15; this.ctx.strokeRect(x, y, cellW, cellH);
             } else {
@@ -800,16 +815,16 @@
           }
         }
         
+        // WATERMARK TOÀN TRANG
         if (this.printLogo) { 
           const logoScale = parseInt(document.getElementById('logoSize').value) / 100;
-          const logoPos = document.getElementById('logoPos').value;
+          const posX = parseInt(document.getElementById('logoX').value) / 100;
+          const posY = parseInt(document.getElementById('logoY').value) / 100;
+          
           const logoW = cw * logoScale; 
           const logoH = (this.printLogo.height / this.printLogo.width) * logoW;
-          let lx = 0, ly = 0;
-          if(logoPos === 'TL') { lx = 30; ly = 30; }
-          if(logoPos === 'TR') { lx = cw - logoW - 30; ly = 30; }
-          if(logoPos === 'BL') { lx = 30; ly = ch - logoH - 30; }
-          if(logoPos === 'BR') { lx = cw - logoW - 30; ly = ch - logoH - 30; }
+          
+          const lx = (cw - logoW) * posX; const ly = (ch - logoH) * posY;
           this.ctx.drawImage(this.printLogo, lx, ly, logoW, logoH); 
         }
 
@@ -834,16 +849,6 @@
       },
       
       print: function() { this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas(); setTimeout(() => { window.print(); }, 300); },
-      saveLayoutToDrive: function() {
-        if(this.layoutSlots.every(s => s === null)) return Swal.fire('Lỗi', 'Trang in trống', 'error');
-        this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas();
-        const b64 = this.canvas.toDataURL('image/jpeg', 0.9);
-        const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Print_Layout_' + new Date().getTime() + '.jpg');
-        Swal.fire({title: 'Đang lưu...', didOpen: () => Swal.showLoading()});
-        fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{
-          if(r.success) Swal.fire('Thành công', 'Đã lưu bố cục lên Drive', 'success'); else Swal.fire('Lỗi', 'Có lỗi xảy ra', 'error');
-        }).catch(()=>Swal.fire('Lỗi', 'Mạng không ổn định', 'error'));
-      },
       loadPrintLogo: function(e) {
         if(!e.target.files[0]) return;
         const r = new FileReader();
