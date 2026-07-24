@@ -48,9 +48,9 @@
     .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
     
     .camera-control-col { width: 140px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-    .action-control-col { width: 150px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+    .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
     
-    .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 45vh; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; }
+    .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; }
     .viewport-wrapper.vertical { aspect-ratio: 9/16; }
     #videoElement { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s; }
     
@@ -58,24 +58,25 @@
     .btn-cam-mode { background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--accent); padding: 4px 8px; border-radius: 4px; cursor: pointer; backdrop-filter: blur(4px); }
     .btn-cam-mode.active { background: var(--accent); }
 
-    /* NÚT CHỤP ẢNH GHI ĐÈ TRÊN CAMERA */
-    .btn-capture-overlay { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 3px solid #fff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transition: 0.2s; }
-    .btn-capture-overlay:hover { background: rgba(255, 255, 255, 0.4); transform: translateX(-50%) scale(1.1); }
+    /* NÚT CHỤP ẢNH GHI ĐÈ TRÊN CAMERA (LỚN HƠN) */
+    .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 72px; height: 72px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 3px solid #fff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transition: 0.2s; }
+    .btn-capture-overlay:hover { background: rgba(255, 255, 255, 0.4); transform: translateX(-50%) scale(1.05); }
     .btn-capture-overlay:active { transform: translateX(-50%) scale(0.95); }
     
     /* ĐẾM NGƯỢC NỀN TRONG SUỐT */
     #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 0 10px var(--accent); pointer-events: none; }
 
-    /* GALLERY - HÌNH ẢNH (COLUMN-COUNT CHỐNG LỖI OVERLAP) */
+    /* GALLERY - HÌNH ẢNH (GRID 3 CỘT - THUMBNAIL NHỎ GỌN) */
     .gallery-section { background: var(--panel-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
     .gallery-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; }
     
-    .gallery-container { display: block; column-count: 2; column-gap: 10px; flex: 1; overflow-y: auto; padding-right: 5px; }
+    /* SỬ DỤNG GRID ĐỂ CHỐNG XẾP CHỒNG, ĐẢM BẢO CUỘN DỌC, KHÔNG CUỘN NGANG */
+    .gallery-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: flex-start; flex: 1; overflow-y: auto; overflow-x: hidden; padding-right: 5px; }
     .gallery-container::-webkit-scrollbar { width: 5px; }
     .gallery-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
     
-    .thumb-wrapper { break-inside: avoid; margin-bottom: 10px; position: relative; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); background: #000; overflow: hidden; }
+    .thumb-wrapper { position: relative; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); background: #000; overflow: hidden; align-self: start; }
     .thumb-wrapper img { width: 100%; height: auto; display: block; cursor: grab; transition: 0.2s; }
     .thumb-wrapper:hover { transform: scale(1.03); z-index: 2; box-shadow: var(--accent-glow); border: 1px solid var(--accent); }
     
@@ -105,7 +106,7 @@
     .btn-outline-custom { background: transparent; border: 1px solid var(--accent); color: var(--text-main); transition: 0.3s; }
     .btn-outline-custom:hover { background: var(--accent); color: var(--bg-color); }
     
-    .btn-print-tall { padding-top: 14px; padding-bottom: 14px; font-size: 1.05rem; }
+    .btn-print-tall { padding-top: 10px; padding-bottom: 10px; font-size: 1.05rem; }
 
     /* PRINT STYLES */
     @media print {
@@ -172,7 +173,7 @@
           <video id="videoElement" autoplay playsinline></video>
           <div id="countdownOverlay">3</div>
           
-          <!-- NÚT CHỤP GHI ĐÈ Ở ĐÂY -->
+          <!-- NÚT CHỤP GHI ĐÈ Ở ĐÂY (SIZE LỚN) -->
           <button class="btn-capture-overlay" onclick="app.startCaptureSession()" title="Chụp ảnh">
             <i class="bi bi-camera-fill"></i>
           </button>
@@ -180,19 +181,37 @@
         
         <!-- Cột 3: ĐIỀU HƯỚNG & Nút thao tác Layout -->
         <div class="action-control-col">
-          <!-- ĐIỀU HƯỚNG TRANG (PAGINATION) -->
-          <div class="d-flex align-items-center justify-content-between mb-2 w-100 bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
+          
+          <!-- 1. NÚT IN NGAY -->
+          <button class="btn btn-primary-custom w-100 shadow mb-1 btn-print-tall" onclick="app.printAllPages()"><i class="bi bi-printer"></i> IN NGAY</button>
+          
+          <!-- 2. LƯU ẢNH -->
+          <button class="btn btn-outline-custom w-100 btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
+          
+          <!-- 3. XÓA TRANG -->
+          <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.clearLayout()"><i class="bi bi-trash"></i> Xóa trang</button>
+
+          <!-- 4. BỐ CỤC & VIỀN ẢNH (Đưa từ cài đặt ra đây) -->
+          <div class="w-100 mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
+            <label class="small fw-bold mb-1" style="color:var(--accent); font-size: 0.75rem;"><i class="bi bi-grid-1x2"></i> Bố cục in</label>
+            <select id="layoutSelect" class="form-select form-select-sm mb-2" style="font-size: 0.75rem;" onchange="app.changeLayout(); app.saveSettings()">
+              <option value="1">10x15 cm (1 ảnh)</option>
+              <option value="2">6x9 cm (2 ô)</option>
+              <option value="4">4x6 cm (4 ô)</option>
+              <option value="8" selected>3x4 cm (8 ô)</option>
+            </select>
+            <label class="small text-muted w-100 mb-1" style="font-size: 0.7rem;">Viền trắng: <span id="vBorder" class="float-end text-white">0px</span></label>
+            <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
+          </div>
+
+          <!-- 5. QUẢN LÝ ĐA TRANG (PAGINATION) -->
+          <div class="d-flex align-items-center justify-content-between mt-auto w-100 bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
             <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
             <span class="fw-bold text-uppercase text-center" id="pageIndicator" style="font-size: 0.75rem; color: var(--accent); flex:1;">1/1</span>
             <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.nextPage()"><i class="bi bi-chevron-right"></i></button>
             <button class="btn btn-sm btn-outline-secondary p-1 border-0 rounded-circle ms-1" onclick="app.addEmptyPage()" title="Thêm trang"><i class="bi bi-plus-lg"></i></button>
           </div>
-
-          <!-- NÚT IN CAO HƠN -->
-          <button class="btn btn-primary-custom w-100 shadow mb-2 mt-auto btn-print-tall" onclick="app.printAllPages()"><i class="bi bi-printer"></i> IN NGAY</button>
           
-          <button class="btn btn-outline-custom w-100 btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
-          <button class="btn btn-outline-danger w-100 btn-sm" onclick="app.clearLayout()"><i class="bi bi-trash"></i> Xóa trang</button>
         </div>
 
       </div>
@@ -214,9 +233,9 @@
           </label>
         </div>
         
-        <!-- HIỂN THỊ MASONRY BẢO TOÀN TỈ LỆ -->
+        <!-- HIỂN THỊ LƯỚI 3 CỘT GỌN GÀNG HƠN -->
         <div class="gallery-container" id="capturedGallery">
-          <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; column-span: all;">Kéo thả ảnh từ thiết bị vào đây hoặc bấm chụp mới</span>
+          <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Kéo thả ảnh từ thiết bị vào đây hoặc bấm chụp mới</span>
         </div>
       </div>
     </div>
@@ -248,7 +267,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHỌN ẢNH VÀO KHUNG (TÍCH HỢP HÌNH ẢNH - CHỌN NHIỀU) -->
+  <!-- MODAL CHỌN ẢNH VÀO KHUNG (GRID 4 CỘT - THUMBNAIL NHỎ GỌN) -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -267,8 +286,8 @@
             <span class="badge bg-secondary" id="modalSelectedCount">0 đã chọn</span>
           </div>
           
-          <!-- Lưới ảnh session trong modal (Masonry) -->
-          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 35vh; column-count: 3; overflow-y: auto;">
+          <!-- Lưới ảnh session trong modal (Grid 4 cột) -->
+          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 40vh; grid-template-columns: repeat(4, 1fr); overflow-x: hidden;">
             <!-- Generate bằng JS -->
           </div>
 
@@ -353,19 +372,6 @@
           <option value="retro">Cổ điển (Retro)</option>
           <option value="dark">Dark Mode Thuần</option>
         </select>
-      </div>
-
-      <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Bố cục & Viền ảnh</h6>
-        <select id="layoutSelect" class="form-select form-select-sm mb-3" onchange="app.changeLayout(); app.saveSettings()">
-          <option value="1">10x15 cm (1 ảnh) - Khổ Ngang</option>
-          <option value="2">6x9 cm (2 ô) - Khổ Dọc</option>
-          <option value="4">4x6 cm (4 ô) - Khổ Ngang</option>
-          <option value="8" selected>3x4 cm (8 ô) - Khổ Dọc (Khung nhỏ ngang)</option>
-        </select>
-        
-        <label class="small text-muted w-100">Độ dày viền trắng khung ảnh <span id="vBorder" class="float-end text-white">0px</span></label>
-        <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
       </div>
 
       <div class="mb-4">
@@ -718,7 +724,7 @@
 
           wrapper.appendChild(img); wrapper.appendChild(btnDel); cap.appendChild(wrapper);
         });
-        if(this.capturedPhotos.length === 0) cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; column-span: all;">Kéo thả file vào đây hoặc bấm chụp mới</span>';
+        if(this.capturedPhotos.length === 0) cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; grid-column: 1 / -1;">Kéo thả file vào đây hoặc bấm chụp mới</span>';
       },
       deleteSessionPhoto: function(index) {
         const record = this.capturedPhotos[index];
@@ -756,7 +762,7 @@
           container.innerHTML = '';
           
           if(this.capturedPhotos.length === 0) {
-              container.innerHTML = '<span class="small text-muted w-100 text-center" style="column-span: all; padding: 10px;">Chưa có ảnh nào trong Hình ảnh.</span>';
+              container.innerHTML = '<span class="small text-muted w-100 text-center" style="grid-column: 1 / -1; padding: 10px;">Chưa có ảnh nào trong Hình ảnh.</span>';
           } else {
               this.capturedPhotos.forEach((record, idx) => {
                   const wrap = document.createElement('div');
