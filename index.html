@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro PhotoBooth Studio</title>
+  <title>HaMa PhotoBooth</title>
+  
+  <!-- Thêm Favicon -->
+  <link rel="icon" href="favicon.png" type="image/png">
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   
@@ -47,7 +51,7 @@
     /* CAMERA VIEWPORT VÀ CỤM ĐIỀU KHIỂN */
     .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
     
-    .camera-control-col { width: 140px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .camera-control-col { width: 160px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
     .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
     
     .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; }
@@ -74,9 +78,9 @@
     /* CẤU TRÚC GRID 4 CỘT - GIẢM KÍCH THƯỚC ẢNH GỌN NHẸ HƠN */
     .gallery-container { 
         display: grid; 
-        grid-template-columns: repeat(4, 1fr); /* Đổi sang 4 cột để hiển thị nhiều ảnh nhỏ hơn */
+        grid-template-columns: repeat(4, 1fr); 
         grid-auto-rows: max-content; 
-        gap: 6px; /* Thu hẹp gap cho vừa vặn */
+        gap: 6px; 
         align-content: start; 
         align-items: start; 
         flex: 1; 
@@ -147,6 +151,9 @@
 
   <style id="printStyle"></style>
   <input type="file" id="slotFileInput" accept="image/*" onchange="app.handleSlotFile(event)" hidden>
+  
+  <!-- File Picker Dành Cho Load Thư Mục Nội Bộ -->
+  <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
 
   <!-- VÙNG IN ẨN -->
   <div id="printContainer" class="d-none"></div>
@@ -157,9 +164,15 @@
       <img id="headerLogo" src="" alt="Logo" style="height: 20px; display: none;">
       <h6 id="headerTitleText" style="margin:0; font-size:0.85rem; font-weight:800; color:var(--accent); letter-spacing: 1px;">STUDIO BOOTH</h6>
     </div>
-    <button class="btn btn-sm text-muted p-0" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt">
-      <i class="bi bi-gear-fill fs-6" style="color: var(--accent);"></i>
-    </button>
+    <div class="d-flex align-items-center">
+      <!-- Mạng xã hội Twitter / Discord -->
+      <a href="#" class="text-muted px-2" title="Twitter/X"><i class="bi bi-twitter-x fs-6" style="color: var(--accent);"></i></a>
+      <a href="#" class="text-muted px-2 border-end border-secondary" title="Discord"><i class="bi bi-discord fs-6" style="color: var(--accent);"></i></a>
+      
+      <button class="btn btn-sm text-muted p-0 ms-3" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt">
+        <i class="bi bi-gear-fill fs-6" style="color: var(--accent);"></i>
+      </button>
+    </div>
   </div>
 
   <div class="app-container">
@@ -170,24 +183,23 @@
       <!-- HÀNG TRÊN: ĐIỀU KHIỂN | CAMERA | NÚT CÔNG CỤ -->
       <div class="camera-setup-row">
         
-        <!-- Cột 1: Thông số Camera -->
+        <!-- Cột 1: Thông số Camera (Icons Lớn cho Cảm Ứng) -->
         <div class="camera-control-col">
-          <label class="small fw-bold mb-0" style="color:var(--accent)"><i class="bi bi-webcam"></i> Camera</label>
-          <select id="cameraSelect" class="form-select form-select-sm mb-1" onchange="app.switchCamera()"></select>
+          <select id="cameraSelect" class="form-select form-select-sm mb-2 shadow-sm" onchange="app.switchCamera()"></select>
 
-          <div class="input-group input-group-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary w-50" style="border-right: none;">Chụp</span>
-            <input type="number" id="photoCount" class="form-control text-center border-secondary" style="border-left: none;" value="1" min="1">
+          <div class="input-group input-group-lg mb-2 shadow-sm">
+            <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Số lượng chụp" style="border-right: none;"><i class="bi bi-camera fs-5"></i></span>
+            <input type="number" id="photoCount" class="form-control form-control-lg text-center border-secondary fs-5" style="border-left: none;" value="1" min="1">
           </div>
 
-          <div class="input-group input-group-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary w-50" style="border-right: none;">Đếm (s)</span>
-            <input type="number" id="timerCount" class="form-control text-center border-secondary" style="border-left: none;" value="3" min="0">
+          <div class="input-group input-group-lg mb-2 shadow-sm">
+            <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Thời gian đếm ngược (giây)" style="border-right: none;"><i class="bi bi-stopwatch fs-5"></i></span>
+            <input type="number" id="timerCount" class="form-control form-control-lg text-center border-secondary fs-5" style="border-left: none;" value="3" min="0">
           </div>
 
-          <div class="input-group input-group-sm mb-1">
-            <span class="input-group-text bg-transparent text-muted border-secondary w-50" style="border-right: none;">Nhân bản</span>
-            <input type="number" id="autoCopies" class="form-control text-center border-secondary fw-bold" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
+          <div class="input-group input-group-lg mb-1 shadow-sm">
+            <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Số lần nhân bản ảnh" style="border-right: none;"><i class="bi bi-files fs-5"></i></span>
+            <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-5" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
         </div>
 
@@ -206,7 +218,7 @@
           </button>
         </div>
         
-        <!-- Cột 3: ĐIỀU HƯỚNG & Nút thao tác Layout -->
+        <!-- Cột 3: Nút thao tác Layout -->
         <div class="action-control-col">
           
           <!-- 1. NÚT IN NGAY -->
@@ -215,8 +227,8 @@
           <!-- 2. LƯU ẢNH -->
           <button class="btn btn-outline-custom w-100 btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
           
-          <!-- 3. XÓA TRANG -->
-          <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.clearLayout()"><i class="bi bi-trash"></i> Xóa trang</button>
+          <!-- 3. XÓA TRANG (CHỈ XÓA TRANG HIỆN TẠI) -->
+          <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.clearCurrentPage()"><i class="bi bi-trash"></i> Xóa trang</button>
 
           <!-- 4. BỐ CỤC & VIỀN ẢNH -->
           <div class="w-100 mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
@@ -255,12 +267,17 @@
               <div class="progress-bar-tiny" id="uploadProgress" style="width: 0%"></div>
             </div>
           </div>
-          <label class="btn btn-sm btn-outline-custom m-0 px-3 py-0 rounded-pill" style="cursor: pointer; font-size: 0.75rem;">
-            + Thêm ảnh <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
-          </label>
+          <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary py-0 rounded-pill" onclick="document.getElementById('folderInput').click()" title="Đồng bộ thư mục nội bộ" style="font-size: 0.75rem;">
+                  <i class="bi bi-folder-symlink"></i> Tải Thư Mục
+              </button>
+              <label class="btn btn-sm btn-outline-custom m-0 px-3 py-0 rounded-pill" style="cursor: pointer; font-size: 0.75rem;">
+                + Thêm ảnh <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
+              </label>
+          </div>
         </div>
         
-        <!-- HIỂN THỊ LƯỚI 4 CỘT (HOẶC 3 TÙY THÍCH MÀ VẪN GIỮ TỈ LỆ) -->
+        <!-- HIỂN THỊ LƯỚI 4 CỘT BẢO TOÀN TỈ LỆ ẢNH -->
         <div class="gallery-container" id="capturedGallery">
           <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Kéo thả ảnh từ thiết bị vào đây hoặc bấm chụp mới</span>
         </div>
@@ -294,9 +311,10 @@
     </div>
   </div>
 
-  <!-- MODAL CHỌN ẢNH VÀO KHUNG -->
+  <!-- MODAL CHỌN ẢNH VÀO KHUNG (SIZE LỚN HƠN) -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <!-- Đổi sang modal-xl để hiển thị to hơn -->
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
         <div class="modal-header border-bottom-0 pb-2">
           <h6 class="modal-title fw-bold text-uppercase" style="color: var(--accent);">Chọn nguồn ảnh</h6>
@@ -313,8 +331,8 @@
             <span class="badge bg-secondary" id="modalSelectedCount">0 đã chọn</span>
           </div>
           
-          <!-- Lưới ảnh session trong modal -->
-          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 40vh; grid-template-columns: repeat(5, 1fr); gap: 6px; overflow-x: hidden;">
+          <!-- Lưới ảnh session trong modal (Grid 5 cột cho modal XL) -->
+          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 50vh; grid-template-columns: repeat(5, 1fr); overflow-x: hidden;">
             <!-- Generate bằng JS -->
           </div>
 
@@ -377,6 +395,15 @@
     </div>
     <div class="offcanvas-body">
       
+      <!-- CÀI ĐẶT FOLDER (NỘI BỘ) -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Nguồn ảnh Cục bộ (Máy tính)</h6>
+        <label class="small text-muted w-100 mb-1">Đường dẫn thư mục (để ghi nhớ)</label>
+        <input type="text" id="localFolderPath" class="form-control form-control-sm mb-2" placeholder="VD: D:\OneDrive\..." onchange="app.saveSettings()">
+        <button class="btn btn-sm btn-outline-custom w-100" onclick="document.getElementById('folderInput').click()"><i class="bi bi-folder-symlink"></i> Chọn & Tải ảnh từ thư mục</button>
+        <div class="small text-muted mt-1" style="font-size: 0.65rem;">* Trình duyệt yêu cầu bạn cấp quyền để đọc thư mục cục bộ. Hệ thống sẽ tự lọc 100 ảnh gần nhất.</div>
+      </div>
+
       <!-- CÀI ĐẶT HEADER -->
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Tùy chỉnh App (Header)</h6>
@@ -520,6 +547,7 @@
           const settings = {
               headerTitle: document.getElementById('appHeaderTitle').value,
               headerLogo: document.getElementById('headerLogo').src,
+              localFolderPath: document.getElementById('localFolderPath').value,
               theme: document.getElementById('themeSelect').value,
               layout: document.getElementById('layoutSelect').value,
               slotBorder: document.getElementById('slotBorder').value,
@@ -547,6 +575,7 @@
                   
                   if(s.headerTitle) { document.getElementById('appHeaderTitle').value = s.headerTitle; document.getElementById('headerTitleText').innerText = s.headerTitle; }
                   if(s.headerLogo && s.headerLogo.startsWith('data:image')) { document.getElementById('headerLogo').src = s.headerLogo; document.getElementById('headerLogo').style.display = 'block'; }
+                  if(s.localFolderPath) { document.getElementById('localFolderPath').value = s.localFolderPath; }
                   
                   if(s.theme) document.getElementById('themeSelect').value = s.theme;
                   if(s.layout) document.getElementById('layoutSelect').value = s.layout;
@@ -594,6 +623,25 @@
         const lightThemes = ['professional', 'simple', 'minimalist', 'pastel', 'retro', 'bimgroup'];
         if(lightThemes.includes(themeName)) { document.documentElement.setAttribute('data-bs-theme', 'light'); } 
         else { document.documentElement.setAttribute('data-bs-theme', 'dark'); }
+      },
+
+      /* --- TẢI ẢNH TỪ FOLDER CỤC BỘ --- */
+      loadFromFolder: function(e) {
+          let files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+          if (files.length === 0) return;
+          
+          // Sắp xếp theo thời gian sửa đổi (mới nhất lên đầu)
+          files.sort((a, b) => b.lastModified - a.lastModified);
+          
+          // Giới hạn tải 100 ảnh gần nhất để tránh treo trình duyệt
+          const topFiles = files.slice(0, 100);
+          this.processLocalFiles(topFiles);
+          
+          Swal.fire({
+              toast: true, position: 'top-end', showConfirmButton: false, timer: 3000,
+              icon: 'success', title: `Đã load ${topFiles.length} ảnh mới nhất.`
+          });
+          e.target.value = ''; // Reset input
       },
 
       /* --- CAMERA --- */
@@ -665,6 +713,7 @@
           this.capturedPhotos.unshift(photoRecord);
           this.renderCapturedGallery();
           
+          // Thêm tự động vào trang in theo số lượng nhân bản
           if(targetSlot !== -1) {
             this.pages[this.currentPage][targetSlot] = { img: imgObj, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 };
             this.activeSlotIndex = targetSlot;
@@ -884,6 +933,25 @@
           this.updateToolbarUI();
           this.renderPagination();
           this.renderCanvas();
+      },
+      
+      /* --- XÓA TRANG HIỆN TẠI --- */
+      clearCurrentPage: function() {
+          Swal.fire({
+              title: 'Xóa trang này?', 
+              text: "Các ảnh trên trang hiện tại sẽ bị xóa trống.", 
+              icon: 'warning',
+              showCancelButton: true, 
+              confirmButtonText: 'Đồng ý', 
+              cancelButtonText: 'Hủy'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  this.pages[this.currentPage] = new Array(this.slotsPerPage).fill(null);
+                  this.activeSlotIndex = -1;
+                  this.updateToolbarUI();
+                  this.renderCanvas();
+              }
+          });
       },
 
       /* --- BỐ CỤC IN (LAYOUT) & AUTOFILL TRÀN TRANG --- */
