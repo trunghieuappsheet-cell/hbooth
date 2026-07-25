@@ -174,7 +174,14 @@
         
         <!-- Cột 1: Thông số Camera (Icons Lớn cho Cảm Ứng) -->
         <div class="camera-control-col">
-          <select id="cameraSelect" class="form-select form-select-lg mb-2 shadow-sm fs-6" onchange="app.switchCamera()"></select>
+          
+          <!-- Dropdown Camera & Cửa sổ Chia sẻ -->
+          <div class="d-flex gap-1 mb-2 shadow-sm">
+              <select id="cameraSelect" class="form-select form-select-lg fs-6 flex-grow-1" onchange="app.switchCamera()"></select>
+              <button class="btn btn-warning px-3 fw-bold border-0" onclick="app.startWindowCapture()" title="Chia sẻ màn hình Live View (Scrcpy)">
+                  <i class="bi bi-display"></i>
+              </button>
+          </div>
 
           <!-- Ảnh chụp -->
           <div class="input-group input-group-lg mb-2 shadow-sm">
@@ -194,8 +201,13 @@
             <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
 
+          <!-- NÚT LẬT GƯƠNG -->
+          <button id="btnMirror" class="btn btn-primary-custom w-100 py-1 mt-auto mb-1 shadow-sm fw-bold fs-6" onclick="app.toggleMirror()" title="Bật/Tắt Lật gương (Mirror) cho màn hình Live View">
+              <i class="bi bi-symmetry-horizontal"></i> Lật gương (On)
+          </button>
+
           <!-- Nhân bản Tự động Folder -->
-          <div class="input-group input-group-lg mb-2 shadow-sm mt-auto">
+          <div class="input-group input-group-lg mb-2 shadow-sm">
             <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (ảnh tự động từ thư mục)" style="width: 50px; border-right: none;"><i class="bi bi-folder-plus fs-4"></i></span>
             <input type="number" id="folderAutoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
@@ -539,7 +551,7 @@
       folderPollInterval: null,
       processedFileNames: new Set(),
       autoInsertSynced: false,
-      folderConnectTime: 0, // Lưu mốc thời gian kết nối thư mục để lọc ảnh "Mới"
+      folderConnectTime: 0, 
 
       // HỆ THỐNG TRANG IN
       pages: [], 
@@ -549,6 +561,7 @@
       printLogo: null,
       printLogoB64: null, 
       cameraMode: 'horizontal', 
+      isMirrored: true, // Biến cờ hiệu theo dõi trạng thái Lật gương Live Cam
       
       prepState: {}, 
       prepModalInstance: null,
@@ -577,6 +590,38 @@
         
         this.loadSettings();
         this.toggleFilterUI();
+        this.updateMirrorUI();
+      },
+
+      /* --- QUẢN LÝ LẬT GƯƠNG LIVE CAM --- */
+      toggleMirror: function() {
+          this.isMirrored = !this.isMirrored;
+          this.updateMirrorUI();
+      },
+      updateMirrorUI: function() {
+          const btn = document.getElementById('btnMirror');
+          let t = "";
+          
+          if (this.cameraMode === 'horizontal') {
+              t = this.isMirrored ? "rotate(0deg) scaleX(-1)" : "rotate(0deg) scaleX(1)";
+          } else {
+              // Ở chế độ dọc (vertical), video đã xoay 90 độ, để lật gương trái/phải màn hình, cần lật dọc (scaleY)
+              t = this.isMirrored ? "rotate(90deg) scaleY(-1)" : "rotate(90deg) scaleY(1)";
+          }
+          
+          this.video.style.transform = t;
+          
+          if(btn) {
+              if (this.isMirrored) {
+                  btn.classList.remove('btn-outline-custom');
+                  btn.classList.add('btn-primary-custom');
+                  btn.innerHTML = '<i class="bi bi-symmetry-horizontal"></i> Lật gương (On)';
+              } else {
+                  btn.classList.remove('btn-primary-custom');
+                  btn.classList.add('btn-outline-custom');
+                  btn.innerHTML = '<i class="bi bi-symmetry-horizontal"></i> Lật gương (Off)';
+              }
+          }
       },
       
       toggleFilterUI: function() {
@@ -843,15 +888,50 @@
           const c = { video: id ? { deviceId: { exact: id }, width: {ideal:4096} } : { facingMode: "user", width: {ideal:4096} } };
           this.stream = await navigator.mediaDevices.getUserMedia(c);
           this.video.srcObject = this.stream;
+          this.isMirrored = true; // Mặc định WebCam thì bật lật gương
+          this.updateMirrorUI();
         } catch(e){}
       },
       switchCamera: function() { this.startCamera(); },
+      startWindowCapture: async function() {
+        if(this.stream) this.stream.getTracks().forEach(t => t.stop());
+        document.getElementById('cameraSelect').value = ""; // Đặt rỗng dropdown
+        
+        try {
+            this.stream = await navigator.mediaDevices.getDisplayMedia({
+                video: { cursor: "never", displaySurface: "window" },
+                audio: false
+            });
+            this.video.srcObject = this.stream;
+            
+            // Chia sẻ màn hình thường không cần lật gương mặc định
+            this.isMirrored = false;
+            this.updateMirrorUI();
+
+            this.stream.getVideoTracks()[0].onended = () => {
+                alert("Đã ngắt kết nối Live View cửa sổ!");
+                this.video.srcObject = null;
+                this.startCamera(); // Fallback lại camera mặc định
+            };
+        } catch (err) {
+            console.error("Lỗi chia sẻ màn hình", err);
+            // Nếu người dùng ấn hủy chia sẻ
+            this.startCamera();
+        }
+      },
       setCameraMode: function(mode) {
         this.cameraMode = mode;
         const wp = document.getElementById('viewport');
         document.getElementById('btnModeH').classList.remove('active'); document.getElementById('btnModeV').classList.remove('active');
-        if(mode === 'horizontal') { wp.classList.remove('vertical'); this.video.style.transform = 'rotate(0deg)'; document.getElementById('btnModeH').classList.add('active'); } 
-        else { wp.classList.add('vertical'); this.video.style.transform = 'rotate(90deg)'; document.getElementById('btnModeV').classList.add('active'); }
+        if(mode === 'horizontal') { 
+            wp.classList.remove('vertical'); 
+            document.getElementById('btnModeH').classList.add('active'); 
+        } 
+        else { 
+            wp.classList.add('vertical'); 
+            document.getElementById('btnModeV').classList.add('active'); 
+        }
+        this.updateMirrorUI();
       },
       
       startCaptureSession: async function(targetSlot = -1) {
