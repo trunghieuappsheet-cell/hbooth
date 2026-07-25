@@ -150,6 +150,9 @@
 
   <style id="printStyle"></style>
   <input type="file" id="slotFileInput" accept="image/*" onchange="app.handleSlotFile(event)" hidden>
+  
+  <!-- File Picker Dành Cho Load Thư Mục Nội Bộ -->
+  <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
 
   <!-- VÙNG IN ẨN -->
   <div id="printContainer" class="d-none"></div>
@@ -193,6 +196,11 @@
             <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Số lần nhân bản ảnh" style="border-right: none;"><i class="bi bi-files fs-5"></i></span>
             <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-5" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
+
+          <!-- NÚT TOGGLE AUTO-INSERT ẢNH ĐỒNG BỘ NẰM DƯỚI CÙNG, ĐỐI DIỆN PAGINATION -->
+          <button id="btnAutoInsert" class="btn btn-outline-custom w-100 mt-auto py-2 shadow-sm fw-bold" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in theo số lượng nhân bản">
+            <i class="bi bi-images fs-5"></i> Auto Dàn Trang
+          </button>
         </div>
 
         <!-- Cột 2: Khung Camera Live -->
@@ -232,7 +240,7 @@
             <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
           </div>
 
-          <!-- 3. XÓA TRANG (Xóa đứt luôn trang hiện tại) -->
+          <!-- 3. XÓA TRANG (Xóa đứt luôn trang hiện tại) NẰM TRÊN PAGINATION -->
           <button class="btn btn-outline-danger w-100 btn-sm mb-2 mt-auto" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
 
           <!-- 5. QUẢN LÝ ĐA TRANG (PAGINATION) -->
@@ -269,6 +277,7 @@
           </div>
         </div>
         
+        <!-- HIỂN THỊ LƯỚI 4 CỘT BẢO TOÀN TỈ LỆ ẢNH -->
         <div class="gallery-container" id="capturedGallery">
           <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Tải Thư Mục" hoặc Kéo thả ảnh vào đây</span>
         </div>
@@ -302,7 +311,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHỌN ẢNH VÀO KHUNG (SIZE LỚN HƠN) -->
+  <!-- MODAL CHỌN ẢNH VÀO KHUNG TỪ HÌNH ẢNH (SIZE LỚN HƠN) -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -321,23 +330,22 @@
             <span class="badge bg-secondary" id="modalSelectedCount">0 đã chọn</span>
           </div>
           
-          <!-- Lưới ảnh session trong modal -->
-          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 65vh; grid-template-columns: repeat(5, 1fr); overflow-x: hidden;">
+          <!-- Lưới ảnh session trong modal (Grid 3 cột để ảnh to hơn) -->
+          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 50vh; grid-template-columns: repeat(3, 1fr); overflow-x: hidden;">
             <!-- Generate bằng JS -->
           </div>
 
           <!-- Nút chèn nhiều -->
           <div class="mt-3 p-3 rounded" style="background: var(--input-bg); border: 1px solid var(--border-color);">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-              <label class="small fw-bold m-0 text-muted fs-6">Nhân bản mỗi ảnh:</label>
-              <div class="input-group input-group-lg" style="width: 140px;">
+            <div class="d-flex align-items-center justify-content-center mb-3">
+              <div class="input-group input-group-lg" style="width: 160px;">
                 <button type="button" class="btn btn-outline-secondary fw-bold px-3" onclick="document.getElementById('modalCopies').value = Math.max(1, parseInt(document.getElementById('modalCopies').value)-1)">-</button>
-                <input type="number" id="modalCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-5" style="color: var(--accent);">
+                <input type="number" id="modalCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-4" style="color: var(--accent);">
                 <button type="button" class="btn btn-outline-secondary fw-bold px-3" onclick="document.getElementById('modalCopies').value = parseInt(document.getElementById('modalCopies').value)+1">+</button>
               </div>
             </div>
-            <div class="text-center">
-               <button class="btn btn-primary-custom px-5 py-2 fw-bold rounded-pill" onclick="app.insertSelectedPhotos()">
+            <div class="text-center d-flex justify-content-center">
+               <button class="btn btn-primary-custom py-2 fw-bold rounded-pill" style="width: 250px;" onclick="app.insertSelectedPhotos()">
                  <i class="bi bi-magic"></i> Tự động dàn trang
                </button>
             </div>
@@ -357,7 +365,8 @@
           <button type="button" class="btn-close btn-close-custom" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body text-center pt-2">
-          <div id="prepPreviewContainer" style="width:100%; height: 260px; overflow:hidden; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom:15px; background:#000; position:relative; cursor: grab;">
+          <!-- Làm to diện tích Preview lên 320px -->
+          <div id="prepPreviewContainer" style="width:100%; height: 320px; overflow:hidden; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom:15px; background:#000; position:relative; cursor: grab;">
              <img id="prepPreview" src="" style="width:100%; height:100%; object-fit:contain; pointer-events: none;">
              <div style="position:absolute; bottom:5px; left:5px; font-size:9px; color:#fff; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;">
                 Cuộn: Zoom | Kéo: Di chuyển
@@ -371,19 +380,18 @@
             <div class="col-6"><label class="small text-muted m-0">Tương phản</label><input type="range" class="form-range" id="prepCt" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div>
             <input type="hidden" id="prepPanX" value="0"> <input type="hidden" id="prepPanY" value="0">
 
-            <div class="col-12 mt-2 d-flex justify-content-between align-items-center bg-dark p-2 rounded">
-              <label class="small text-muted m-0">Số lượng nhân bản:</label>
-              <div class="btn-group input-group-sm" role="group">
-                <button type="button" class="btn btn-outline-secondary py-0 fw-bold px-3" onclick="app.adjustPrepCopies(-1)">-</button>
-                <input type="number" id="prepCopies" value="1" min="1" max="8" class="form-control text-center bg-transparent fw-bold fs-6 p-0" style="width: 45px; border-radius: 0; color: var(--accent);" readonly>
-                <button type="button" class="btn btn-outline-secondary py-0 fw-bold px-3" onclick="app.adjustPrepCopies(1)">+</button>
+            <div class="col-12 mt-3 d-flex justify-content-center align-items-center bg-dark p-2 rounded">
+              <div class="input-group input-group-sm" style="width: 120px;">
+                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3" onclick="app.adjustPrepCopies(-1)">-</button>
+                <input type="number" id="prepCopies" value="1" min="1" max="20" class="form-control text-center bg-transparent fw-bold fs-5 p-0" style="color: var(--accent);" readonly>
+                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3" onclick="app.adjustPrepCopies(1)">+</button>
               </div>
             </div>
 
           </div>
         </div>
         <div class="modal-footer border-top-0 pt-0 justify-content-center">
-          <button type="button" class="btn btn-primary-custom w-100 rounded-pill" onclick="app.addToLayout()"><i class="bi bi-check2-circle"></i> Đưa vào Trang In</button>
+          <button type="button" class="btn btn-primary-custom w-100 rounded-pill py-2" onclick="app.addToLayout()"><i class="bi bi-check2-circle"></i> Đưa vào Trang In</button>
         </div>
       </div>
     </div>
@@ -397,6 +405,15 @@
     </div>
     <div class="offcanvas-body">
       
+      <!-- CÀI ĐẶT FOLDER (NỘI BỘ) -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Nguồn ảnh Cục bộ (Máy tính)</h6>
+        <label class="small text-muted w-100 mb-1">Đường dẫn thư mục (để ghi nhớ)</label>
+        <input type="text" id="localFolderPath" class="form-control form-control-sm mb-2" placeholder="VD: D:\OneDrive\..." onchange="app.saveSettings()">
+        <button class="btn btn-sm btn-outline-custom w-100" onclick="document.getElementById('folderInput').click()"><i class="bi bi-folder-symlink"></i> Chọn & Tải ảnh từ thư mục</button>
+        <div class="small text-muted mt-1" style="font-size: 0.65rem;">* Trình duyệt yêu cầu bạn cấp quyền để đọc thư mục cục bộ. Hệ thống sẽ tự lọc 100 ảnh gần nhất.</div>
+      </div>
+
       <!-- CÀI ĐẶT HEADER -->
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Tùy chỉnh App (Header)</h6>
@@ -498,10 +515,11 @@
       
       capturedPhotos: [], 
       
-      // HỆ THỐNG FOLDER REALTIME
+      // HỆ THỐNG FOLDER REALTIME VÀ TỰ ĐỘNG CHÈN
       localDirHandle: null,
       folderPollInterval: null,
       processedFileNames: new Set(),
+      autoInsertSynced: false,
 
       // HỆ THỐNG TRANG IN
       pages: [], 
@@ -540,11 +558,25 @@
         this.loadSettings();
       },
 
+      /* --- TOGGLE AUTO-INSERT --- */
+      toggleAutoInsert: function() {
+          this.autoInsertSynced = !this.autoInsertSynced;
+          const btn = document.getElementById('btnAutoInsert');
+          if(this.autoInsertSynced) {
+              btn.classList.remove('btn-outline-custom');
+              btn.classList.add('btn-primary-custom');
+          } else {
+              btn.classList.remove('btn-primary-custom');
+              btn.classList.add('btn-outline-custom');
+          }
+      },
+
       /* --- LƯU & TẢI CÀI ĐẶT TỪ TRÌNH DUYỆT --- */
       saveSettings: function() {
           const settings = {
               headerTitle: document.getElementById('appHeaderTitle').value,
               headerLogo: document.getElementById('headerLogo').src,
+              localFolderPath: document.getElementById('localFolderPath').value,
               theme: document.getElementById('themeSelect').value,
               layout: document.getElementById('layoutSelect').value,
               slotBorder: document.getElementById('slotBorder').value,
@@ -572,6 +604,7 @@
                   
                   if(s.headerTitle) { document.getElementById('appHeaderTitle').value = s.headerTitle; document.getElementById('headerTitleText').innerText = s.headerTitle; }
                   if(s.headerLogo && s.headerLogo.startsWith('data:image')) { document.getElementById('headerLogo').src = s.headerLogo; document.getElementById('headerLogo').style.display = 'block'; }
+                  if(s.localFolderPath) { document.getElementById('localFolderPath').value = s.localFolderPath; }
                   
                   if(s.theme) document.getElementById('themeSelect').value = s.theme;
                   if(s.layout) document.getElementById('layoutSelect').value = s.layout;
@@ -670,6 +703,14 @@
                       const photoRecord = { imgObj: img, driveId: null };
                       this.capturedPhotos.unshift(photoRecord); // Đẩy lên đầu danh sách
                       newFilesFound = true;
+                      
+                      // NẾU BẬT TỰ ĐỘNG CHÈN (AUTO DÀN TRANG) -> CHÈN VÀO TRANG THEO SỐ LƯỢNG NHÂN BẢN
+                      if (this.autoInsertSynced) {
+                          const autoCopies = parseInt(document.getElementById('autoCopies').value) || 1;
+                          for(let c = 0; c < autoCopies; c++) {
+                              this.autoFillFirstEmptySlot(img);
+                          }
+                      }
                   }
                   
                   if (newFilesFound) {
@@ -812,6 +853,13 @@
               this.capturedPhotos.unshift(photoRecord); 
               this.renderCapturedGallery(); 
               
+              if(this.autoInsertSynced) {
+                  const autoCopies = parseInt(document.getElementById('autoCopies').value) || 1;
+                  for(let c = 0; c < autoCopies; c++) {
+                      this.autoFillFirstEmptySlot(img);
+                  }
+              }
+
               if(API_URL) {
                 this.totalToUpload++;
                 document.getElementById('uploadStatusText').style.display = 'inline';
@@ -1113,7 +1161,7 @@
       adjustPrepCopies: function(val) {
         const input = document.getElementById('prepCopies');
         let current = parseInt(input.value) + val;
-        if(current < 1) current = 1; if(current > 8) current = 8;
+        if(current < 1) current = 1; if(current > 20) current = 20;
         input.value = current;
       },
       addToLayout: function() {
