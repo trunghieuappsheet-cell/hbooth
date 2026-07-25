@@ -51,7 +51,7 @@
     /* CAMERA VIEWPORT VÀ CỤM ĐIỀU KHIỂN */
     .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
     
-    .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+    .camera-control-col { width: 175px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
     .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
     
     .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; }
@@ -110,7 +110,6 @@
     }
     .thumb-wrapper:hover { transform: scale(1.03); z-index: 2; box-shadow: var(--accent-glow); border: 1px solid var(--accent); }
     
-    /* Styles for multi-select in Modal */
     .thumb-wrapper.selected { border: 3px solid var(--accent); box-shadow: var(--accent-glow); opacity: 0.8; }
     .thumb-wrapper.selected::after { content: '\F26A'; font-family: 'bootstrap-icons'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; background: var(--accent); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 10px rgba(0,0,0,0.5); pointer-events: none;}
 
@@ -118,19 +117,15 @@
     .thumb-wrapper:hover .btn-del-thumb { opacity: 1; }
     .btn-del-thumb:hover { background: #dc3545; transform: scale(1.1); }
 
-    /* UPLOAD PROGRESS */
     .progress-tiny { height: 4px; background-color: var(--input-bg); width: 120px; border-radius: 2px; overflow: hidden; display: none; margin-right: 10px; }
     .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; height: 100%; }
 
-    /* CANVAS TRANG IN */
     .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; }
     #finalCanvas { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 5px 25px rgba(0,0,0,0.3); border: 1px solid var(--border-color); background: #fff; cursor: crosshair; }
 
-    /* TOOLBAR TRỰC TIẾP */
     .slot-toolbar { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
     .slot-toolbar.active { visibility: visible; opacity: 1; top: 20px; }
 
-    /* NÚT THAO TÁC CAO HƠN */
     .btn-primary-custom { background: var(--accent); color: var(--bg-color); border: none; font-weight: bold; box-shadow: var(--accent-glow); transition: 0.3s; }
     .btn-primary-custom:hover { filter: brightness(1.2); color: var(--bg-color); }
     .btn-outline-custom { background: transparent; border: 1px solid var(--accent); color: var(--text-main); transition: 0.3s; }
@@ -138,7 +133,6 @@
     
     .btn-print-tall { padding-top: 10px; padding-bottom: 10px; font-size: 1.05rem; }
 
-    /* PRINT STYLES */
     @media print {
       body > *:not(#printContainer) { display: none !important; }
       #printContainer { display: block !important; position: absolute; left: 0; top: 0; width: 100vw; background: #fff; }
@@ -180,26 +174,35 @@
         
         <!-- Cột 1: Thông số Camera (Icons Lớn cho Cảm Ứng) -->
         <div class="camera-control-col">
-          <select id="cameraSelect" class="form-select form-select-sm mb-2 shadow-sm" onchange="app.switchCamera()"></select>
+          <select id="cameraSelect" class="form-select form-select-lg mb-2 shadow-sm fs-6" onchange="app.switchCamera()"></select>
 
+          <!-- Ảnh chụp -->
           <div class="input-group input-group-lg mb-2 shadow-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Số lượng chụp" style="border-right: none;"><i class="bi bi-camera fs-5"></i></span>
-            <input type="number" id="photoCount" class="form-control form-control-lg text-center border-secondary fs-5" style="border-left: none;" value="1" min="1">
+            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Số lượng chụp" style="width: 50px; border-right: none;"><i class="bi bi-camera fs-4"></i></span>
+            <input type="number" id="photoCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="1" min="1">
           </div>
 
+          <!-- Đếm ngược -->
           <div class="input-group input-group-lg mb-2 shadow-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Thời gian đếm ngược (giây)" style="border-right: none;"><i class="bi bi-stopwatch fs-5"></i></span>
-            <input type="number" id="timerCount" class="form-control form-control-lg text-center border-secondary fs-5" style="border-left: none;" value="3" min="0">
+            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Thời gian đếm ngược (giây)" style="width: 50px; border-right: none;"><i class="bi bi-stopwatch fs-4"></i></span>
+            <input type="number" id="timerCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="3" min="0">
           </div>
 
-          <div class="input-group input-group-lg mb-1 shadow-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary w-50 justify-content-center" title="Số lần nhân bản ảnh" style="border-right: none;"><i class="bi bi-files fs-5"></i></span>
-            <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-5" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
+          <!-- Nhân bản chụp -->
+          <div class="input-group input-group-lg mb-2 shadow-sm">
+            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (khi chụp)" style="width: 50px; border-right: none;"><i class="bi bi-files fs-4"></i></span>
+            <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
 
-          <!-- NÚT TOGGLE AUTO-INSERT ẢNH ĐỒNG BỘ NẰM DƯỚI CÙNG, ĐỐI DIỆN PAGINATION -->
-          <button id="btnAutoInsert" class="btn btn-outline-custom w-100 mt-auto py-2 shadow-sm fw-bold" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in theo số lượng nhân bản">
-            <i class="bi bi-images fs-5"></i> Auto Dàn Trang
+          <!-- Nhân bản Tự động Folder -->
+          <div class="input-group input-group-lg mb-2 shadow-sm mt-auto">
+            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (ảnh tự động từ thư mục)" style="width: 50px; border-right: none;"><i class="bi bi-folder-plus fs-4"></i></span>
+            <input type="number" id="folderAutoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
+          </div>
+
+          <!-- NÚT TOGGLE AUTO-INSERT DÀN TRANG TỪ FOLDER -->
+          <button id="btnAutoInsert" class="btn btn-outline-custom w-100 py-2 shadow-sm fw-bold fs-6" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in">
+            <i class="bi bi-magic"></i> Tự động
           </button>
         </div>
 
@@ -240,7 +243,7 @@
             <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
           </div>
 
-          <!-- 3. XÓA TRANG (Xóa đứt luôn trang hiện tại) NẰM TRÊN PAGINATION -->
+          <!-- 3. XÓA TRANG HIỆN TẠI -->
           <button class="btn btn-outline-danger w-100 btn-sm mb-2 mt-auto" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
 
           <!-- 5. QUẢN LÝ ĐA TRANG (PAGINATION) -->
@@ -311,7 +314,7 @@
     </div>
   </div>
 
-  <!-- MODAL CHỌN ẢNH VÀO KHUNG TỪ HÌNH ẢNH (SIZE LỚN HƠN) -->
+  <!-- MODAL CHỌN ẢNH VÀO KHUNG (SIZE LỚN HƠN) -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -338,10 +341,10 @@
           <!-- Nút chèn nhiều -->
           <div class="mt-3 p-3 rounded" style="background: var(--input-bg); border: 1px solid var(--border-color);">
             <div class="d-flex align-items-center justify-content-center mb-3">
-              <div class="input-group input-group-lg" style="width: 160px;">
-                <button type="button" class="btn btn-outline-secondary fw-bold px-3" onclick="document.getElementById('modalCopies').value = Math.max(1, parseInt(document.getElementById('modalCopies').value)-1)">-</button>
-                <input type="number" id="modalCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-4" style="color: var(--accent);">
-                <button type="button" class="btn btn-outline-secondary fw-bold px-3" onclick="document.getElementById('modalCopies').value = parseInt(document.getElementById('modalCopies').value)+1">+</button>
+              <div class="input-group input-group-lg" style="width: 180px;">
+                <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="document.getElementById('modalCopies').value = Math.max(1, parseInt(document.getElementById('modalCopies').value)-1)">-</button>
+                <input type="number" id="modalCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-3" style="color: var(--accent);" title="Số lượng nhân bản">
+                <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="document.getElementById('modalCopies').value = parseInt(document.getElementById('modalCopies').value)+1">+</button>
               </div>
             </div>
             <div class="text-center d-flex justify-content-center">
@@ -380,11 +383,11 @@
             <div class="col-6"><label class="small text-muted m-0">Tương phản</label><input type="range" class="form-range" id="prepCt" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div>
             <input type="hidden" id="prepPanX" value="0"> <input type="hidden" id="prepPanY" value="0">
 
-            <div class="col-12 mt-3 d-flex justify-content-center align-items-center bg-dark p-2 rounded">
-              <div class="input-group input-group-sm" style="width: 120px;">
-                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3" onclick="app.adjustPrepCopies(-1)">-</button>
-                <input type="number" id="prepCopies" value="1" min="1" max="20" class="form-control text-center bg-transparent fw-bold fs-5 p-0" style="color: var(--accent);" readonly>
-                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3" onclick="app.adjustPrepCopies(1)">+</button>
+            <div class="col-12 mt-3 d-flex justify-content-center align-items-center bg-dark p-3 rounded">
+              <div class="input-group input-group-lg" style="width: 160px;">
+                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3 fs-4" onclick="app.adjustPrepCopies(-1)">-</button>
+                <input type="number" id="prepCopies" value="1" min="1" max="20" class="form-control text-center bg-transparent fw-bold fs-4 p-0" style="color: var(--accent);" readonly title="Số lượng nhân bản">
+                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3 fs-4" onclick="app.adjustPrepCopies(1)">+</button>
               </div>
             </div>
 
@@ -527,6 +530,7 @@
       slotsPerPage: 1,
 
       printLogo: null,
+      printLogoB64: null, // Lưu cache Logo cho việc reload
       cameraMode: 'horizontal', 
       
       prepState: {}, 
@@ -592,7 +596,8 @@
               wmSize: document.getElementById('wmSize').value,
               logoSize: document.getElementById('logoSize').value,
               logoX: document.getElementById('logoX').value,
-              logoY: document.getElementById('logoY').value
+              logoY: document.getElementById('logoY').value,
+              slotLogoB64: this.printLogoB64 || ""
           };
           localStorage.setItem('boothSettings_Pro', JSON.stringify(settings));
       },
@@ -622,6 +627,12 @@
                   if(s.logoSize) document.getElementById('logoSize').value = s.logoSize;
                   if(s.logoX) document.getElementById('logoX').value = s.logoX;
                   if(s.logoY) document.getElementById('logoY').value = s.logoY;
+                  
+                  if(s.slotLogoB64) {
+                      const img = new Image();
+                      img.onload = () => { this.printLogo = img; this.printLogoB64 = s.slotLogoB64; this.renderCanvas(); };
+                      img.src = s.slotLogoB64;
+                  }
               } catch(e){}
           }
           this.changeTheme(document.getElementById('themeSelect').value);
@@ -632,7 +643,7 @@
       updateHeader: function() {
           const t = document.getElementById('appHeaderTitle').value;
           if(t) document.getElementById('headerTitleText').innerText = t;
-          else document.getElementById('headerTitleText').innerText = 'STUDIO BOOTH';
+          else document.getElementById('headerTitleText').innerText = 'HaMa PhotoBooth';
       },
       loadHeaderLogo: function(e) {
           const file = e.target.files[0];
@@ -704,12 +715,24 @@
                       this.capturedPhotos.unshift(photoRecord); // Đẩy lên đầu danh sách
                       newFilesFound = true;
                       
-                      // NẾU BẬT TỰ ĐỘNG CHÈN (AUTO DÀN TRANG) -> CHÈN VÀO TRANG THEO SỐ LƯỢNG NHÂN BẢN
+                      // NẾU BẬT TỰ ĐỘNG CHÈN (AUTO DÀN TRANG) -> CHÈN VÀO TRANG THEO SỐ LƯỢNG NHÂN BẢN AUTO
                       if (this.autoInsertSynced) {
-                          const autoCopies = parseInt(document.getElementById('autoCopies').value) || 1;
+                          const autoCopies = parseInt(document.getElementById('folderAutoCopies').value) || 1;
                           for(let c = 0; c < autoCopies; c++) {
                               this.autoFillFirstEmptySlot(img);
                           }
+                      }
+                      
+                      // AUTO UPLOAD DRIVE (cho ảnh quét được từ folder nội bộ)
+                      if(API_URL) {
+                          this.totalToUpload++;
+                          document.getElementById('uploadStatusText').style.display = 'inline';
+                          document.getElementById('uploadProgressBarContainer').style.display = 'block';
+                          this.updateUploadUI();
+                          const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'FolderSync_' + new Date().getTime() + '.jpg');
+                          fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ 
+                             if(res.success) { photoRecord.driveId = res.id; this.totalUploaded++; this.updateUploadUI(); } 
+                          }).catch(()=>{ this.updateUploadUI(); });
                       }
                   }
                   
@@ -762,7 +785,8 @@
         const vp = document.getElementById('viewport');
         const overlay = document.getElementById('countdownOverlay');
 
-        if (vp.requestFullscreen && targetSlot === -1) { await vp.requestFullscreen().catch(err => console.log(err)); }
+        // LUÔN CHO PHÉP FULLSCREEN KHI BẤM CHỤP DÙ LÀ MODAL HAY Ở NGOÀI
+        if (vp.requestFullscreen) { await vp.requestFullscreen().catch(err => console.log(err)); }
 
         for (let i = 0; i < count; i++) {
           overlay.style.display = 'flex';
@@ -776,7 +800,8 @@
           if(i < count - 1) await new Promise(r => setTimeout(r, 1000));
         }
 
-        if (document.fullscreenElement && targetSlot === -1) { document.exitFullscreen().catch(err => {}); }
+        // THOÁT FULLSCREEN KHI XONG
+        if (document.fullscreenElement) { document.exitFullscreen().catch(err => {}); }
       },
       captureSingleFrame: function(targetSlot) {
         const tCanvas = document.createElement('canvas'); const tCtx = tCanvas.getContext('2d');
@@ -797,7 +822,7 @@
           this.capturedPhotos.unshift(photoRecord);
           this.renderCapturedGallery();
           
-          // Thêm tự động vào trang in theo số lượng nhân bản
+          // Thêm tự động vào trang in theo số lượng nhân bản của ảnh chụp trực tiếp
           if(targetSlot !== -1) {
             this.pages[this.currentPage][targetSlot] = { img: imgObj, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 };
             this.activeSlotIndex = targetSlot;
@@ -836,7 +861,7 @@
         }
       },
 
-      /* --- QUẢN LÝ ẢNH LOCAL CỦA PHIÊN --- */
+      /* --- QUẢN LÝ TẢI ẢNH LOCAL (NÚT + THÊM ẢNH) --- */
       handleDragOverSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.add('dragover'); },
       handleDragLeaveSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); },
       handleDropSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); this.processLocalFiles(e.dataTransfer.files); },
@@ -1144,7 +1169,7 @@
         document.getElementById('prepZoom').value = 1; document.getElementById('prepRot').value = 0;
         document.getElementById('prepPanX').value = 0; document.getElementById('prepPanY').value = 0;
         document.getElementById('prepBr').value = 100; document.getElementById('prepCt').value = 100;
-        document.getElementById('prepCopies').value = 1;
+        document.getElementById('prepCopies').value = 1; // Reset số lượng
         this.updatePrepPreview();
         this.prepModalInstance.show();
       },
@@ -1169,21 +1194,27 @@
           const cvsPanX = this.prepState.panX * 2; const cvsPanY = this.prepState.panY * 2;
           const configItem = { img: this.prepState.img, zoom: this.prepState.zoom, panX: cvsPanX, panY: cvsPanY, rotate: this.prepState.rot, br: this.prepState.br, ct: this.prepState.ct };
           
+          let tPage = this.currentPage;
+          let tSlot = 0;
+          
           for(let c = 0; c < copies; c++) {
               let found = false;
-              let pIdx = this.currentPage;
               while(!found) {
-                  if(!this.pages[pIdx]) this.pages[pIdx] = new Array(this.slotsPerPage).fill(null);
-                  for(let i=0; i<this.slotsPerPage; i++) {
-                      if(this.pages[pIdx][i] === null) {
+                  if(!this.pages[tPage]) this.pages[tPage] = new Array(this.slotsPerPage).fill(null);
+                  for(let i=tSlot; i<this.slotsPerPage; i++) {
+                      if(this.pages[tPage][i] === null) {
                           // Sao chép configItem vào ô trống
-                          this.pages[pIdx][i] = { ...configItem };
+                          this.pages[tPage][i] = { ...configItem };
                           found = true;
-                          this.currentPage = pIdx;
+                          this.currentPage = tPage; // Cập nhật lại trang hiện tại nhảy tới trang có ô vừa điền
+                          tSlot = i + 1; // Điểm bắt đầu tiếp theo
                           break;
                       }
                   }
-                  if(!found) pIdx++; // sang trang mới nếu đầy
+                  if(!found) {
+                      tPage++; // sang trang mới nếu đầy
+                      tSlot = 0;
+                  }
               }
           }
           
@@ -1272,6 +1303,24 @@
       rotateActiveSlot: function() { if(this.activeSlotIndex === -1) return; this.pages[this.currentPage][this.activeSlotIndex].rotate = (this.pages[this.currentPage][this.activeSlotIndex].rotate + 90) % 360; this.renderCanvas(); },
       removeActiveSlot: function() { if(this.activeSlotIndex === -1) return; this.pages[this.currentPage][this.activeSlotIndex] = null; this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas(); },
       
+      loadPrintLogo: function(e) {
+          const file = e.target.files[0];
+          if(!file) return;
+          const r = new FileReader();
+          r.onload = (evt) => { 
+              const b64 = evt.target.result;
+              const img = new Image(); 
+              img.onload = () => {
+                  this.printLogo = img;
+                  this.printLogoB64 = b64;
+                  this.renderCanvas();
+                  this.saveSettings();
+              };
+              img.src = b64;
+          }
+          r.readAsDataURL(file);
+      },
+
       handleSlotFile: function(e) {
         const file = e.target.files[0];
         if(!file) return;
