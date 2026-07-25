@@ -413,8 +413,20 @@
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Nguồn ảnh Cục bộ (Máy tính)</h6>
         <label class="small text-muted w-100 mb-1">Đường dẫn thư mục (để ghi nhớ)</label>
         <input type="text" id="localFolderPath" class="form-control form-control-sm mb-2" placeholder="VD: D:\OneDrive\..." onchange="app.saveSettings()">
+        
+        <!-- BỘ LỌC NGÀY/GIỜ -->
+        <div class="mb-3 p-2 border rounded border-secondary" style="background: rgba(0,0,0,0.1);">
+          <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" id="enableDateFilter" onchange="app.saveSettings()">
+              <label class="form-check-label small fw-bold text-muted">Lọc ảnh theo thời gian</label>
+          </div>
+          <div class="row g-2">
+            <div class="col-12"><label class="small text-muted m-0">Từ ngày/giờ:</label><input type="datetime-local" id="filterFromDate" class="form-control form-control-sm" onchange="app.saveSettings()"></div>
+            <div class="col-12"><label class="small text-muted m-0">Đến ngày/giờ:</label><input type="datetime-local" id="filterToDate" class="form-control form-control-sm" onchange="app.saveSettings()"></div>
+          </div>
+        </div>
+
         <button class="btn btn-sm btn-outline-custom w-100" onclick="document.getElementById('folderInput').click()"><i class="bi bi-folder-symlink"></i> Chọn & Tải ảnh từ thư mục</button>
-        <div class="small text-muted mt-1" style="font-size: 0.65rem;">* Trình duyệt yêu cầu bạn cấp quyền để đọc thư mục cục bộ. Hệ thống sẽ tự lọc 100 ảnh gần nhất.</div>
       </div>
 
       <!-- CÀI ĐẶT HEADER -->
@@ -581,6 +593,9 @@
               headerTitle: document.getElementById('appHeaderTitle').value,
               headerLogo: document.getElementById('headerLogo').src,
               localFolderPath: document.getElementById('localFolderPath').value,
+              enableDateFilter: document.getElementById('enableDateFilter').checked,
+              filterFromDate: document.getElementById('filterFromDate').value,
+              filterToDate: document.getElementById('filterToDate').value,
               theme: document.getElementById('themeSelect').value,
               layout: document.getElementById('layoutSelect').value,
               slotBorder: document.getElementById('slotBorder').value,
@@ -610,6 +625,10 @@
                   if(s.headerTitle) { document.getElementById('appHeaderTitle').value = s.headerTitle; document.getElementById('headerTitleText').innerText = s.headerTitle; }
                   if(s.headerLogo && s.headerLogo.startsWith('data:image')) { document.getElementById('headerLogo').src = s.headerLogo; document.getElementById('headerLogo').style.display = 'block'; }
                   if(s.localFolderPath) { document.getElementById('localFolderPath').value = s.localFolderPath; }
+                  
+                  if(s.enableDateFilter !== undefined) document.getElementById('enableDateFilter').checked = s.enableDateFilter;
+                  if(s.filterFromDate) document.getElementById('filterFromDate').value = s.filterFromDate;
+                  if(s.filterToDate) document.getElementById('filterToDate').value = s.filterToDate;
                   
                   if(s.theme) document.getElementById('themeSelect').value = s.theme;
                   if(s.layout) document.getElementById('layoutSelect').value = s.layout;
@@ -693,10 +712,31 @@
               // Lặp qua tất cả file trong thư mục
               for await (const entry of this.localDirHandle.values()) {
                   if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|webp)$/i)) {
-                      // Nếu file chưa từng được load
+                      // Nếu file chưa từng được load trong phiên này
                       if(!this.processedFileNames.has(entry.name)) {
                           const file = await entry.getFile();
-                          newFiles.push(file);
+                          
+                          // LỌC THEO THỜI GIAN
+                          let isValidDate = true;
+                          if (document.getElementById('enableDateFilter').checked) {
+                              const fromVal = document.getElementById('filterFromDate').value;
+                              const toVal = document.getElementById('filterToDate').value;
+                              
+                              if (fromVal) {
+                                  const fromTime = new Date(fromVal).getTime();
+                                  if (file.lastModified < fromTime) isValidDate = false;
+                              }
+                              if (toVal) {
+                                  const toTime = new Date(toVal).getTime();
+                                  if (file.lastModified > toTime) isValidDate = false;
+                              }
+                          }
+
+                          if (isValidDate) {
+                              newFiles.push(file);
+                          }
+                          
+                          // Đánh dấu đã xử lý để không quét lại ở vòng lặp sau (dù bị loại bởi filter)
                           this.processedFileNames.add(entry.name);
                       }
                   }
