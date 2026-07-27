@@ -70,6 +70,15 @@
     /* ĐẾM NGƯỢC NỀN TRONG SUỐT */
     #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 0 10px var(--accent); pointer-events: none; }
 
+    /* THIẾT KẾ LIVE GALLERY KHI FULLSCREEN */
+    .live-gallery-strip { display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 15vh; background: rgba(0,0,0,0.85); padding: 10px; gap: 10px; overflow-x: auto; align-items: center; justify-content: center; z-index: 1001;}
+    .live-gallery-strip img { height: 100%; object-fit: contain; border-radius: 6px; border: 2px solid var(--accent); cursor: pointer; transition: 0.2s;}
+    .live-gallery-strip img:hover { transform: scale(1.05); }
+    #viewport:fullscreen { display: flex; flex-direction: column; justify-content: flex-start; background: #000; }
+    #viewport:fullscreen #videoElement { height: 85vh; }
+    #viewport:fullscreen .live-gallery-strip { display: flex !important; }
+    #viewport:fullscreen #mainCaptureBtn { bottom: 18vh; transform: translateX(-50%) scale(0.8); }
+
     /* GALLERY - HÌNH ẢNH */
     .gallery-section { background: var(--panel-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; }
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
@@ -158,6 +167,10 @@
       <h6 id="headerTitleText" style="margin:0; font-size:0.85rem; font-weight:800; color:var(--accent); letter-spacing: 1px;">STUDIO BOOTH</h6>
     </div>
     <div class="d-flex align-items-center">
+      <!-- NÚT FULL MÀN HÌNH MỚI THÊM -->
+      <button class="btn btn-sm text-muted p-0 ms-3" onclick="app.toggleFullScreenApp()" title="Toàn màn hình (F11)">
+        <i class="bi bi-arrows-fullscreen fs-6" style="color: var(--accent);"></i>
+      </button>
       <button class="btn btn-sm text-muted p-0 ms-3" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt">
         <i class="bi bi-gear-fill fs-6" style="color: var(--accent);"></i>
       </button>
@@ -201,13 +214,31 @@
             <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
 
-          <!-- NÚT LẬT GƯƠNG -->
-          <button id="btnMirror" class="btn btn-primary-custom w-100 py-1 mt-auto mb-1 shadow-sm fw-bold fs-6" onclick="app.toggleMirror()" title="Bật/Tắt Lật gương (Mirror) cho màn hình Live View">
-              <i class="bi bi-symmetry-horizontal"></i> Lật gương (On)
-          </button>
+          <!-- THU PHÓNG, CẮT XÉN LIVE VIEW -->
+          <div class="bg-dark p-2 rounded mb-1 border border-secondary mt-auto" style="background: rgba(0,0,0,0.2) !important;">
+              <label class="small text-muted d-block text-center mb-1" style="font-size:0.65rem;">Thu phóng & Di chuyển</label>
+              <div class="d-flex gap-1 align-items-center mb-1">
+                  <i class="bi bi-zoom-in text-muted" style="font-size:0.7rem;"></i>
+                  <input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()">
+              </div>
+              <div class="d-flex gap-1">
+                  <input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()" title="Di chuyển ngang">
+                  <input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()" title="Di chuyển dọc">
+              </div>
+          </div>
+
+          <!-- NÚT LẬT GƯƠNG VÀ RESET -->
+          <div class="d-flex gap-1 mb-1">
+              <button id="btnMirror" class="btn btn-primary-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.toggleMirror()" title="Bật/Tắt Lật gương">
+                  <i class="bi bi-symmetry-horizontal"></i>
+              </button>
+              <button class="btn btn-outline-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.resetCamTransform()" title="Mặc định Cam">
+                  <i class="bi bi-arrow-counterclockwise"></i>
+              </button>
+          </div>
 
           <!-- Nhân bản Tự động Folder -->
-          <div class="input-group input-group-lg mb-2 shadow-sm">
+          <div class="input-group input-group-lg mb-2 shadow-sm mt-auto">
             <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (ảnh tự động từ thư mục)" style="width: 50px; border-right: none;"><i class="bi bi-folder-plus fs-4"></i></span>
             <input type="number" id="folderAutoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
           </div>
@@ -227,10 +258,13 @@
           <video id="videoElement" autoplay playsinline></video>
           <div id="countdownOverlay">3</div>
           
-          <!-- NÚT CHỤP GHI ĐÈ Ở ĐÂY -->
-          <button class="btn-capture-overlay" onclick="app.startCaptureSession()" title="Chụp ảnh">
+          <!-- NÚT CHỤP GHI ĐÈ Ở ĐÂY (SẼ THAY ĐỔI KHI CHIA SẺ MÀN HÌNH) -->
+          <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()" title="Chụp ảnh">
             <i class="bi bi-camera-fill"></i>
           </button>
+          
+          <!-- HÀNG CHỨA ẢNH HIỂN THỊ KHI FULLSCREEN -->
+          <div id="liveGalleryStrip" class="live-gallery-strip"></div>
         </div>
         
         <!-- Cột 3: Nút thao tác Layout -->
@@ -330,28 +364,28 @@
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
       <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);">
-        <div class="modal-header border-bottom-0 pb-2">
+        <div class="modal-header border-bottom-0 pb-2 flex-shrink-0">
           <h6 class="modal-title fw-bold text-uppercase" style="color: var(--accent);">Chọn nguồn ảnh</h6>
           <button type="button" class="btn-close btn-close-custom" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body pt-0">
-          <div class="d-flex gap-2 mb-3">
+        <div class="modal-body pt-0 d-flex flex-column" style="height: 80vh;">
+          <div class="d-flex gap-2 mb-3 flex-shrink-0">
             <button class="btn btn-primary-custom flex-fill py-2" onclick="app.startCaptureSession(app.pendingSlotIndex); app.selectModalInstance.hide();"><i class="bi bi-camera fs-5 d-block"></i> Chụp ngay</button>
             <button class="btn btn-outline-custom flex-fill py-2" onclick="document.getElementById('slotFileInput').click(); app.selectModalInstance.hide();"><i class="bi bi-folder2-open fs-5 d-block"></i> Tải file lên</button>
           </div>
           
-          <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center justify-content-between mb-2 flex-shrink-0">
             <h6 class="small text-muted fw-bold m-0"><i class="bi bi-images"></i> CHỌN TỪ HÌNH ẢNH ĐÃ CHỤP</h6>
             <span class="badge bg-secondary" id="modalSelectedCount">0 đã chọn</span>
           </div>
           
-          <!-- Lưới ảnh session trong modal (Grid 3 cột để ảnh to hơn) -->
-          <div class="gallery-container" id="modalGalleryContainer" style="max-height: 50vh; grid-template-columns: repeat(3, 1fr); overflow-x: hidden;">
+          <!-- Lưới ảnh session trong modal -->
+          <div class="gallery-container flex-grow-1" id="modalGalleryContainer" style="grid-template-columns: repeat(3, 1fr); overflow-x: hidden; min-height: 0;">
             <!-- Generate bằng JS -->
           </div>
 
           <!-- Nút chèn nhiều -->
-          <div class="mt-3 p-3 rounded" style="background: var(--input-bg); border: 1px solid var(--border-color);">
+          <div class="mt-3 p-3 rounded flex-shrink-0" style="background: var(--input-bg); border: 1px solid var(--border-color);">
             <div class="d-flex align-items-center justify-content-center mb-3">
               <div class="input-group input-group-lg" style="width: 180px;">
                 <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="document.getElementById('modalCopies').value = Math.max(1, parseInt(document.getElementById('modalCopies').value)-1)">-</button>
@@ -593,20 +627,40 @@
         this.updateMirrorUI();
       },
 
+      /* --- TOGGLE FULLSCREEN TOÀN TRÌNH DUYỆT --- */
+      toggleFullScreenApp: function() {
+          if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().catch(e => console.log(e));
+          } else {
+              document.exitFullscreen();
+          }
+      },
+
       /* --- QUẢN LÝ LẬT GƯƠNG LIVE CAM --- */
       toggleMirror: function() {
           this.isMirrored = !this.isMirrored;
           this.updateMirrorUI();
       },
+      resetCamTransform: function() {
+          document.getElementById('camZoom').value = 1;
+          document.getElementById('camPanX').value = 0;
+          document.getElementById('camPanY').value = 0;
+          this.updateMirrorUI();
+      },
       updateMirrorUI: function() {
           const btn = document.getElementById('btnMirror');
+          const zoom = parseFloat(document.getElementById('camZoom').value) || 1;
+          const panX = parseFloat(document.getElementById('camPanX').value) || 0;
+          const panY = parseFloat(document.getElementById('camPanY').value) || 0;
           let t = "";
           
           if (this.cameraMode === 'horizontal') {
-              t = this.isMirrored ? "rotate(0deg) scaleX(-1)" : "rotate(0deg) scaleX(1)";
+              let scaleX = this.isMirrored ? -zoom : zoom;
+              t = `translate(${panX}%, ${panY}%) rotate(0deg) scaleX(${scaleX}) scaleY(${zoom})`;
           } else {
-              // Ở chế độ dọc (vertical), video đã xoay 90 độ, để lật gương trái/phải màn hình, cần lật dọc (scaleY)
-              t = this.isMirrored ? "rotate(90deg) scaleY(-1)" : "rotate(90deg) scaleY(1)";
+              // Ở chế độ dọc (vertical), video đã xoay 90 độ, lật dọc tức scaleY
+              let scaleY = this.isMirrored ? -zoom : zoom;
+              t = `translate(${panX}%, ${panY}%) rotate(90deg) scaleX(${zoom}) scaleY(${scaleY})`;
           }
           
           this.video.style.transform = t;
@@ -615,11 +669,9 @@
               if (this.isMirrored) {
                   btn.classList.remove('btn-outline-custom');
                   btn.classList.add('btn-primary-custom');
-                  btn.innerHTML = '<i class="bi bi-symmetry-horizontal"></i> Lật gương (On)';
               } else {
                   btn.classList.remove('btn-primary-custom');
                   btn.classList.add('btn-outline-custom');
-                  btn.innerHTML = '<i class="bi bi-symmetry-horizontal"></i> Lật gương (Off)';
               }
           }
       },
@@ -752,24 +804,16 @@
       /* --- TẢI & ĐỒNG BỘ ẢNH REALTIME TỪ FOLDER CỤC BỘ --- */
       selectAndWatchFolder: async function() {
           try {
-              // Yêu cầu người dùng cấp quyền đọc thư mục
               this.localDirHandle = await window.showDirectoryPicker();
-              
-              // Ghi lại mốc thời gian bắt đầu kết nối
               this.folderConnectTime = Date.now();
-              
               Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Đã kết nối, đang quét...', showConfirmButton: false, timer: 3000 });
               
-              // Quét lần đầu (isFirstScan = true để tối ưu tốc độ nếu lọc theo "Chỉ tải ảnh mới")
               await this.scanFolder(true);
               
-              // Bật tự động quét lặp lại mỗi 2 giây
               if(this.folderPollInterval) clearInterval(this.folderPollInterval);
               this.folderPollInterval = setInterval(() => this.scanFolder(false), 2000);
               
-          } catch (error) {
-              console.error(error);
-          }
+          } catch (error) { console.error(error); }
       },
       
       scanFolder: async function(isFirstScan = false) {
@@ -789,30 +833,22 @@
               for await (const entry of this.localDirHandle.values()) {
                   if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|webp)$/i)) {
                       
-                      // Nếu file CHƯA từng được xử lý trong phiên này
                       if(!this.processedFileNames.has(entry.name)) {
                           
-                          // TỐI ƯU CỰC MẠNH: Nếu chọn "Chỉ ảnh mới" VÀ đang quét lần đầu
-                          // -> Ta chỉ việc lấy tên bỏ vào mảng Đã xử lý, KHÔNG CẦN gọi getFile() làm chậm máy.
                           if (filterMode === 'new' && isFirstScan) {
                               this.processedFileNames.add(entry.name);
                               continue; 
                           }
                           
-                          // Trái lại, ta bắt buộc phải getFile để đọc thời gian
                           const file = await entry.getFile();
-                          
                           let isValidDate = true;
                           
                           if (filterMode === 'new') {
-                              // Những lần quét sau (sau mỗi 2s), chỉ lấy file có ngày chỉnh sửa > mốc thời gian kết nối
                               if (file.lastModified < this.folderConnectTime) isValidDate = false;
                           } else if (filterMode === 'time') {
                               if (file.lastModified < fromTime || file.lastModified > toTime) isValidDate = false;
                           }
-                          // Nếu filterMode === 'all', mặc định isValidDate là true
 
-                          // Đánh dấu đã xử lý để không quét lại ở vòng lặp 2s sau (dù hợp lệ hay không)
                           this.processedFileNames.add(entry.name);
 
                           if (isValidDate) {
@@ -823,7 +859,6 @@
               }
               
               if (newFiles.length > 0) {
-                  // Sắp xếp theo thời gian (cũ trước, mới sau để đưa vào unshift)
                   newFiles.sort((a, b) => a.lastModified - b.lastModified);
                   
                   for(let file of newFiles) {
@@ -835,7 +870,6 @@
                       this.capturedPhotos.unshift(photoRecord); 
                       newFilesFound = true;
                       
-                      // NẾU BẬT TỰ ĐỘNG CHÈN -> CHÈN VÀO TRANG THEO SỐ LƯỢNG
                       if (this.autoInsertSynced) {
                           const autoCopies = parseInt(document.getElementById('folderAutoCopies').value) || 1;
                           for(let c = 0; c < autoCopies; c++) {
@@ -843,7 +877,6 @@
                           }
                       }
                       
-                      // AUTO UPLOAD DRIVE
                       if(API_URL) {
                           this.totalToUpload++;
                           document.getElementById('uploadStatusText').style.display = 'inline';
@@ -888,14 +921,21 @@
           const c = { video: id ? { deviceId: { exact: id }, width: {ideal:4096} } : { facingMode: "user", width: {ideal:4096} } };
           this.stream = await navigator.mediaDevices.getUserMedia(c);
           this.video.srcObject = this.stream;
-          this.isMirrored = true; // Mặc định WebCam thì bật lật gương
+          
+          this.isMirrored = true;
           this.updateMirrorUI();
+          
+          // Phục hồi lại icon Chụp hình nếu có thay đổi
+          const capBtn = document.getElementById('mainCaptureBtn');
+          capBtn.innerHTML = '<i class="bi bi-camera-fill"></i>';
+          capBtn.onclick = () => app.startCaptureSession();
+          
         } catch(e){}
       },
       switchCamera: function() { this.startCamera(); },
       startWindowCapture: async function() {
         if(this.stream) this.stream.getTracks().forEach(t => t.stop());
-        document.getElementById('cameraSelect').value = ""; // Đặt rỗng dropdown
+        document.getElementById('cameraSelect').value = ""; 
         
         try {
             this.stream = await navigator.mediaDevices.getDisplayMedia({
@@ -904,21 +944,34 @@
             });
             this.video.srcObject = this.stream;
             
-            // Chia sẻ màn hình thường không cần lật gương mặc định
             this.isMirrored = false;
             this.updateMirrorUI();
+            
+            // Biến nút chụp hình thành nút Phóng to Fullscreen Live View
+            const capBtn = document.getElementById('mainCaptureBtn');
+            capBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+            capBtn.onclick = () => app.toggleViewportFullscreen();
 
             this.stream.getVideoTracks()[0].onended = () => {
-                alert("Đã ngắt kết nối Live View cửa sổ!");
+                Swal.fire({toast: true, position: 'top-end', icon: 'info', title: 'Đã ngắt kết nối Live View!', showConfirmButton: false, timer: 3000});
                 this.video.srcObject = null;
-                this.startCamera(); // Fallback lại camera mặc định
+                this.startCamera(); 
             };
         } catch (err) {
             console.error("Lỗi chia sẻ màn hình", err);
-            // Nếu người dùng ấn hủy chia sẻ
             this.startCamera();
         }
       },
+      
+      toggleViewportFullscreen: function() {
+          const vp = document.getElementById('viewport');
+          if (!document.fullscreenElement) {
+              vp.requestFullscreen().catch(err => console.log(err));
+          } else {
+              document.exitFullscreen();
+          }
+      },
+      
       setCameraMode: function(mode) {
         this.cameraMode = mode;
         const wp = document.getElementById('viewport');
@@ -940,7 +993,6 @@
         const vp = document.getElementById('viewport');
         const overlay = document.getElementById('countdownOverlay');
 
-        // LUÔN CHO PHÉP FULLSCREEN KHI BẤM CHỤP DÙ LÀ MODAL HAY Ở NGOÀI
         if (vp.requestFullscreen) { await vp.requestFullscreen().catch(err => console.log(err)); }
 
         for (let i = 0; i < count; i++) {
@@ -955,7 +1007,6 @@
           if(i < count - 1) await new Promise(r => setTimeout(r, 1000));
         }
 
-        // THOÁT FULLSCREEN KHI XONG
         if (document.fullscreenElement) { document.exitFullscreen().catch(err => {}); }
       },
       captureSingleFrame: function(targetSlot) {
@@ -977,7 +1028,6 @@
           this.capturedPhotos.unshift(photoRecord);
           this.renderCapturedGallery();
           
-          // Thêm tự động vào trang in theo số lượng nhân bản của ảnh chụp trực tiếp
           if(targetSlot !== -1) {
             this.pages[this.currentPage][targetSlot] = { img: imgObj, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 };
             this.activeSlotIndex = targetSlot;
@@ -1058,6 +1108,8 @@
       },
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); cap.innerHTML = '';
+        const strip = document.getElementById('liveGalleryStrip'); strip.innerHTML = ''; // Fullscreen strip
+        
         this.capturedPhotos.forEach((record, index) => {
           const wrapper = document.createElement('div'); wrapper.className = 'thumb-wrapper';
           
@@ -1070,8 +1122,19 @@
           btnDel.onclick = (e) => { e.stopPropagation(); this.deleteSessionPhoto(index); };
 
           wrapper.appendChild(img); wrapper.appendChild(btnDel); cap.appendChild(wrapper);
+          
+          // Tạo ảnh cho dải Gallery ngang khi xem Fullscreen
+          const stripImg = document.createElement('img'); stripImg.src = record.imgObj.src;
+          stripImg.onclick = () => { 
+              this.openPrepModal(record.imgObj); 
+              if(document.fullscreenElement) document.exitFullscreen(); 
+          };
+          strip.appendChild(stripImg);
         });
-        if(this.capturedPhotos.length === 0) cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; grid-column: 1 / -1;">Bấm "Auto Tải Thư Mục" hoặc Kéo thả ảnh vào đây</span>';
+        
+        if(this.capturedPhotos.length === 0) {
+            cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Tải Thư Mục" hoặc Kéo thả ảnh vào đây</span>';
+        }
       },
       deleteSessionPhoto: function(index) {
         const record = this.capturedPhotos[index];
@@ -1087,7 +1150,6 @@
             this.capturedPhotos.splice(index, 1);
             this.renderCapturedGallery();
             
-            // Tìm và xóa khỏi các trang
             for(let p = 0; p < this.pages.length; p++) {
                 for(let i=0; i < this.slotsPerPage; i++) {
                   if(this.pages[p][i] && this.pages[p][i].img.src === record.imgObj.src) { this.pages[p][i] = null; }
@@ -1206,29 +1268,17 @@
           this.renderCanvas();
       },
       
-      /* --- XÓA TRANG HIỆN TẠI HẲN KHỎI BỘ NHỚ --- */
       deleteCurrentPage: function() {
           Swal.fire({
               title: 'Xóa hẳn trang này?', 
               text: "Trang này cùng mọi khung ảnh bên trong sẽ bị xóa bỏ hoàn toàn.", 
               icon: 'warning',
-              showCancelButton: true, 
-              confirmButtonText: 'Đồng ý', 
-              cancelButtonText: 'Hủy'
+              showCancelButton: true, confirmButtonText: 'Đồng ý', cancelButtonText: 'Hủy'
           }).then((result) => {
               if (result.isConfirmed) {
-                  // Cắt hẳn trang này khỏi Array pages
                   this.pages.splice(this.currentPage, 1);
-                  
-                  // Nếu lỡ xóa hết trang cuối cùng, thì tạo lại 1 trang trống
-                  if(this.pages.length === 0) {
-                      this.pages.push(new Array(this.slotsPerPage).fill(null));
-                  }
-                  
-                  // Lùi lại 1 trang nếu đang ở trang cuối mà bị xóa
-                  if(this.currentPage >= this.pages.length) {
-                      this.currentPage = this.pages.length - 1;
-                  }
+                  if(this.pages.length === 0) { this.pages.push(new Array(this.slotsPerPage).fill(null)); }
+                  if(this.currentPage >= this.pages.length) { this.currentPage = this.pages.length - 1; }
                   
                   this.activeSlotIndex = -1;
                   this.updateToolbarUI();
@@ -1284,11 +1334,11 @@
                   if(this.pages[pIdx][i] === null) {
                       this.pages[pIdx][i] = { img: imgObj, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 };
                       found = true;
-                      this.currentPage = pIdx; // nhảy tới trang có ô vừa điền
+                      this.currentPage = pIdx; 
                       break;
                   }
               }
-              if(!found) pIdx++; // sang trang mới
+              if(!found) pIdx++; 
           }
           this.renderPagination();
           this.renderCanvas();
@@ -1324,7 +1374,7 @@
         document.getElementById('prepZoom').value = 1; document.getElementById('prepRot').value = 0;
         document.getElementById('prepPanX').value = 0; document.getElementById('prepPanY').value = 0;
         document.getElementById('prepBr').value = 100; document.getElementById('prepCt').value = 100;
-        document.getElementById('prepCopies').value = 1; // Reset số lượng
+        document.getElementById('prepCopies').value = 1; 
         this.updatePrepPreview();
         this.prepModalInstance.show();
       },
@@ -1358,16 +1408,15 @@
                   if(!this.pages[tPage]) this.pages[tPage] = new Array(this.slotsPerPage).fill(null);
                   for(let i=tSlot; i<this.slotsPerPage; i++) {
                       if(this.pages[tPage][i] === null) {
-                          // Sao chép configItem vào ô trống
                           this.pages[tPage][i] = { ...configItem };
                           found = true;
-                          this.currentPage = tPage; // Cập nhật lại trang hiện tại nhảy tới trang có ô vừa điền
-                          tSlot = i + 1; // Điểm bắt đầu tiếp theo
+                          this.currentPage = tPage; 
+                          tSlot = i + 1; 
                           break;
                       }
                   }
                   if(!found) {
-                      tPage++; // sang trang mới nếu đầy
+                      tPage++; 
                       tSlot = 0;
                   }
               }
@@ -1479,25 +1528,58 @@
       handleSlotFile: function(e) {
         const file = e.target.files[0];
         if(!file) return;
+        
+        // Đọc số lượng cần copy từ modal
+        const copies = parseInt(document.getElementById('modalCopies').value) || 1;
+        
         const r = new FileReader();
         r.onload = (evt) => { 
            const b64 = evt.target.result;
            const img = new Image(); 
+           const photoRecord = { imgObj: img, driveId: null };
+
            img.onload = () => { 
-              let targetIdx = this.pendingSlotIndex !== -1 ? this.pendingSlotIndex : this.activeSlotIndex;
-              if (targetIdx !== -1) {
-                 if (this.pages[this.currentPage][targetIdx]) { this.pages[this.currentPage][targetIdx].img = img; } 
-                 else { this.pages[this.currentPage][targetIdx] = { img: img, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 }; }
-                 this.activeSlotIndex = targetIdx;
-                 this.renderCanvas(); this.updateToolbarUI();
+              // 1. Thêm vào hiển thị trong HÌNH ẢNH
+              this.capturedPhotos.unshift(photoRecord);
+              this.renderCapturedGallery();
+              
+              // 2. Chèn vào Trang in
+              let targetIdx = this.pendingSlotIndex !== -1 ? this.pendingSlotIndex : (this.activeSlotIndex !== -1 ? this.activeSlotIndex : 0);
+              let tPage = this.currentPage;
+              
+              for (let c = 0; c < copies; c++) {
+                  let found = false;
+                  while(!found) {
+                      if(!this.pages[tPage]) this.pages[tPage] = new Array(this.slotsPerPage).fill(null);
+                      for(let i = targetIdx; i < this.slotsPerPage; i++) {
+                          // Với ảnh đầu tiên, đè trực tiếp lên ô đang chỉ định, ảnh sau thì tự tìm ô trống
+                          if(this.pages[tPage][i] === null || (c === 0 && targetIdx === i && this.pages[tPage][i])) { 
+                              this.pages[tPage][i] = { img: img, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 };
+                              found = true;
+                              this.currentPage = tPage;
+                              targetIdx = i + 1;
+                              break;
+                          }
+                      }
+                      if(!found) {
+                          tPage++;
+                          targetIdx = 0;
+                      }
+                  }
               }
+              
+              this.pendingSlotIndex = -1;
+              this.activeSlotIndex = -1;
+              this.updateToolbarUI();
+              this.renderPagination();
+              this.renderCanvas();
               
               if(API_URL) {
                 this.totalToUpload++;
                 document.getElementById('uploadStatusText').style.display = 'inline';
                 document.getElementById('uploadProgressBarContainer').style.display = 'block';
                 this.updateUploadUI();
-                const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Replaced_' + new Date().getTime() + '.jpg');
+                const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Uploaded_' + new Date().getTime() + '.jpg');
                 fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ 
                    if(r.success) { this.totalUploaded++; this.updateUploadUI(); } 
                 }).catch(()=>{ this.updateUploadUI(); });
@@ -1604,8 +1686,11 @@
         }
       },
       
-      /* --- IN ĐA TRANG (PRINT MULTIPLE PAGES) --- */
+      /* --- IN ĐA TRANG KÈM LƯU ẢNH --- */
       printAllPages: async function() {
+          // GỌI HÀM LƯU TRẠNG THÁI (CHẠY NGẦM)
+          this.saveLayoutToDrive(true);
+
           Swal.fire({title: 'Đang chuẩn bị trang in...', didOpen: () => Swal.showLoading()});
           
           this.activeSlotIndex = -1; 
@@ -1633,15 +1718,25 @@
           setTimeout(() => { window.print(); }, 500);
       },
 
-      saveLayoutToDrive: function() {
-        if(this.pages[this.currentPage].every(s => s === null)) return Swal.fire('Lỗi', 'Trang hiện tại đang trống', 'error');
+      saveLayoutToDrive: function(silent = false) {
+        if(this.pages[this.currentPage].every(s => s === null)) {
+            if(!silent) Swal.fire('Lỗi', 'Trang hiện tại đang trống', 'error');
+            return;
+        }
+        
         this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas();
         const b64 = this.canvas.toDataURL('image/jpeg', 0.9);
         const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Print_Layout_' + new Date().getTime() + '.jpg');
-        Swal.fire({title: 'Đang lưu...', didOpen: () => Swal.showLoading()});
+        
+        if(!silent) Swal.fire({title: 'Đang lưu...', didOpen: () => Swal.showLoading()});
+        
         fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{
-          if(r.success) Swal.fire('Thành công', 'Đã lưu bố cục lên Drive', 'success'); else Swal.fire('Lỗi', 'Có lỗi xảy ra', 'error');
-        }).catch(()=>Swal.fire('Lỗi', 'Mạng không ổn định', 'error'));
+          if(!silent) {
+            if(r.success) Swal.fire('Thành công', 'Đã lưu bố cục lên Drive', 'success'); else Swal.fire('Lỗi', 'Có lỗi xảy ra', 'error');
+          }
+        }).catch(()=>{
+          if(!silent) Swal.fire('Lỗi', 'Mạng không ổn định', 'error');
+        });
       }
     };
     
