@@ -788,7 +788,7 @@
       },
 
       initRemoteMode: async function(targetId) {
-          // XÓA GIAO DIỆN CHÍNH, RENDER GIAO DIỆN ĐIỆN THOẠI
+// XÓA GIAO DIỆN CHÍNH, RENDER GIAO DIỆN ĐIỆN THOẠI
           document.body.innerHTML = `
             <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center;">
                 <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
@@ -796,7 +796,9 @@
                 <div style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap: 30px; align-items:center; z-index:20;">
                     <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; color:white; font-size:24px; cursor:pointer;"><i class="bi bi-arrow-repeat"></i></button>
                     <button id="remoteCaptureBtn" style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; outline:none; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5);"></button>
-                    <div style="width:50px; height:50px;"></div>
+                    
+                    <!-- Nút Full Screen mới thêm vào đây -->
+                    <button id="btnFullScreen" style="width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; color:white; font-size:20px; cursor:pointer;"><i class="bi bi-arrows-fullscreen"></i></button>
                 </div>
                 <div id="flashEffect" style="position:absolute; inset:0; background:white; opacity:0; pointer-events:none; transition:opacity 0.2s; z-index:30;"></div>
             </div>
@@ -810,6 +812,34 @@
           const video = document.getElementById('remoteVideo');
           const btnCapture = document.getElementById('remoteCaptureBtn');
           const btnSwitch = document.getElementById('btnSwitchCam');
+        const status = document.getElementById('remoteStatus');
+          const video = document.getElementById('remoteVideo');
+          const btnCapture = document.getElementById('remoteCaptureBtn');
+          const btnSwitch = document.getElementById('btnSwitchCam');
+          
+          // --- THÊM ĐOẠN CODE NÀY VÀO ĐÂY ---
+          const btnFullScreen = document.getElementById('btnFullScreen');
+          
+          btnFullScreen.onclick = () => {
+              if (!document.fullscreenElement) {
+                  document.documentElement.requestFullscreen().catch(err => console.log(err));
+              } else {
+                  document.exitFullscreen();
+              }
+          };
+
+          // Tự động đổi icon khi chuyển đổi trạng thái toàn màn hình
+          document.addEventListener('fullscreenchange', () => {
+              if (document.fullscreenElement) {
+                  btnFullScreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+              } else {
+                  btnFullScreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+              }
+          });
+          // ---------------------------------
+
+          let remoteStream = null;
+          let useFrontCam = false;
           let remoteStream = null;
           let useFrontCam = false; 
 
