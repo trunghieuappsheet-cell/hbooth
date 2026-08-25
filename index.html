@@ -1103,18 +1103,17 @@
       /* ========================================================
        * REMOTE CAMERA: METERED TURN/STUN SERVER (Khắc phục 4G)
        * ======================================================== */
-      setupPeerJS: function() {
+setupPeerJS: function() {
           if (this.peer) return;
           
-          // Sử dụng TURN Server miễn phí của Metered để xuyên tường lửa 4G. 
-          // Nếu chung Wi-Fi nó sẽ tự động dùng LAN.
           this.peer = new Peer({ 
               config: { 
                   'iceServers': [
                       { urls: 'stun:stun.l.google.com:19302' },
+                      { urls: 'stun:stun1.l.google.com:19302' },
                       { urls: 'stun:stun.cloudflare.com:3478' },
                       { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+                      { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
                   ] 
               } 
           }); 
@@ -1243,15 +1242,28 @@
           }
 
           // Cấu hình P2P giống hệt hàm setupPeerJS (Có TURN)
+// Cấu hình ICE Server trên điện thoại PHẢI GIỐNG HỆT PC để xuyên tường lửa 4G
           const peer = new Peer({ 
               config: { 
                   'iceServers': [
                       { urls: 'stun:stun.l.google.com:19302' },
+                      { urls: 'stun:stun1.l.google.com:19302' },
                       { urls: 'stun:stun.cloudflare.com:3478' },
                       { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+                      { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
                   ] 
               } 
+          });
+          
+          let conn = null;
+
+          peer.on('open', (id) => {
+              conn = peer.connect(targetId, { reliable: true }); 
+              conn.on('open', () => {
+                  status.innerText = "Đã kết nối PC!"; status.style.background = "rgba(40, 167, 69, 0.8)";
+                  setTimeout(() => { status.style.opacity = '0'; }, 2000); 
+              });
+              conn.on('error', (err) => { status.innerText = "Lỗi: " + err.message; status.style.background = "rgba(220, 53, 69, 0.8)"; status.style.opacity = '1'; });
           });
           
           let conn = null;
