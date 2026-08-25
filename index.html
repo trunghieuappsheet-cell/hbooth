@@ -829,11 +829,17 @@
               });
           });
 
-          const startRemoteCamera = async () => {
+const startRemoteCamera = async () => {
               if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
               try {
+                  // Đặt ideal 4096 cho cả 2 chiều, trình duyệt sẽ tự chọn độ phân giải GỐC cao nhất
+                  // và tự động đổi chiều ngang/dọc theo hướng cầm điện thoại
                   const constraints = {
-                      video: { facingMode: useFrontCam ? "user" : "environment", width: { ideal: 4096 }, height: { ideal: 2160 } },
+                      video: { 
+                          facingMode: useFrontCam ? "user" : "environment", 
+                          width: { ideal: 4096 }, 
+                          height: { ideal: 4096 } 
+                      },
                       audio: false
                   };
                   remoteStream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -849,28 +855,58 @@
 
           btnSwitch.onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
 
-          btnCapture.onclick = () => {
+btnCapture.onclick = async () => {
               if (!conn || !conn.open) return alert("Chưa kết nối được với máy tính!");
               
               const flash = document.getElementById('flashEffect');
               flash.style.opacity = '1';
               setTimeout(() => { flash.style.opacity = '0'; }, 100);
 
-              const canvas = document.createElement('canvas');
-              canvas.width = video.videoWidth;
-              canvas.height = video.videoHeight;
-              const ctx = canvas.getContext('2d');
-              
-              if (useFrontCam) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
-              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-              
-              const b64 = canvas.toDataURL('image/jpeg', 0.95);
-              conn.send(b64);
-              
-              status.innerText = "Đã gửi ảnh thành công!";
+              status.innerText = "Đang xử lý ảnh gốc...";
               status.style.opacity = '1';
-              status.style.background = "rgba(40, 167, 69, 0.8)";
-              setTimeout(() => { status.style.opacity = '0'; }, 2000);
+
+              try {
+                  // CÁCH 1: Cố gắng lấy ảnh RAW gốc từ cảm biến (Độ phân giải tối đa, đúng chiều vật lý)
+                  const track = remoteStream.getVideoTracks()[0];
+                  const imageCapture = new ImageCapture(track);
+                  const blob = await imageCapture.takePhoto();
+                  
+                  const imgBitmap = await createImageBitmap(blob);
+                  const canvas = document.createElement('canvas');
+                  canvas.width = imgBitmap.width;
+                  canvas.height = imgBitmap.height;
+                  const ctx = canvas.getContext('2d');
+                  
+                  if (useFrontCam) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
+                  ctx.drawImage(imgBitmap, 0, 0);
+                  
+                  // Chuyển thành Base64 với chất lượng 100% (1.0)
+                  const b64 = canvas.toDataURL('image/jpeg', 1.0);
+                  conn.send(b64);
+                  showSuccess();
+                  
+              } catch (err) {
+                  // CÁCH 2: Fallback cho iOS/Safari (Không hỗ trợ ImageCapture API)
+                  // Lấy độ phân giải thực tế của video ngay tại khoảnh khắc bấm chụp
+                  const canvas = document.createElement('canvas');
+                  canvas.width = video.videoWidth;
+                  canvas.height = video.videoHeight;
+                  const ctx = canvas.getContext('2d');
+                  
+                  if (useFrontCam) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
+                  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  
+                  // Vẫn giữ chất lượng 100% (1.0)
+                  const b64 = canvas.toDataURL('image/jpeg', 1.0);
+                  conn.send(b64);
+                  showSuccess();
+              }
+
+              function showSuccess() {
+                  status.innerText = "Đã gửi ảnh thành công!";
+                  status.style.background = "rgba(40, 167, 69, 0.8)";
+                  setTimeout(() => { status.style.opacity = '0'; }, 2000);
+              }
           };
       },
 
