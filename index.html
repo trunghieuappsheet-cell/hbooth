@@ -197,13 +197,6 @@
               <button id="btnMirror" class="btn btn-primary-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.toggleMirror()" title="Bật/Tắt Lật gương"><i class="bi bi-symmetry-horizontal"></i></button>
               <button class="btn btn-outline-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.resetCamTransform()" title="Mặc định Cam"><i class="bi bi-arrow-counterclockwise"></i></button>
           </div>
-          <div class="input-group input-group-lg mb-2 shadow-sm mt-auto">
-            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (ảnh tự động từ thư mục)" style="width: 50px; border-right: none;"><i class="bi bi-folder-plus fs-4"></i></span>
-            <input type="number" id="folderAutoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
-          </div>
-          <button id="btnAutoInsert" class="btn btn-outline-custom w-100 py-2 shadow-sm fw-bold fs-6" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in">
-            <i class="bi bi-magic"></i> Tự động
-          </button>
         </div>
 
         <div class="viewport-wrapper" id="viewport">
@@ -231,7 +224,16 @@
             <label class="small text-muted w-100 mb-1" style="font-size: 0.7rem;">Viền trắng: <span id="vBorder" class="float-end text-white">0px</span></label>
             <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
           </div>
-          <button class="btn btn-outline-danger w-100 btn-sm mb-2 mt-auto" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
+
+          <!-- NÚT TỰ ĐỘNG CHÈN (Đã được chuyển sang cột Công cụ để luôn hiển thị) -->
+          <div class="d-flex gap-1 w-100 mb-2 mt-auto">
+            <input type="number" id="folderAutoCopies" class="form-control form-control-sm text-center border-secondary fw-bold" style="width: 50px; color: var(--accent); background: var(--input-bg);" value="1" min="1" max="8" title="Nhân bản (ảnh tự động)">
+            <button id="btnAutoInsert" class="btn btn-outline-custom flex-grow-1 btn-sm shadow-sm fw-bold" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in">
+              <i class="bi bi-magic"></i> Tự động
+            </button>
+          </div>
+
+          <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
           <div class="d-flex align-items-center justify-content-between w-100 bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
             <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
             <span class="fw-bold text-uppercase text-center" id="pageIndicator" style="font-size: 0.75rem; color: var(--accent); flex:1;">1/1</span>
@@ -264,7 +266,7 @@
           </div>
         </div>
         <div class="gallery-container" id="capturedGallery">
-          <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Tải Thư Mục" hoặc Kéo thả ảnh vào đây</span>
+          <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Folder" hoặc Kéo thả ảnh vào đây</span>
         </div>
       </div>
     </div>
@@ -359,14 +361,13 @@
     </div>
   </div>
 
-  <!-- Modal Mã QR -->
   <div class="modal fade" id="qrModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">
         <div class="modal-body text-center p-4">
           <h6 class="fw-bold mb-3" style="color:var(--accent);"><i class="bi bi-camera"></i> REMOTE CAMERA</h6>
           <div id="qrcode" class="mb-3 d-flex justify-content-center bg-white p-2 rounded mx-auto" style="width: 180px; height: 180px;"></div>
-          <p class="small text-muted mb-0">Dùng camera điện thoại quét mã này để chụp ảnh gửi trực tiếp vào đây.</p>
+          <p class="small text-muted mb-0">Dùng điện thoại quét mã này để chụp ảnh gửi trực tiếp vào đây.</p>
         </div>
       </div>
     </div>
@@ -522,6 +523,7 @@
       prepState: {}, 
       prepModalInstance: null,
       selectModalInstance: null,
+      qrModalInstance: null,
       
       selectedModalIndices: [],
       
@@ -537,7 +539,6 @@
       // -- REMOTE PEERJS PROPERTIES --
       peer: null,
       peerId: null,
-      qrModalInstance: null,
 
       init: async function() {
         // KIỂM TRA CHẾ ĐỘ REMOTE CAM (Dành cho thiết bị quét QR)
@@ -545,7 +546,7 @@
         const remoteId = urlParams.get('remote');
         if (remoteId) {
             this.initRemoteMode(remoteId);
-            return; // Dừng khởi tạo app chính nếu đang ở chế độ đện thoại
+            return; // Dừng khởi tạo app chính nếu đang ở chế độ điện thoại
         }
 
         this.prepModalInstance = new bootstrap.Modal(document.getElementById('imagePrepModal'));
@@ -602,7 +603,7 @@
               t = `translate(${panX}%, ${panY}%) rotate(90deg) scaleX(${zoom}) scaleY(${scaleY})`;
           }
           
-          this.video.style.transform = t;
+          if(this.video) this.video.style.transform = t;
           
           if(btn) {
               if (this.isMirrored) { btn.classList.remove('btn-outline-custom'); btn.classList.add('btn-primary-custom'); } 
@@ -627,7 +628,7 @@
           else { btn.classList.remove('btn-primary-custom'); btn.classList.add('btn-outline-custom'); }
       },
 
-      /* --- LƯU & TẢI CÀI ĐẶT TỪ TRÌNH DUYỆT --- */
+      /* --- LƯU & TẢI CÀI ĐẶT --- */
       saveSettings: function() {
           const settings = {
               hideLiveCam: document.getElementById('hideLiveCamToggle').checked,
@@ -720,11 +721,11 @@
       },
 
       /* --------------------------------------------------------
-       * TÍNH NĂNG REMOTE CAMERA & PEERJS (ĐIỆN THOẠI QUÉT QR)
+       * TÍNH NĂNG REMOTE CAMERA & PEERJS
        * -------------------------------------------------------- */
       setupPeerJS: function() {
           if (this.peer) return;
-          this.peer = new Peer(); // Khởi tạo Peer
+          this.peer = new Peer(); 
           
           this.peer.on('open', (id) => {
               this.peerId = id;
@@ -770,7 +771,7 @@
               this.renderCapturedGallery(); 
               
               if(this.autoInsertSynced) {
-                  const autoCopies = parseInt(document.getElementById('autoCopies').value) || 1;
+                  const autoCopies = parseInt(document.getElementById('folderAutoCopies').value) || 1;
                   for(let c = 0; c < autoCopies; c++) { this.autoFillFirstEmptySlot(img); }
               }
               if(API_URL) {
@@ -788,16 +789,14 @@
       },
 
       initRemoteMode: async function(targetId) {
-// XÓA GIAO DIỆN CHÍNH, RENDER GIAO DIỆN ĐIỆN THOẠI
+          // XÓA GIAO DIỆN CHÍNH, RENDER GIAO DIỆN ĐIỆN THOẠI
           document.body.innerHTML = `
             <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center;">
                 <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
-                <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:20; white-space:nowrap;">Đang kết nối tới PC...</div>
+                <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:20; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
                 <div style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap: 30px; align-items:center; z-index:20;">
                     <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; color:white; font-size:24px; cursor:pointer;"><i class="bi bi-arrow-repeat"></i></button>
                     <button id="remoteCaptureBtn" style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; outline:none; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5);"></button>
-                    
-                    <!-- Nút Full Screen mới thêm vào đây -->
                     <button id="btnFullScreen" style="width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; color:white; font-size:20px; cursor:pointer;"><i class="bi bi-arrows-fullscreen"></i></button>
                 </div>
                 <div id="flashEffect" style="position:absolute; inset:0; background:white; opacity:0; pointer-events:none; transition:opacity 0.2s; z-index:30;"></div>
@@ -808,14 +807,13 @@
           style.innerHTML = `#remoteCaptureBtn:active { transform: scale(0.9); background:rgba(255,255,255,0.8); }`;
           document.head.appendChild(style);
 
-const status = document.getElementById('remoteStatus');
+          const status = document.getElementById('remoteStatus');
           const video = document.getElementById('remoteVideo');
           const btnCapture = document.getElementById('remoteCaptureBtn');
           const btnSwitch = document.getElementById('btnSwitchCam');
-          
-          // --- THÊM ĐOẠN CODE NÀY VÀO ĐÂY ---
           const btnFullScreen = document.getElementById('btnFullScreen');
-          
+
+          // Cấu hình Nút FullScreen
           btnFullScreen.onclick = () => {
               if (!document.fullscreenElement) {
                   document.documentElement.requestFullscreen().catch(err => console.log(err));
@@ -824,7 +822,6 @@ const status = document.getElementById('remoteStatus');
               }
           };
 
-          // Tự động đổi icon khi chuyển đổi trạng thái toàn màn hình
           document.addEventListener('fullscreenchange', () => {
               if (document.fullscreenElement) {
                   btnFullScreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
@@ -832,29 +829,47 @@ const status = document.getElementById('remoteStatus');
                   btnFullScreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
               }
           });
-          // ---------------------------------
 
           let remoteStream = null;
-          let useFrontCam = false;
+          let useFrontCam = false; 
+
+          // --- NÂNG CẤP KẾT NỐI VÀ XỬ LÝ LỖI PEERJS ---
+          const peer = new Peer();
+          let conn = null;
 
           peer.on('open', (id) => {
-              conn = peer.connect(targetId);
+              conn = peer.connect(targetId, { reliable: true }); // Tăng cường tính ổn định
+              
               conn.on('open', () => {
                   status.innerText = "Đã kết nối! Sẵn sàng chụp.";
                   status.style.background = "rgba(40, 167, 69, 0.8)";
                   setTimeout(() => { status.style.opacity = '0'; }, 3000); 
               });
-              conn.on('error', () => {
-                  status.innerText = "Mất kết nối!";
+              
+              conn.on('error', (err) => {
+                  status.innerText = "Lỗi truyền dữ liệu: " + err.message;
                   status.style.background = "rgba(220, 53, 69, 0.8)";
+                  status.style.opacity = '1';
               });
           });
 
-const startRemoteCamera = async () => {
+          peer.on('error', (err) => {
+              status.style.opacity = '1';
+              status.style.background = "rgba(220, 53, 69, 0.8)";
+              
+              if (err.type === 'peer-unavailable') {
+                  status.innerText = "Lỗi: Không tìm thấy PC (Hãy tạo lại QR!)";
+              } else if (err.type === 'network' || err.type === 'webrtc') {
+                  status.innerText = "Lỗi mạng: Tường lửa chặn (Thử dùng 4G)";
+              } else {
+                  status.innerText = "Lỗi kết nối: " + err.type;
+              }
+          });
+
+          // --- CẤU HÌNH CAMERA ĐỘ PHÂN GIẢI GỐC (XOAY CHUẨN) ---
+          const startRemoteCamera = async () => {
               if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
               try {
-                  // Đặt ideal 4096 cho cả 2 chiều, trình duyệt sẽ tự chọn độ phân giải GỐC cao nhất
-                  // và tự động đổi chiều ngang/dọc theo hướng cầm điện thoại
                   const constraints = {
                       video: { 
                           facingMode: useFrontCam ? "user" : "environment", 
@@ -876,7 +891,7 @@ const startRemoteCamera = async () => {
 
           btnSwitch.onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
 
-btnCapture.onclick = async () => {
+          btnCapture.onclick = async () => {
               if (!conn || !conn.open) return alert("Chưa kết nối được với máy tính!");
               
               const flash = document.getElementById('flashEffect');
@@ -887,7 +902,7 @@ btnCapture.onclick = async () => {
               status.style.opacity = '1';
 
               try {
-                  // CÁCH 1: Cố gắng lấy ảnh RAW gốc từ cảm biến (Độ phân giải tối đa, đúng chiều vật lý)
+                  // Cố gắng chụp ảnh RAW từ cảm biến để có độ phân giải tối đa (API ImageCapture)
                   const track = remoteStream.getVideoTracks()[0];
                   const imageCapture = new ImageCapture(track);
                   const blob = await imageCapture.takePhoto();
@@ -901,14 +916,13 @@ btnCapture.onclick = async () => {
                   if (useFrontCam) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
                   ctx.drawImage(imgBitmap, 0, 0);
                   
-                  // Chuyển thành Base64 với chất lượng 100% (1.0)
+                  // Gửi ảnh chất lượng 100%
                   const b64 = canvas.toDataURL('image/jpeg', 1.0);
                   conn.send(b64);
                   showSuccess();
                   
               } catch (err) {
-                  // CÁCH 2: Fallback cho iOS/Safari (Không hỗ trợ ImageCapture API)
-                  // Lấy độ phân giải thực tế của video ngay tại khoảnh khắc bấm chụp
+                  // Fallback: nếu thiết bị (như iOS) không hỗ trợ ImageCapture API
                   const canvas = document.createElement('canvas');
                   canvas.width = video.videoWidth;
                   canvas.height = video.videoHeight;
@@ -917,7 +931,6 @@ btnCapture.onclick = async () => {
                   if (useFrontCam) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
                   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                   
-                  // Vẫn giữ chất lượng 100% (1.0)
                   const b64 = canvas.toDataURL('image/jpeg', 1.0);
                   conn.send(b64);
                   showSuccess();
@@ -931,7 +944,7 @@ btnCapture.onclick = async () => {
           };
       },
 
-      /* --- TẢI & ĐỒNG BỘ ẢNH REALTIME TỪ FOLDER CỤC BỘ --- */
+      /* --- TẢI & ĐỒNG BỘ ẢNH TỪ FOLDER CỤC BỘ --- */
       selectAndWatchFolder: async function() {
           try {
               this.localDirHandle = await window.showDirectoryPicker();
@@ -1010,7 +1023,7 @@ btnCapture.onclick = async () => {
           return new Promise((resolve) => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(file); });
       },
 
-      /* --- CAMERA CƠ BẢN --- */
+      /* --- CAMERA CƠ BẢN TRÊN PC --- */
       loadDeviceList: async function() {
         try {
           await navigator.mediaDevices.getUserMedia({ video: true });
@@ -1026,14 +1039,16 @@ btnCapture.onclick = async () => {
         try {
           const c = { video: id ? { deviceId: { exact: id }, width: {ideal:4096} } : { facingMode: "user", width: {ideal:4096} } };
           this.stream = await navigator.mediaDevices.getUserMedia(c);
-          this.video.srcObject = this.stream;
+          if(this.video) this.video.srcObject = this.stream;
           
           this.isMirrored = true;
           this.updateMirrorUI();
           
           const capBtn = document.getElementById('mainCaptureBtn');
-          capBtn.innerHTML = '<i class="bi bi-camera-fill"></i>';
-          capBtn.onclick = () => app.startCaptureSession();
+          if(capBtn) {
+             capBtn.innerHTML = '<i class="bi bi-camera-fill"></i>';
+             capBtn.onclick = () => app.startCaptureSession();
+          }
         } catch(e){}
       },
       switchCamera: function() { this.startCamera(); },
@@ -1043,18 +1058,20 @@ btnCapture.onclick = async () => {
         
         try {
             this.stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: "never", displaySurface: "window" }, audio: false });
-            this.video.srcObject = this.stream;
+            if(this.video) this.video.srcObject = this.stream;
             
             this.isMirrored = false;
             this.updateMirrorUI();
             
             const capBtn = document.getElementById('mainCaptureBtn');
-            capBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
-            capBtn.onclick = () => app.toggleViewportFullscreen();
+            if(capBtn) {
+               capBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+               capBtn.onclick = () => app.toggleViewportFullscreen();
+            }
 
             this.stream.getVideoTracks()[0].onended = () => {
                 Swal.fire({toast: true, position: 'top-end', icon: 'info', title: 'Đã ngắt kết nối Live View!', showConfirmButton: false, timer: 3000});
-                this.video.srcObject = null;
+                if(this.video) this.video.srcObject = null;
                 this.startCamera(); 
             };
         } catch (err) { console.error("Lỗi chia sẻ màn hình", err); this.startCamera(); }
@@ -1211,7 +1228,7 @@ btnCapture.onclick = async () => {
         });
         
         if(this.capturedPhotos.length === 0) {
-            cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Tải Thư Mục" hoặc Kéo thả ảnh vào đây</span>';
+            cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Folder" hoặc Kéo thả ảnh vào đây</span>';
         }
       },
       deleteSessionPhoto: function(index) {
@@ -1721,5 +1738,4 @@ btnCapture.onclick = async () => {
     window.addEventListener('DOMContentLoaded', () => app.init());
   </script>
 </body>
-</html>
-  
+</html>  
