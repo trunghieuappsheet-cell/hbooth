@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HaMa PhotoBooth Pro</title>
   
-  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="icon" id="dynamicFavicon" href="favicon.png" type="image/png">
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -15,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Thêm thư viện QRCode và PeerJS cho tính năng Camera từ xa -->
+  <!-- Thư viện QRCode và PeerJS (Remote Cam xuyên mạng) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
@@ -95,8 +95,9 @@
     .progress-tiny { height: 4px; background-color: var(--input-bg); width: 120px; border-radius: 2px; overflow: hidden; display: none; margin-right: 10px; }
     .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; height: 100%; }
 
-    .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; }
-    #finalCanvas { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 5px 25px rgba(0,0,0,0.3); border: 1px solid var(--border-color); background: #fff; cursor: crosshair; }
+    /* Fix tỷ lệ tối đa khoảng trắng */
+    .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 5px; }
+    #finalCanvas { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; box-shadow: 0 5px 25px rgba(0,0,0,0.3); border: 1px solid var(--border-color); background: #fff; cursor: crosshair; }
 
     .slot-toolbar { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
     .slot-toolbar.active { visibility: visible; opacity: 1; top: 20px; }
@@ -129,11 +130,26 @@
         .gallery-container { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     }
 
-    /* CSS ẨN LIVECAM */
+    /* CSS ẨN LIVECAM - SẮP XẾP LẠI THÀNH DẠNG GRID THÔNG MINH */
     body.hide-livecam .camera-control-col, body.hide-livecam .viewport-wrapper { display: none !important; }
-    body.hide-livecam .camera-setup-row { flex-direction: row !important; margin-bottom: 0px !important; }
-    body.hide-livecam .action-control-col { width: 100% !important; flex-direction: row; flex-wrap: wrap; align-items: center;}
-    body.hide-livecam .action-control-col > * { flex: 1 1 auto; width: auto !important; margin: 3px !important; }
+    body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; }
+    body.hide-livecam .action-control-col { 
+        width: 100% !important; 
+        display: grid !important; 
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+        gap: 10px; 
+        align-items: center; 
+    }
+    body.hide-livecam .action-control-col > * { margin: 0 !important; width: 100% !important; }
+    body.hide-livecam .action-control-col .d-flex { flex-direction: row !important; }
+
+    /* ALBUM KHÁCH HÀNG (DÀNH CHO ĐIỆN THOẠI QUÉT VÀO) */
+    .client-album-wrapper { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; flex-direction: column; overflow-y: auto; color: var(--text-main); }
+    .album-header { padding: 15px; background: var(--panel-bg); text-align: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 15px; }
+    .album-item { position: relative; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 4px 6px rgba(0,0,0,0.2); aspect-ratio: 3/4; }
+    .album-item img { width: 100%; height: 100%; object-fit: cover; }
+    .album-download { position: absolute; bottom: 5px; right: 5px; background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
   </style>
 </head>
 <body class="theme-bimgroup">
@@ -144,153 +160,165 @@
 
   <div id="printContainer" class="d-none"></div>
 
-  <div class="app-header">
-    <div class="d-flex align-items-center gap-2">
-      <img id="headerLogo" src="" alt="Logo" style="height: 20px; display: none;">
-      <h6 id="headerTitleText" style="margin:0; font-size:0.85rem; font-weight:800; color:var(--accent); letter-spacing: 1px;">STUDIO BOOTH</h6>
-    </div>
-    <div class="d-flex align-items-center">
-      <button class="btn btn-sm text-muted p-0 ms-3" onclick="app.toggleFullScreenApp()" title="Toàn màn hình (F11)">
-        <i class="bi bi-arrows-fullscreen fs-6" style="color: var(--accent);"></i>
-      </button>
-      <button class="btn btn-sm text-muted p-0 ms-3" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt">
-        <i class="bi bi-gear-fill fs-6" style="color: var(--accent);"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="app-container">
-    <div class="left-panel">
-      <div class="camera-setup-row">
-        
-        <div class="camera-control-col">
-          <div class="d-flex gap-1 mb-2 shadow-sm">
-              <select id="cameraSelect" class="form-select form-select-lg fs-6 flex-grow-1" onchange="app.switchCamera()"></select>
-              <button class="btn btn-warning px-3 fw-bold border-0" onclick="app.startWindowCapture()" title="Chia sẻ màn hình Live View (Scrcpy)">
-                  <i class="bi bi-display"></i>
-              </button>
-          </div>
-          <div class="input-group input-group-lg mb-2 shadow-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Số lượng chụp" style="width: 50px; border-right: none;"><i class="bi bi-camera fs-4"></i></span>
-            <input type="number" id="photoCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="1" min="1">
-          </div>
-          <div class="input-group input-group-lg mb-2 shadow-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Thời gian đếm ngược (giây)" style="width: 50px; border-right: none;"><i class="bi bi-stopwatch fs-4"></i></span>
-            <input type="number" id="timerCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="3" min="0">
-          </div>
-          <div class="input-group input-group-lg mb-2 shadow-sm">
-            <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (khi chụp)" style="width: 50px; border-right: none;"><i class="bi bi-files fs-4"></i></span>
-            <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
-          </div>
-          <div class="bg-dark p-2 rounded mb-1 border border-secondary mt-auto" style="background: rgba(0,0,0,0.2) !important;">
-              <label class="small text-muted d-block text-center mb-1" style="font-size:0.65rem;">Thu phóng & Di chuyển</label>
-              <div class="d-flex gap-1 align-items-center mb-1">
-                  <i class="bi bi-zoom-in text-muted" style="font-size:0.7rem;"></i>
-                  <input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()">
-              </div>
-              <div class="d-flex gap-1">
-                  <input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()" title="Di chuyển ngang">
-                  <input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()" title="Di chuyển dọc">
-              </div>
-          </div>
-          <div class="d-flex gap-1 mb-1">
-              <button id="btnMirror" class="btn btn-primary-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.toggleMirror()" title="Bật/Tắt Lật gương"><i class="bi bi-symmetry-horizontal"></i></button>
-              <button class="btn btn-outline-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.resetCamTransform()" title="Mặc định Cam"><i class="bi bi-arrow-counterclockwise"></i></button>
-          </div>
+  <!-- CONTAINER CHỨA ỨNG DỤNG CHÍNH -->
+  <div id="mainAppWrapper">
+      <div class="app-header">
+        <div class="d-flex align-items-center gap-2">
+          <img id="headerLogo" src="" alt="Logo" style="height: 20px; display: none;">
+          <h6 id="headerTitleText" style="margin:0; font-size:0.85rem; font-weight:800; color:var(--accent); letter-spacing: 1px;">STUDIO BOOTH</h6>
         </div>
-
-        <div class="viewport-wrapper" id="viewport">
-          <div class="camera-modes">
-            <button class="btn-cam-mode active" id="btnModeH" onclick="app.setCameraMode('horizontal')"><i class="bi bi-phone-landscape"></i></button>
-            <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')"><i class="bi bi-phone"></i></button>
-          </div>
-          <video id="videoElement" autoplay playsinline></video>
-          <div id="countdownOverlay">3</div>
-          <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()" title="Chụp ảnh"><i class="bi bi-camera-fill"></i></button>
-          <div id="liveGalleryStrip" class="live-gallery-strip"></div>
+        <div class="d-flex align-items-center">
+          <button class="btn btn-sm text-muted p-0 ms-3" onclick="app.toggleFullScreenApp()" title="Toàn màn hình (F11)">
+            <i class="bi bi-arrows-fullscreen fs-6" style="color: var(--accent);"></i>
+          </button>
+          <button class="btn btn-sm text-muted p-0 ms-3" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt">
+            <i class="bi bi-gear-fill fs-6" style="color: var(--accent);"></i>
+          </button>
         </div>
-        
-        <div class="action-control-col">
-          <button class="btn btn-primary-custom w-100 shadow mb-1 btn-print-tall" onclick="app.printAllPages()"><i class="bi bi-printer"></i> IN NGAY</button>
-          <button class="btn btn-outline-custom w-100 btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
-          <div class="w-100 mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
-            <label class="small fw-bold mb-1" style="color:var(--accent); font-size: 0.75rem;"><i class="bi bi-grid-1x2"></i> Bố cục in</label>
-            <select id="layoutSelect" class="form-select form-select-sm mb-2" style="font-size: 0.75rem;" onchange="app.changeLayout(); app.saveSettings()">
-              <option value="1">10x15 cm (1 ảnh)</option>
-              <option value="2">6x9 cm (2 ô)</option>
-              <option value="4">4x6 cm (4 ô)</option>
-              <option value="8" selected>3x4 cm (8 ô)</option>
-            </select>
-            <label class="small text-muted w-100 mb-1" style="font-size: 0.7rem;">Viền trắng: <span id="vBorder" class="float-end text-white">0px</span></label>
-            <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
-          </div>
-
-          <!-- NÚT TỰ ĐỘNG CHÈN (Đã được chuyển sang cột Công cụ để luôn hiển thị) -->
-          <div class="d-flex gap-1 w-100 mb-2 mt-auto">
-            <input type="number" id="folderAutoCopies" class="form-control form-control-sm text-center border-secondary fw-bold" style="width: 50px; color: var(--accent); background: var(--input-bg);" value="1" min="1" max="8" title="Nhân bản (ảnh tự động)">
-            <button id="btnAutoInsert" class="btn btn-outline-custom flex-grow-1 btn-sm shadow-sm fw-bold" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in">
-              <i class="bi bi-magic"></i> Tự động
-            </button>
-          </div>
-
-          <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
-          <div class="d-flex align-items-center justify-content-between w-100 bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
-            <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
-            <span class="fw-bold text-uppercase text-center" id="pageIndicator" style="font-size: 0.75rem; color: var(--accent); flex:1;">1/1</span>
-            <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.nextPage()"><i class="bi bi-chevron-right"></i></button>
-            <button class="btn btn-sm btn-outline-secondary p-1 border-0 rounded-circle ms-1" onclick="app.addEmptyPage()" title="Thêm trang"><i class="bi bi-plus-lg"></i></button>
-          </div>
-        </div>
-
       </div>
 
-      <div class="gallery-section" id="currentSessionZone" ondragover="app.handleDragOverSession(event)" ondragleave="app.handleDragLeaveSession(event)" ondrop="app.handleDropSession(event)">
-        <div class="gallery-title">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-images"></i> HÌNH ẢNH
-            <span id="uploadStatusText" class="small text-muted fw-normal ms-2" style="font-size: 0.7rem; display: none;">Lưu: <span id="uploadCount">0/0</span></span>
-            <div class="progress-tiny" id="uploadProgressBarContainer">
-              <div class="progress-bar-tiny" id="uploadProgress" style="width: 0%"></div>
+      <div class="app-container">
+        <div class="left-panel">
+          <div class="camera-setup-row">
+            
+            <div class="camera-control-col">
+              <div class="d-flex gap-1 mb-2 shadow-sm">
+                  <select id="cameraSelect" class="form-select form-select-lg fs-6 flex-grow-1" onchange="app.switchCamera()"></select>
+                  <button class="btn btn-warning px-3 fw-bold border-0" onclick="app.startWindowCapture()" title="Chia sẻ màn hình Live View (Scrcpy)">
+                      <i class="bi bi-display"></i>
+                  </button>
+              </div>
+              <div class="input-group input-group-lg mb-2 shadow-sm">
+                <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Số lượng chụp" style="width: 50px; border-right: none;"><i class="bi bi-camera fs-4"></i></span>
+                <input type="number" id="photoCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="1" min="1">
+              </div>
+              <div class="input-group input-group-lg mb-2 shadow-sm">
+                <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Thời gian đếm ngược (giây)" style="width: 50px; border-right: none;"><i class="bi bi-stopwatch fs-4"></i></span>
+                <input type="number" id="timerCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="3" min="0">
+              </div>
+              <div class="input-group input-group-lg mb-2 shadow-sm">
+                <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Nhân bản (khi chụp)" style="width: 50px; border-right: none;"><i class="bi bi-files fs-4"></i></span>
+                <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fw-bold fs-4" style="border-left: none; color: var(--accent);" value="1" min="1" max="8">
+              </div>
+              <div class="bg-dark p-2 rounded mb-1 border border-secondary mt-auto" style="background: rgba(0,0,0,0.2) !important;">
+                  <label class="small text-muted d-block text-center mb-1" style="font-size:0.65rem;">Thu phóng & Di chuyển</label>
+                  <div class="d-flex gap-1 align-items-center mb-1">
+                      <i class="bi bi-zoom-in text-muted" style="font-size:0.7rem;"></i>
+                      <input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()">
+                  </div>
+                  <div class="d-flex gap-1">
+                      <input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()" title="Di chuyển ngang">
+                      <input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()" title="Di chuyển dọc">
+                  </div>
+              </div>
+              <div class="d-flex gap-1 mb-1">
+                  <button id="btnMirror" class="btn btn-primary-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.toggleMirror()" title="Bật/Tắt Lật gương"><i class="bi bi-symmetry-horizontal"></i></button>
+                  <button class="btn btn-outline-custom flex-fill py-1 shadow-sm fw-bold fs-6" onclick="app.resetCamTransform()" title="Mặc định Cam"><i class="bi bi-arrow-counterclockwise"></i></button>
+              </div>
+            </div>
+
+            <div class="viewport-wrapper" id="viewport">
+              <div class="camera-modes">
+                <button class="btn-cam-mode active" id="btnModeH" onclick="app.setCameraMode('horizontal')"><i class="bi bi-phone-landscape"></i></button>
+                <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')"><i class="bi bi-phone"></i></button>
+              </div>
+              <video id="videoElement" autoplay playsinline></video>
+              <div id="countdownOverlay">3</div>
+              <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()" title="Chụp ảnh"><i class="bi bi-camera-fill"></i></button>
+              <div id="liveGalleryStrip" class="live-gallery-strip"></div>
+            </div>
+            
+            <div class="action-control-col">
+              <button class="btn btn-primary-custom w-100 shadow mb-1 btn-print-tall" onclick="app.printAllPages()"><i class="bi bi-printer"></i> IN NGAY</button>
+              <button class="btn btn-outline-custom w-100 btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
+              
+              <div class="w-100 mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
+                <label class="small fw-bold mb-1" style="color:var(--accent); font-size: 0.75rem;"><i class="bi bi-grid-1x2"></i> Bố cục in</label>
+                <select id="layoutSelect" class="form-select form-select-sm mb-2" style="font-size: 0.75rem;" onchange="app.changeLayout(); app.saveSettings()">
+                  <option value="1">10x15 cm (1 ảnh)</option>
+                  <option value="2">6x9 cm (2 ô)</option>
+                  <option value="4">4x6 cm (4 ô)</option>
+                  <option value="8" selected>3x4 cm (8 ô)</option>
+                </select>
+                <label class="small text-muted w-100 mb-1" style="font-size: 0.7rem;">Viền trắng: <span id="vBorder" class="float-end text-white">0px</span></label>
+                <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
+              </div>
+
+              <!-- TÁCH TỰ ĐỘNG THÀNH 2 HÀNG -->
+              <div class="d-flex flex-column gap-1 w-100 mb-2 mt-auto">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent text-muted border-secondary">Nhân bản:</span>
+                    <input type="number" id="folderAutoCopies" class="form-control text-center border-secondary fw-bold" style="color: var(--accent); background: var(--input-bg);" value="1" min="1" max="8" title="Nhân bản (ảnh tự động)">
+                </div>
+                <button id="btnAutoInsert" class="btn btn-outline-custom w-100 btn-sm shadow-sm fw-bold" onclick="app.toggleAutoInsert()" title="Tự động xếp ảnh đồng bộ vào trang in">
+                  <i class="bi bi-magic"></i> Tự động
+                </button>
+              </div>
+
+              <button class="btn btn-outline-danger w-100 btn-sm mb-2" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
+              <div class="d-flex align-items-center justify-content-between w-100 bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
+                <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
+                <span class="fw-bold text-uppercase text-center" id="pageIndicator" style="font-size: 0.75rem; color: var(--accent); flex:1;">1/1</span>
+                <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.nextPage()"><i class="bi bi-chevron-right"></i></button>
+                <button class="btn btn-sm btn-outline-secondary p-1 border-0 rounded-circle ms-1" onclick="app.addEmptyPage()" title="Thêm trang"><i class="bi bi-plus-lg"></i></button>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="gallery-section" id="currentSessionZone" ondragover="app.handleDragOverSession(event)" ondragleave="app.handleDragLeaveSession(event)" ondrop="app.handleDropSession(event)">
+            <div class="gallery-title">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-images"></i> HÌNH ẢNH
+                <span id="uploadStatusText" class="small text-muted fw-normal ms-2" style="font-size: 0.7rem; display: none;">Lưu: <span id="uploadCount">0/0</span></span>
+                <div class="progress-tiny" id="uploadProgressBarContainer">
+                  <div class="progress-bar-tiny" id="uploadProgress" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                  <!-- Nút chia sẻ thư viện Album mã QR -->
+                  <button class="btn btn-sm btn-outline-warning py-0 rounded-pill fw-bold" onclick="app.showAlbumQRModal()" title="Mã QR cho khách lấy ảnh" style="font-size: 0.75rem;">
+                      <i class="bi bi-cloud-arrow-down"></i> Mã Khách lấy ảnh
+                  </button>
+                  <button class="btn btn-sm btn-outline-info py-0 rounded-pill" onclick="app.showQRModal()" title="Kết nối điện thoại chụp từ xa" style="font-size: 0.75rem;">
+                      <i class="bi bi-qr-code-scan"></i> Remote Cam
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary py-0 rounded-pill" onclick="app.selectAndWatchFolder()" title="Theo dõi thư mục chứa ảnh nội bộ trên máy" style="font-size: 0.75rem;">
+                      <i class="bi bi-folder-symlink"></i> Auto Folder
+                  </button>
+                  <label class="btn btn-sm btn-outline-custom m-0 px-3 py-0 rounded-pill" style="cursor: pointer; font-size: 0.75rem;">
+                    + Thêm ảnh <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
+                  </label>
+              </div>
+            </div>
+            <div class="gallery-container" id="capturedGallery">
+              <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Folder" hoặc Kéo thả ảnh vào đây</span>
             </div>
           </div>
-          <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-sm btn-outline-info py-0 rounded-pill" onclick="app.showQRModal()" title="Kết nối điện thoại chụp từ xa" style="font-size: 0.75rem;">
-                  <i class="bi bi-qr-code-scan"></i> Remote Cam
-              </button>
-              <button class="btn btn-sm btn-outline-secondary py-0 rounded-pill" onclick="app.selectAndWatchFolder()" title="Theo dõi thư mục chứa ảnh nội bộ trên máy" style="font-size: 0.75rem;">
-                  <i class="bi bi-folder-symlink"></i> Auto Folder
-              </button>
-              <label class="btn btn-sm btn-outline-custom m-0 px-3 py-0 rounded-pill" style="cursor: pointer; font-size: 0.75rem;">
-                + Thêm ảnh <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
-              </label>
+        </div>
+
+        <div class="right-panel d-flex flex-column">
+          <div class="slot-toolbar" id="slotToolbar">
+            <span class="badge bg-primary rounded-pill">#<span id="stIndex">1</span></span>
+            <button class="btn btn-sm btn-outline-info rounded-circle py-0 px-1" onclick="app.openPhotoSelector(app.activeSlotIndex)" title="Thay ảnh"><i class="bi bi-image"></i></button>
+            <button class="btn btn-sm btn-outline-secondary rounded-circle py-0 px-1" onclick="app.rotateActiveSlot()" title="Xoay 90 độ"><i class="bi bi-arrow-clockwise"></i></button>
+            <div class="d-flex align-items-center gap-1 ms-1">
+              <i class="bi bi-brightness-high text-warning" style="font-size:0.8rem;"></i>
+              <input type="range" class="form-range" id="stBr" min="50" max="150" value="100" style="width: 40px;" oninput="app.applyDirectEdit()">
+            </div>
+            <div class="d-flex align-items-center gap-1 ms-1">
+              <i class="bi bi-circle-half text-info" style="font-size:0.8rem;"></i>
+              <input type="range" class="form-range" id="stCt" min="50" max="150" value="100" style="width: 40px;" oninput="app.applyDirectEdit()">
+            </div>
+            <button class="btn btn-sm btn-danger rounded-circle ms-1 py-0 px-1" onclick="app.removeActiveSlot()" title="Xóa ảnh khỏi khung"><i class="bi bi-x-lg"></i></button>
+          </div>
+          <div class="canvas-container">
+            <canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)" title="Click để thêm hoặc chỉnh sửa ảnh"></canvas>
           </div>
         </div>
-        <div class="gallery-container" id="capturedGallery">
-          <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;">Bấm "Auto Folder" hoặc Kéo thả ảnh vào đây</span>
-        </div>
       </div>
-    </div>
-
-    <div class="right-panel d-flex flex-column">
-      <div class="slot-toolbar" id="slotToolbar">
-        <span class="badge bg-primary rounded-pill">#<span id="stIndex">1</span></span>
-        <button class="btn btn-sm btn-outline-info rounded-circle py-0 px-1" onclick="app.openPhotoSelector(app.activeSlotIndex)" title="Thay ảnh"><i class="bi bi-image"></i></button>
-        <button class="btn btn-sm btn-outline-secondary rounded-circle py-0 px-1" onclick="app.rotateActiveSlot()" title="Xoay 90 độ"><i class="bi bi-arrow-clockwise"></i></button>
-        <div class="d-flex align-items-center gap-1 ms-1">
-          <i class="bi bi-brightness-high text-warning" style="font-size:0.8rem;"></i>
-          <input type="range" class="form-range" id="stBr" min="50" max="150" value="100" style="width: 40px;" oninput="app.applyDirectEdit()">
-        </div>
-        <div class="d-flex align-items-center gap-1 ms-1">
-          <i class="bi bi-circle-half text-info" style="font-size:0.8rem;"></i>
-          <input type="range" class="form-range" id="stCt" min="50" max="150" value="100" style="width: 40px;" oninput="app.applyDirectEdit()">
-        </div>
-        <button class="btn btn-sm btn-danger rounded-circle ms-1 py-0 px-1" onclick="app.removeActiveSlot()" title="Xóa ảnh khỏi khung"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <div class="canvas-container">
-        <canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)" title="Click để thêm hoặc chỉnh sửa ảnh"></canvas>
-      </div>
-    </div>
   </div>
+  <!-- KẾT THÚC VÙNG MAIN APP -->
 
   <!-- CÁC MODAL HỆ THỐNG -->
   <div class="modal fade" id="selectPhotoModal" tabindex="-1">
@@ -367,7 +395,19 @@
         <div class="modal-body text-center p-4">
           <h6 class="fw-bold mb-3" style="color:var(--accent);"><i class="bi bi-camera"></i> REMOTE CAMERA</h6>
           <div id="qrcode" class="mb-3 d-flex justify-content-center bg-white p-2 rounded mx-auto" style="width: 180px; height: 180px;"></div>
-          <p class="small text-muted mb-0">Dùng điện thoại quét mã này để chụp ảnh gửi trực tiếp vào đây.</p>
+          <p class="small text-muted mb-0">Dùng điện thoại (4G/WiFi) quét mã này để chụp ảnh gửi trực tiếp vào đây.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="albumQRModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">
+        <div class="modal-body text-center p-4">
+          <h6 class="fw-bold mb-3 text-warning"><i class="bi bi-cloud-arrow-down"></i> TẢI ẢNH KHÁCH HÀNG</h6>
+          <div id="albumQRCode" class="mb-3 d-flex justify-content-center bg-white p-2 rounded mx-auto" style="width: 180px; height: 180px;"></div>
+          <p class="small text-muted mb-0">Khách hàng quét mã này để vào thư viện tải ảnh (Đã lọc theo phiên hiện tại).</p>
         </div>
       </div>
     </div>
@@ -380,6 +420,16 @@
     </div>
     <div class="offcanvas-body">
       
+      <!-- Bổ sung nút Đồng bộ Đám mây -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Đồng bộ dữ liệu</h6>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-primary-custom flex-fill fw-normal" onclick="app.syncSettingsToCloud()"><i class="bi bi-cloud-upload"></i> Lưu lên Cloud</button>
+            <button class="btn btn-sm btn-outline-custom flex-fill fw-normal" onclick="app.syncSettingsFromCloud()"><i class="bi bi-cloud-download"></i> Tải từ Cloud</button>
+        </div>
+        <p class="small text-muted mt-2 mb-0" style="font-size: 0.65rem;">* Giúp đồng bộ cấu hình (Logo, Favicon, Watermark...) sang máy tính khác.</p>
+      </div>
+
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Camera & Giao Diện</h6>
         <div class="form-check form-switch mb-3 mt-2 p-2 rounded" style="background: rgba(0,0,0,0.1); border: 1px solid var(--border-color);">
@@ -412,7 +462,7 @@
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Tùy chỉnh App (Header)</h6>
         <label class="small text-muted w-100 mb-1">Tên ứng dụng</label>
         <input type="text" id="appHeaderTitle" class="form-control form-control-sm mb-2" placeholder="STUDIO BOOTH..." onkeyup="app.updateHeader(); app.saveSettings()">
-        <label class="small text-muted w-100 mb-1">Logo góc trái (Hình ảnh)</label>
+        <label class="small text-muted w-100 mb-1">Logo góc trái (Hình ảnh/Favicon)</label>
         <input type="file" id="appHeaderLogoInput" class="form-control form-control-sm" accept="image/*" onchange="app.loadHeaderLogo(event)">
       </div>
 
@@ -484,7 +534,11 @@
         </div>
 
         <h6 class="fw-bold text-uppercase small mt-3" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Logo dán góc từng ô (PNG)</h6>
-        <input type="file" class="form-control form-control-sm mb-2" accept="image/*" onchange="app.loadPrintLogo(event)">
+        <div class="d-flex gap-1 mb-2">
+            <input type="file" id="printLogoInput" class="form-control form-control-sm" accept="image/*" onchange="app.loadPrintLogo(event)">
+            <!-- Nút xóa logo -->
+            <button class="btn btn-sm btn-outline-danger px-3" onclick="app.removePrintLogo()" title="Xóa Logo"><i class="bi bi-trash"></i></button>
+        </div>
         <div class="row g-2">
           <div class="col-4"><label class="small text-muted m-0">Size (%)</label><input type="range" class="form-range" id="logoSize" min="5" max="100" value="30" oninput="app.renderCanvas(); app.saveSettings()"></div>
           <div class="col-4"><label class="small text-muted m-0">Tọa độ X (%)</label><input type="range" class="form-range" id="logoX" min="0" max="100" value="95" oninput="app.renderCanvas(); app.saveSettings()"></div>
@@ -504,6 +558,7 @@
       stream: null,
       
       capturedPhotos: [], 
+      sessionStartTime: Date.now(), // Thời điểm bắt đầu phiên để lọc Album Khách
       
       localDirHandle: null,
       folderPollInterval: null,
@@ -524,6 +579,7 @@
       prepModalInstance: null,
       selectModalInstance: null,
       qrModalInstance: null,
+      albumQRModalInstance: null,
       
       selectedModalIndices: [],
       
@@ -541,14 +597,24 @@
       peerId: null,
 
       init: async function() {
-        // KIỂM TRA CHẾ ĐỘ REMOTE CAM (Dành cho thiết bị quét QR)
+        // KIỂM TRA TRẠNG THÁI URL
         const urlParams = new URLSearchParams(window.location.search);
+        
+        // 1. Nếu là Khách hàng xem Album
+        const albumTime = urlParams.get('album');
+        if (albumTime) {
+            this.initAlbumMode(albumTime);
+            return;
+        }
+
+        // 2. Nếu là Điện thoại Remote Cam
         const remoteId = urlParams.get('remote');
         if (remoteId) {
             this.initRemoteMode(remoteId);
-            return; // Dừng khởi tạo app chính nếu đang ở chế độ điện thoại
+            return;
         }
 
+        // 3. Chạy phần mềm Studio bình thường
         this.prepModalInstance = new bootstrap.Modal(document.getElementById('imagePrepModal'));
         this.selectModalInstance = new bootstrap.Modal(document.getElementById('selectPhotoModal'));
         this.qrModalInstance = new bootstrap.Modal(document.getElementById('qrModal'));
@@ -564,6 +630,120 @@
         this.updateMirrorUI();
       },
 
+      /* =========================================
+       * ĐỒNG BỘ CẤU HÌNH LÊN/XUỐNG CLOUD (GOOGLE SCRIPT)
+       * ========================================= */
+      syncSettingsToCloud: function() {
+          const data = localStorage.getItem('boothSettings_Pro');
+          if(!data) return Swal.fire('Lỗi', 'Chưa có cấu hình nào để lưu!', 'error');
+          
+          Swal.fire({title: 'Đang đồng bộ lên Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+          
+          const fd = new URLSearchParams(); 
+          fd.append('action', 'saveSettings'); 
+          fd.append('data', data);
+          
+          fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{
+              if(r.success) Swal.fire('Thành công', 'Đã lưu cấu hình lên Cloud (Dùng được trên máy khác)', 'success');
+              else Swal.fire('Lỗi', 'Lưu thất bại: ' + r.error, 'error');
+          }).catch(()=>Swal.fire('Lỗi', 'Mạng không ổn định', 'error'));
+      },
+
+      syncSettingsFromCloud: function() {
+          Swal.fire({
+              title: 'Cảnh báo', text: "Việc tải từ Cloud sẽ ghi đè toàn bộ cài đặt hiện tại của máy này. Bạn có chắc chắn?",
+              icon: 'warning', showCancelButton: true, confirmButtonText: 'Đồng ý tải', cancelButtonText: 'Hủy'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  Swal.fire({title: 'Đang tải từ Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                  
+                  const fd = new URLSearchParams(); 
+                  fd.append('action', 'loadSettings');
+                  
+                  fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{
+                      if(r.success) {
+                          localStorage.setItem('boothSettings_Pro', r.data);
+                          Swal.fire('Thành công', 'Đã tải cấu hình. Hệ thống sẽ khởi động lại sau 2 giây...', 'success');
+                          setTimeout(() => window.location.reload(), 2000);
+                      } else { Swal.fire('Lỗi', r.error, 'error'); }
+                  }).catch(()=>Swal.fire('Lỗi', 'Mạng không ổn định', 'error'));
+              }
+          });
+      },
+
+      /* =========================================
+       * GIAO DIỆN ALBUM KHÁCH HÀNG
+       * ========================================= */
+      showAlbumQRModal: function() {
+          if (!this.albumQRModalInstance) { this.albumQRModalInstance = new bootstrap.Modal(document.getElementById('albumQRModal')); }
+          this.albumQRModalInstance.show();
+          
+          const qrContainer = document.getElementById('albumQRCode');
+          qrContainer.innerHTML = "";
+          let albumUrl = window.location.origin + window.location.pathname + "?album=" + this.sessionStartTime;
+          
+          new QRCode(qrContainer, {
+              text: albumUrl, width: 180, height: 180,
+              colorDark : "#000000", colorLight : "#ffffff",
+              correctLevel : QRCode.CorrectLevel.H
+          });
+      },
+
+      initAlbumMode: function(startTime) {
+          // XÓA GIAO DIỆN CHÍNH, RENDER GIAO DIỆN ALBUM
+          document.body.innerHTML = `
+            <div class="client-album-wrapper">
+                <div class="album-header">
+                    <h5 class="m-0 fw-bold" style="color: var(--accent);"><i class="bi bi-images"></i> THƯ VIỆN ẢNH CỦA BẠN</h5>
+                    <p class="small text-muted m-0">Ảnh sẽ tự động cập nhật tại đây</p>
+                </div>
+                <div class="album-grid" id="clientAlbumGrid">
+                    <div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;">
+                        <div class="spinner-border text-info mb-2" role="status"></div><br>Đang tải dữ liệu...
+                    </div>
+                </div>
+            </div>
+          `;
+
+          const loadGallery = () => {
+              const fd = new URLSearchParams();
+              fd.append('action', 'getGalleryImages');
+              fd.append('startTime', startTime);
+              
+              fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
+                  const grid = document.getElementById('clientAlbumGrid');
+                  if (!r.success || r.data.length === 0) {
+                      grid.innerHTML = '<div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><i class="bi bi-cloud-slash fs-1"></i><br>Chưa có ảnh nào được chụp.</div>';
+                      return;
+                  }
+                  
+                  grid.innerHTML = '';
+                  r.data.forEach(item => {
+                      const div = document.createElement('div');
+                      div.className = 'album-item';
+                      
+                      const img = document.createElement('img');
+                      img.src = item.url;
+                      
+                      const a = document.createElement('a');
+                      a.href = item.url;
+                      a.target = '_blank';
+                      a.className = 'album-download';
+                      a.innerHTML = '<i class="bi bi-download"></i>';
+                      
+                      div.appendChild(img);
+                      div.appendChild(a);
+                      grid.appendChild(div);
+                  });
+              }).catch(e => console.log(e));
+          };
+
+          // Chạy ngay lần đầu và tự động reload mỗi 5 giây
+          loadGallery();
+          setInterval(loadGallery, 5000);
+      },
+
+
       /* --- QUẢN LÝ ẨN/HIỆN LIVECAM --- */
       toggleLiveCamUI: function() {
           const isHidden = document.getElementById('hideLiveCamToggle').checked;
@@ -571,7 +751,6 @@
           else { document.body.classList.remove('hide-livecam'); }
       },
 
-      /* --- TOGGLE FULLSCREEN TOÀN TRÌNH DUYỆT --- */
       toggleFullScreenApp: function() {
           if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(e => console.log(e)); } 
           else { document.exitFullscreen(); }
@@ -628,7 +807,7 @@
           else { btn.classList.remove('btn-primary-custom'); btn.classList.add('btn-outline-custom'); }
       },
 
-      /* --- LƯU & TẢI CÀI ĐẶT --- */
+      /* --- LƯU & TẢI CÀI ĐẶT (LOCAL STORAGE) --- */
       saveSettings: function() {
           const settings = {
               hideLiveCam: document.getElementById('hideLiveCamToggle').checked,
@@ -664,7 +843,13 @@
                   const s = JSON.parse(saved);
                   if(s.hideLiveCam !== undefined) { document.getElementById('hideLiveCamToggle').checked = s.hideLiveCam; this.toggleLiveCamUI(); }
                   if(s.headerTitle) { document.getElementById('appHeaderTitle').value = s.headerTitle; document.getElementById('headerTitleText').innerText = s.headerTitle; }
-                  if(s.headerLogo && s.headerLogo.startsWith('data:image')) { document.getElementById('headerLogo').src = s.headerLogo; document.getElementById('headerLogo').style.display = 'block'; }
+                  
+                  if(s.headerLogo && s.headerLogo.startsWith('data:image')) { 
+                      document.getElementById('headerLogo').src = s.headerLogo; 
+                      document.getElementById('headerLogo').style.display = 'block'; 
+                      document.getElementById('dynamicFavicon').href = s.headerLogo; // Đồng bộ Favicon
+                  }
+                  
                   if(s.folderFilterMode) document.getElementById('folderFilterMode').value = s.folderFilterMode;
                   if(s.filterFromDate) document.getElementById('filterFromDate').value = s.filterFromDate;
                   if(s.filterToDate) document.getElementById('filterToDate').value = s.filterToDate;
@@ -708,6 +893,7 @@
               const b64 = evt.target.result;
               document.getElementById('headerLogo').src = b64;
               document.getElementById('headerLogo').style.display = 'block';
+              document.getElementById('dynamicFavicon').href = b64; // Cập nhật Favicon
               this.saveSettings();
           }
           r.readAsDataURL(file);
@@ -720,12 +906,21 @@
         else { document.documentElement.setAttribute('data-bs-theme', 'dark'); }
       },
 
-      /* --------------------------------------------------------
-       * TÍNH NĂNG REMOTE CAMERA & PEERJS
-       * -------------------------------------------------------- */
+      /* ========================================================
+       * TÍNH NĂNG REMOTE CAMERA & PEERJS (XUYÊN MẠNG INTERNET)
+       * ======================================================== */
       setupPeerJS: function() {
           if (this.peer) return;
-          this.peer = new Peer(); 
+          
+          // Thêm cấu hình STUN Server của Google để vượt tường lửa / khác mạng WiFi
+          this.peer = new Peer({
+              config: {
+                  'iceServers': [
+                      { urls: 'stun:stun.l.google.com:19302' },
+                      { urls: 'stun:stun1.l.google.com:19302' }
+                  ]
+              }
+          }); 
           
           this.peer.on('open', (id) => {
               this.peerId = id;
@@ -789,7 +984,6 @@
       },
 
       initRemoteMode: async function(targetId) {
-          // XÓA GIAO DIỆN CHÍNH, RENDER GIAO DIỆN ĐIỆN THOẠI
           document.body.innerHTML = `
             <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center;">
                 <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
@@ -813,32 +1007,34 @@
           const btnSwitch = document.getElementById('btnSwitchCam');
           const btnFullScreen = document.getElementById('btnFullScreen');
 
-          // Cấu hình Nút FullScreen
           btnFullScreen.onclick = () => {
               if (!document.fullscreenElement) {
                   document.documentElement.requestFullscreen().catch(err => console.log(err));
-              } else {
-                  document.exitFullscreen();
-              }
+              } else { document.exitFullscreen(); }
           };
 
           document.addEventListener('fullscreenchange', () => {
-              if (document.fullscreenElement) {
-                  btnFullScreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
-              } else {
-                  btnFullScreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
-              }
+              if (document.fullscreenElement) { btnFullScreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>'; } 
+              else { btnFullScreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>'; }
           });
 
           let remoteStream = null;
           let useFrontCam = false; 
 
-          // --- NÂNG CẤP KẾT NỐI VÀ XỬ LÝ LỖI PEERJS ---
-          const peer = new Peer();
+          // Dùng STUN của Google cho điện thoại
+          const peer = new Peer({
+              config: {
+                  'iceServers': [
+                      { urls: 'stun:stun.l.google.com:19302' },
+                      { urls: 'stun:stun1.l.google.com:19302' }
+                  ]
+              }
+          });
+          
           let conn = null;
 
           peer.on('open', (id) => {
-              conn = peer.connect(targetId, { reliable: true }); // Tăng cường tính ổn định
+              conn = peer.connect(targetId, { reliable: true }); 
               
               conn.on('open', () => {
                   status.innerText = "Đã kết nối! Sẵn sàng chụp.";
@@ -856,17 +1052,15 @@
           peer.on('error', (err) => {
               status.style.opacity = '1';
               status.style.background = "rgba(220, 53, 69, 0.8)";
-              
               if (err.type === 'peer-unavailable') {
                   status.innerText = "Lỗi: Không tìm thấy PC (Hãy tạo lại QR!)";
               } else if (err.type === 'network' || err.type === 'webrtc') {
-                  status.innerText = "Lỗi mạng: Tường lửa chặn (Thử dùng 4G)";
+                  status.innerText = "Lỗi kết nối P2P (Kiểm tra lại 4G/Tường lửa)";
               } else {
                   status.innerText = "Lỗi kết nối: " + err.type;
               }
           });
 
-          // --- CẤU HÌNH CAMERA ĐỘ PHÂN GIẢI GỐC (XOAY CHUẨN) ---
           const startRemoteCamera = async () => {
               if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
               try {
@@ -902,7 +1096,6 @@
               status.style.opacity = '1';
 
               try {
-                  // Cố gắng chụp ảnh RAW từ cảm biến để có độ phân giải tối đa (API ImageCapture)
                   const track = remoteStream.getVideoTracks()[0];
                   const imageCapture = new ImageCapture(track);
                   const blob = await imageCapture.takePhoto();
@@ -916,13 +1109,11 @@
                   if (useFrontCam) { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
                   ctx.drawImage(imgBitmap, 0, 0);
                   
-                  // Gửi ảnh chất lượng 100%
                   const b64 = canvas.toDataURL('image/jpeg', 1.0);
                   conn.send(b64);
                   showSuccess();
                   
               } catch (err) {
-                  // Fallback: nếu thiết bị (như iOS) không hỗ trợ ImageCapture API
                   const canvas = document.createElement('canvas');
                   canvas.width = video.videoWidth;
                   canvas.height = video.videoHeight;
@@ -1555,6 +1746,14 @@
       rotateActiveSlot: function() { if(this.activeSlotIndex === -1) return; this.pages[this.currentPage][this.activeSlotIndex].rotate = (this.pages[this.currentPage][this.activeSlotIndex].rotate + 90) % 360; this.renderCanvas(); },
       removeActiveSlot: function() { if(this.activeSlotIndex === -1) return; this.pages[this.currentPage][this.activeSlotIndex] = null; this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas(); },
       
+      /* --- XÓA / THÊM LOGO --- */
+      removePrintLogo: function() {
+          this.printLogo = null;
+          this.printLogoB64 = "";
+          document.getElementById('printLogoInput').value = "";
+          this.renderCanvas();
+          this.saveSettings();
+      },
       loadPrintLogo: function(e) {
           const file = e.target.files[0];
           if(!file) return;
