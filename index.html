@@ -808,7 +808,7 @@
           style.innerHTML = `#remoteCaptureBtn:active { transform: scale(0.9); background:rgba(255,255,255,0.8); }`;
           document.head.appendChild(style);
 
-          const status = document.getElementById('remoteStatus');
+const status = document.getElementById('remoteStatus');
           const video = document.getElementById('remoteVideo');
           const btnCapture = document.getElementById('remoteCaptureBtn');
           const btnSwitch = document.getElementById('btnSwitchCam');
@@ -836,11 +836,6 @@
 
           let remoteStream = null;
           let useFrontCam = false;
-          let remoteStream = null;
-          let useFrontCam = false; 
-
-          const peer = new Peer();
-          let conn = null;
 
           peer.on('open', (id) => {
               conn = peer.connect(targetId);
@@ -1726,4 +1721,5 @@ btnCapture.onclick = async () => {
     window.addEventListener('DOMContentLoaded', () => app.init());
   </script>
 </body>
-</html>  
+</html>
+  
