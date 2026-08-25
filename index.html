@@ -45,9 +45,9 @@
     .left-panel { flex: 6.5; display: flex; flex-direction: column; padding: 12px; border-right: 1px solid var(--border-color); overflow: hidden; background: transparent; }
     .right-panel { flex: 3.5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; }
     
-    .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
+    .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; transition: 0.3s; }
     .camera-control-col { width: 175px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-    .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; transition: 0.3s; }
     
     .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; }
     .viewport-wrapper.vertical { aspect-ratio: 9/16; }
@@ -91,12 +91,35 @@
     .progress-tiny { height: 4px; background-color: var(--input-bg); width: 120px; border-radius: 2px; overflow: hidden; display: none; margin-right: 10px; }
     .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; height: 100%; }
 
-    /* Fix Canvas hiển thị không bị dư khoảng trắng */
-    .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 5px; }
-    #finalCanvas { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 5px 25px rgba(0,0,0,0.3); border: 1px solid var(--border-color); background: #fff; cursor: crosshair; }
+    /* FIX LỖI DƯ KHOẢNG TRẮNG CANVAS */
+    .canvas-container { 
+        width: 100%; height: 100%; 
+        display: flex; align-items: center; justify-content: center; 
+        min-height: 0; padding: 5px; 
+        overflow: hidden; /* Cắt bỏ phần viền dư */
+    }
+    #finalCanvas { 
+        width: 100%; height: 100%; 
+        max-width: 100%; max-height: 100%; 
+        object-fit: contain; /* Ép khít canvas vào khung chứa */
+        box-shadow: 0 5px 25px rgba(0,0,0,0.3); 
+        border: 1px solid var(--border-color); background: #fff; cursor: crosshair; 
+    }
 
-    .slot-toolbar { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); padding: 6px 12px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 6px; align-items: center; width: max-content; }
-    .slot-toolbar.active { visibility: visible; opacity: 1; top: 20px; }
+    /* LÀM ĐẸP SLOT TOOLBAR (Chuẩn HTML5 / Bootstrap 5) */
+    .slot-toolbar { 
+        position: absolute; top: 20px; left: 50%; 
+        transform: translateX(-50%) translateY(-20px); 
+        background: rgba(33, 37, 41, 0.85); /* Nền tối mờ */
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        padding: 8px 16px; border-radius: 50px; 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4); 
+        visibility: hidden; opacity: 0; 
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
+        border: 1px solid rgba(255,255,255,0.1); 
+        z-index: 100; display: flex; gap: 8px; align-items: center; width: max-content; 
+    }
+    .slot-toolbar.active { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
     .btn-primary-custom { background: var(--accent); color: var(--bg-color); border: none; font-weight: bold; box-shadow: var(--accent-glow); transition: 0.3s; }
     .btn-primary-custom:hover { filter: brightness(1.2); color: var(--bg-color); }
@@ -126,31 +149,48 @@
         .gallery-container { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     }
 
-    /* CSS ẨN LIVECAM - SẮP XẾP BỐ CỤC DẠNG LƯỚI ĐỒNG ĐỀU */
-    body.hide-livecam .camera-control-col > *:not(.always-show) { display: none !important; }
+    /* =========================================================
+       CSS TỐI ƯU 1 HÀNG KHI TẮT LIVECAM (CHỈ HIỆN ACTION COL)
+       ========================================================= */
+    body.hide-livecam .camera-control-col { display: none !important; }
     body.hide-livecam .viewport-wrapper { display: none !important; }
-    body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; flex-direction: column !important; }
-    body.hide-livecam .camera-control-col { width: 100% !important; flex-direction: row; }
+    body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; }
+    
     body.hide-livecam .action-control-col { 
         width: 100% !important; 
-        display: grid !important; 
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-        gap: 10px; 
+        flex-direction: row !important; /* Chung 1 hàng ngang */
+        flex-wrap: nowrap !important; /* Không cho rớt dòng */
+        overflow-x: auto !important; /* Thêm thanh cuộn nếu màn hình quá nhỏ */
+        gap: 15px; 
         align-items: center; 
+        padding-bottom: 5px;
     }
-    body.hide-livecam .action-control-col > * { margin: 0 !important; width: 100% !important; }
+    
+    /* Ghi đè độ rộng để các nút tự điều chỉnh trên 1 hàng ngang */
+    body.hide-livecam .action-control-col > * { 
+        flex: 0 0 auto !important; 
+        width: auto !important; 
+        margin: 0 !important; 
+        white-space: nowrap;
+    }
+    
+    /* Làm đẹp thanh scrollbar ngang */
+    body.hide-livecam .action-control-col::-webkit-scrollbar { height: 6px; }
+    body.hide-livecam .action-control-col::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 
-    /* CSS GIAO DIỆN CAMERA GỐC TRÊN ĐIỆN THOẠI & LIGHTBOX */
+    /* =========================================================
+       GIAO DIỆN CAMERA ĐIỆN THOẠI & ALBUM KHÁCH (LƯỚI VUÔNG)
+       ========================================================= */
     .rotatable { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .remote-grid-overlay { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; pointer-events: none; opacity: 0.35; border: 1px solid rgba(255,255,255,0.5); }
-    .remote-grid-overlay div { border: 1px solid rgba(255,255,255,0.3); }
     .remote-progress { position: absolute; top: 0; left: 0; height: 5px; background: #39ff14; width: 0%; transition: width 0.3s; z-index: 100; box-shadow: 0 0 10px #39ff14; }
     
     .client-album-wrapper { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; flex-direction: column; overflow-y: auto; color: var(--text-main); }
     .album-header { padding: 15px; background: var(--panel-bg); display: flex; align-items: center; justify-content: center; gap: 10px; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; padding: 10px; }
-    .album-item { position: relative; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 2px 5px rgba(0,0,0,0.3); aspect-ratio: 3/4; cursor: pointer; }
-    .album-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+    
+    /* Fix dạng lưới vuông */
+    .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; padding: 15px; }
+    .album-item { position: relative; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); aspect-ratio: 1/1; cursor: pointer; }
+    .album-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
     .album-item:hover img { transform: scale(1.05); }
     
     .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10500; display: none; align-items: center; justify-content: center; cursor: zoom-out; flex-direction: column;}
@@ -169,7 +209,7 @@
   <!-- LIGHTBOX XEM ẢNH PHÓNG TO TRONG ALBUM -->
   <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
       <img id="lightboxImg" src="">
-      <a id="lightboxDownloadBtn" href="#" target="_blank" class="lightbox-download"><i class="bi bi-download"></i> Tải ảnh này</a>
+      <a id="lightboxDownloadBtn" href="#" target="_blank" class="lightbox-download" onclick="event.stopPropagation()"><i class="bi bi-download"></i> Tải ảnh này</a>
   </div>
 
   <div id="mainAppWrapper">
@@ -193,7 +233,7 @@
           <div class="camera-setup-row">
             
             <div class="camera-control-col">
-              <div class="d-flex gap-1 mb-2 shadow-sm">
+              <div class="d-flex gap-1 mb-2 shadow-sm always-show">
                   <select id="cameraSelect" class="form-select form-select-lg fs-6 flex-grow-1" onchange="app.switchCamera()"></select>
                   <button class="btn btn-warning px-3 fw-bold border-0" onclick="app.startWindowCapture()" title="Chia sẻ màn hình Live View (Scrcpy)">
                       <i class="bi bi-display"></i>
@@ -208,8 +248,8 @@
                 <input type="number" id="timerCount" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="3" min="0">
               </div>
               
-              <!-- NÚT GỘP: Nhân bản & Tự động xếp ảnh (Luôn hiện dù Livecam có tắt) -->
-              <div class="always-show d-flex flex-column gap-2 p-2 rounded bg-dark border border-secondary mb-1 shadow-sm" style="background: rgba(0,0,0,0.2) !important;">
+              <!-- NÚT GỘP: Nhân bản & Tự động xếp ảnh (Nằm trong camera-control-col để khi tắt Livecam nó bị ẩn, thay bằng hàng riêng ở action) -->
+              <div class="d-flex flex-column gap-2 p-2 rounded bg-dark border border-secondary mb-1 shadow-sm" style="background: rgba(0,0,0,0.2) !important;">
                   <div class="input-group input-group-sm w-100">
                       <span class="input-group-text bg-transparent text-muted border-secondary" style="font-size: 0.75rem;">Nhân bản:</span>
                       <input type="number" id="autoCopies" class="form-control text-center border-secondary fw-bold" style="color: var(--accent); background: var(--input-bg);" value="1" min="1" max="8">
@@ -248,10 +288,10 @@
             </div>
             
             <div class="action-control-col">
-              <button class="btn btn-primary-custom w-100 shadow mb-1 btn-print-tall" onclick="app.printAllPages()"><i class="bi bi-printer"></i> IN NGAY</button>
-              <button class="btn btn-outline-custom w-100 btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
+              <button class="btn btn-primary-custom shadow mb-1 btn-print-tall" onclick="app.printAllPages()"><i class="bi bi-printer"></i> IN NGAY</button>
+              <button class="btn btn-outline-custom btn-sm mb-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-upload"></i> Lưu ảnh</button>
               
-              <div class="w-100 mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
+              <div class="mb-2 bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important; min-width: 160px;">
                 <label class="small fw-bold mb-1" style="color:var(--accent); font-size: 0.75rem;"><i class="bi bi-grid-1x2"></i> Bố cục in</label>
                 <select id="layoutSelect" class="form-select form-select-sm mb-2" style="font-size: 0.75rem;" onchange="app.changeLayout(); app.saveSettings()">
                   <option value="1">10x15 cm (1 ảnh)</option>
@@ -263,8 +303,15 @@
                 <input type="range" class="form-range" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
               </div>
 
-              <button class="btn btn-outline-danger w-100 btn-sm mb-2 mt-auto" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
-              <div class="d-flex align-items-center justify-content-between w-100 bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important;">
+              <!-- Hàng này chỉ hiện khi tắt Livecam để bù đắp việc mất nút auto ở camera-col -->
+              <div id="offlineAutoRow" class="d-none d-flex gap-2 p-2 rounded bg-dark border border-secondary align-items-center" style="background: rgba(0,0,0,0.2) !important;">
+                  <span class="small text-muted">Copy:</span>
+                  <input type="number" id="offlineAutoCopies" class="form-control form-control-sm text-center border-secondary fw-bold" style="width:50px; color:var(--accent);" value="1" min="1" max="8">
+                  <button class="btn btn-outline-custom btn-sm fw-bold" onclick="app.toggleAutoInsert()"><i class="bi bi-magic"></i> Auto</button>
+              </div>
+
+              <button class="btn btn-outline-danger btn-sm mb-2 mt-auto" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i> Xóa trang này</button>
+              <div class="d-flex align-items-center justify-content-between bg-dark p-1 rounded border border-secondary" style="background: rgba(0,0,0,0.2) !important; min-width: 140px;">
                 <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
                 <span class="fw-bold text-uppercase text-center" id="pageIndicator" style="font-size: 0.75rem; color: var(--accent); flex:1;">1/1</span>
                 <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.nextPage()"><i class="bi bi-chevron-right"></i></button>
@@ -401,7 +448,7 @@
         <div class="modal-body text-center p-4">
           <h6 class="fw-bold mb-3" style="color:var(--accent);"><i class="bi bi-camera"></i> REMOTE CAMERA</h6>
           <div id="qrcode" class="mb-3 d-flex justify-content-center bg-white p-2 rounded mx-auto" style="width: 180px; height: 180px;"></div>
-          <p class="small text-muted mb-0">Dùng điện thoại (4G/WiFi) quét mã này để chụp ảnh gửi trực tiếp vào đây.</p>
+          <p class="small text-muted mb-0">Dùng điện thoại quét mã này để biến điện thoại thành camera chụp ảnh từ xa.</p>
         </div>
       </div>
     </div>
@@ -432,13 +479,11 @@
             <button class="btn btn-sm btn-primary-custom flex-fill fw-normal" onclick="app.syncSettingsToCloud()"><i class="bi bi-cloud-upload"></i> Lưu lên Cloud</button>
             <button class="btn btn-sm btn-outline-custom flex-fill fw-normal" onclick="app.syncSettingsFromCloud()"><i class="bi bi-cloud-download"></i> Tải từ Cloud</button>
         </div>
-        <p class="small text-muted mt-2 mb-0" style="font-size: 0.65rem;">* Giúp đồng bộ cấu hình (Logo, Favicon, Watermark...) sang máy tính khác.</p>
       </div>
 
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Camera & Giao Diện</h6>
         <div class="form-check form-switch mb-3 mt-2 p-2 rounded" style="background: rgba(0,0,0,0.1); border: 1px solid var(--border-color);">
-            <!-- Mặc định Camera Bật, nên ô Checkbox này Mặc định là TẮT (Không tick) -->
             <input class="form-check-input ms-1 me-2" type="checkbox" id="hideLiveCamToggle" onchange="app.toggleLiveCamUI(); app.saveSettings()">
             <label class="form-check-label small fw-bold text-muted" for="hideLiveCamToggle">Tắt Camera trực tiếp (Chỉ hiện nút in và chỉnh sửa)</label>
         </div>
@@ -451,15 +496,14 @@
             <select id="folderFilterMode" class="form-select form-select-sm mb-2" onchange="app.toggleFilterUI(); app.saveSettings()">
                 <option value="new" selected>Chỉ tải ảnh MỚI (Từ lúc kết nối)</option>
                 <option value="time">Lọc theo khoảng thời gian</option>
-                <option value="all">Tải tất cả (Có thể chậm)</option>
+                <option value="all">Tải tất cả</option>
             </select>
             <div id="timeFilterInputs" style="display: none;">
                 <div class="row g-2 mb-2">
-                    <div class="col-12"><label class="small text-muted m-0">Từ ngày/giờ:</label><input type="datetime-local" id="filterFromDate" class="form-control form-control-sm" onchange="app.saveSettings()"></div>
-                    <div class="col-12"><label class="small text-muted m-0">Đến ngày/giờ:</label><input type="datetime-local" id="filterToDate" class="form-control form-control-sm" onchange="app.saveSettings()"></div>
+                    <div class="col-12"><label class="small text-muted m-0">Từ:</label><input type="datetime-local" id="filterFromDate" class="form-control form-control-sm" onchange="app.saveSettings()"></div>
+                    <div class="col-12"><label class="small text-muted m-0">Đến:</label><input type="datetime-local" id="filterToDate" class="form-control form-control-sm" onchange="app.saveSettings()"></div>
                 </div>
             </div>
-            <div class="small text-muted" style="font-size: 0.65rem;" id="filterHelpText">* Khuyên dùng: Chọn "Ảnh MỚI" để bỏ qua ảnh cũ, ứng dụng chạy mượt hơn.</div>
         </div>
         <button class="btn btn-sm btn-outline-custom w-100" onclick="document.getElementById('folderInput').click()"><i class="bi bi-folder-symlink"></i> Chọn & Tải ảnh từ thư mục</button>
       </div>
@@ -498,12 +542,6 @@
               <option value="Impact">Impact</option>
               <option value="Roboto">Roboto</option>
               <option value="Montserrat">Montserrat</option>
-              <option value="'Open Sans'">Open Sans</option>
-              <option value="Lora">Lora</option>
-              <option value="Oswald">Oswald</option>
-              <option value="'Dancing Script'">Dancing Script</option>
-              <option value="Pacifico">Pacifico</option>
-              <option value="'Playfair Display'">Playfair Display</option>
             </select>
           </div>
           <div class="col-6">
@@ -551,7 +589,6 @@
           <div class="col-4"><label class="small text-muted m-0">Tọa độ Y (%)</label><input type="range" class="form-range" id="logoY" min="0" max="100" value="95" oninput="app.renderCanvas(); app.saveSettings()"></div>
         </div>
       </div>
-      
     </div>
   </div>
 <script>
@@ -626,6 +663,10 @@
         this.loadSettings();
         this.toggleFilterUI();
         this.updateMirrorUI();
+
+        // Đồng bộ 2 ô nhập số lượng nhân bản
+        document.getElementById('autoCopies').addEventListener('input', (e) => document.getElementById('offlineAutoCopies').value = e.target.value);
+        document.getElementById('offlineAutoCopies').addEventListener('input', (e) => document.getElementById('autoCopies').value = e.target.value);
       },
 
       /* =========================================
@@ -696,7 +737,6 @@
             </div>
           `;
           
-          // Đồng bộ Logo & Tiêu đề
           const s = JSON.parse(localStorage.getItem('boothSettings_Pro') || '{}');
           if(s.headerTitle) document.getElementById('clientTitle').innerText = s.headerTitle;
           if(s.headerLogo) { document.getElementById('clientLogo').src = s.headerLogo; document.getElementById('clientLogo').style.display = 'block'; }
@@ -716,15 +756,19 @@
                   r.data.forEach(item => {
                       const div = document.createElement('div');
                       div.className = 'album-item';
-                      // Gọi Lightbox khi bấm vào ảnh
+                      // Gọi Lightbox khi bấm
                       div.onclick = () => {
                           document.getElementById('lightboxImg').src = item.url;
                           document.getElementById('lightboxDownloadBtn').href = item.url;
                           document.getElementById('lightbox').style.display = 'flex';
                       };
                       
-                      const img = document.createElement('img'); img.src = item.url; loading="lazy";
-                      div.appendChild(img); grid.appendChild(div);
+                      const img = document.createElement('img'); 
+                      img.src = item.url; 
+                      img.loading = "lazy";
+                      
+                      div.appendChild(img); 
+                      grid.appendChild(div);
                   });
               }).catch(e => console.log(e));
           };
@@ -736,8 +780,14 @@
       /* --- QUẢN LÝ ẨN/HIỆN LIVECAM --- */
       toggleLiveCamUI: function() {
           const isHidden = document.getElementById('hideLiveCamToggle').checked;
-          if (isHidden) { document.body.classList.add('hide-livecam'); }
-          else { document.body.classList.remove('hide-livecam'); }
+          const offlineRow = document.getElementById('offlineAutoRow');
+          if (isHidden) { 
+              document.body.classList.add('hide-livecam'); 
+              if(offlineRow) { offlineRow.classList.remove('d-none'); offlineRow.classList.add('d-flex'); }
+          } else { 
+              document.body.classList.remove('hide-livecam'); 
+              if(offlineRow) { offlineRow.classList.add('d-none'); offlineRow.classList.remove('d-flex'); }
+          }
       },
 
       toggleFullScreenApp: function() {
@@ -786,7 +836,7 @@
           else { btn.classList.remove('btn-primary-custom'); btn.classList.add('btn-outline-custom'); }
       },
 
-      /* --- LƯU & TẢI CÀI ĐẶT --- */
+      /* --- LƯU & TẢI CÀI ĐẶT (LOCAL STORAGE) --- */
       saveSettings: function() {
           const settings = {
               hideLiveCam: document.getElementById('hideLiveCamToggle').checked,
@@ -820,7 +870,6 @@
           if (saved) {
               try {
                   const s = JSON.parse(saved);
-                  // Đảm bảo mặc định là False (Camera bật) nếu chưa có
                   if(s.hideLiveCam !== undefined) { document.getElementById('hideLiveCamToggle').checked = s.hideLiveCam; } 
                   else { document.getElementById('hideLiveCamToggle').checked = false; }
                   this.toggleLiveCamUI();
@@ -889,11 +938,10 @@
       },
 
       /* ========================================================
-       * TÍNH NĂNG REMOTE CAMERA CHUYÊN NGHIỆP (CÓ CẢM BIẾN XOAY)
+       * TÍNH NĂNG REMOTE CAMERA CHUYÊN NGHIỆP (BẢN GỌN & CHUẨN)
        * ======================================================== */
       setupPeerJS: function() {
           if (this.peer) return;
-          // Máy chủ xuyên mạng 4G/Internet
           this.peer = new Peer({ config: { 'iceServers': [{ urls: 'stun:stun.l.google.com:19302' }] } }); 
           
           this.peer.on('open', (id) => { this.peerId = id; this.generateQRCode(); });
@@ -947,44 +995,32 @@
       },
 
       initRemoteMode: async function(targetId) {
-          // XÓA GIAO DIỆN CHÍNH -> HIỂN THỊ CAMERA CHUYÊN NGHIỆP
+          // Giao diện Camera điện thoại
           document.body.innerHTML = `
           <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
               <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
               <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:15;"></canvas>
-              
               <div class="remote-grid-overlay"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               
-              <div id="levelerContainer" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:150px; height:2px; background:rgba(255,255,255,0.4); z-index:10; pointer-events:none;">
-                  <div id="levelerLine" style="width:100%; height:100%; background:#39ff14; transform:rotate(0deg); transition: 0.1s;"></div>
-              </div>
-
               <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
               
-              <div id="zoomControls" style="position:absolute; right:20px; top:50%; transform:translateY(-50%); z-index:20; height:40vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;">
-                  <i class="bi bi-zoom-in text-white rotatable-icon fs-5" style="text-shadow: 0 0 5px #000;"></i>
-                  <input type="range" id="remoteZoom" min="1" max="3" step="0.1" value="1" style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; height:100%;">
-                  <i class="bi bi-zoom-out text-white rotatable-icon fs-5" style="text-shadow: 0 0 5px #000;"></i>
-              </div>
-
-              <!-- Thanh xem lại ảnh -->
               <div id="remoteGallery" style="position:absolute; top:60px; left:20px; right:20px; height:65px; display:flex; gap:10px; overflow-x:auto; z-index:20;"></div>
 
               <div id="captureControls" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap: 40px; align-items:center; z-index:20; width:100%; justify-content:center;">
-                  <button id="btnSwitchCam" class="rotatable-icon" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.4); border:1px solid #fff; color:white; font-size:20px; cursor:pointer;"><i class="bi bi-arrow-repeat"></i></button>
+                  <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.4); border:1px solid #fff; color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="bi bi-arrow-repeat rotatable-icon"></i></button>
                   <button id="remoteCaptureBtn" style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.4); border:4px solid white; cursor:pointer; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5);"></button>
-                  <button id="btnFullScreen" class="rotatable-icon" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.4); border:1px solid #fff; color:white; font-size:20px; cursor:pointer;"><i class="bi bi-arrows-fullscreen"></i></button>
+                  <button id="btnFullScreen" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.4); border:1px solid #fff; color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="bi bi-arrows-fullscreen rotatable-icon"></i></button>
               </div>
 
               <div id="reviewControls" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:none; gap: 20px; align-items:center; z-index:20; width:100%; justify-content:center;">
-                  <button id="btnRetake" class="rotatable-icon" style="padding:15px 30px; border-radius:30px; background:rgba(220,53,69,0.9); border:2px solid #fff; color:white; font-size:16px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><i class="bi bi-x-circle"></i> Chụp lại</button>
-                  <button id="btnSend" class="rotatable-icon" style="padding:15px 40px; border-radius:30px; background:rgba(40,167,69,0.9); border:2px solid #fff; color:white; font-size:18px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><i class="bi bi-send"></i> Gửi PC</button>
+                  <button id="btnRetake" style="padding:15px 30px; border-radius:30px; background:rgba(220,53,69,0.9); border:2px solid #fff; color:white; font-size:16px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display:flex; gap:5px;"><i class="bi bi-x-circle rotatable-icon"></i> <span>Chụp lại</span></button>
+                  <button id="btnSend" style="padding:15px 40px; border-radius:30px; background:rgba(40,167,69,0.9); border:2px solid #fff; color:white; font-size:18px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display:flex; gap:5px;"><i class="bi bi-send rotatable-icon"></i> <span>Gửi PC</span></button>
               </div>
 
               <div id="remoteProgress" class="remote-progress"></div>
               <div id="reqPermOverlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.8); z-index:9999; display:flex; align-items:center; justify-content:center; color:#fff; flex-direction:column; text-align:center;">
                   <i class="bi bi-phone-flip fs-1 mb-3"></i>
-                  <h5>Cấp quyền cảm biến xoay</h5>
+                  <h5>Cấp quyền cảm biến</h5>
                   <button id="btnReqPerm" class="btn btn-primary mt-3 rounded-pill px-4 py-2">Bắt đầu chụp</button>
               </div>
           </div>
@@ -992,7 +1028,8 @@
 
           const style = document.createElement('style');
           style.innerHTML = `#remoteCaptureBtn:active { transform: scale(0.9); background:rgba(255,255,255,0.9); }
-                             #remoteGallery img { height:100%; border-radius:6px; border:2px solid #fff; box-shadow:0 0 5px #000; }`;
+                             #remoteGallery img { height:100%; border-radius:6px; border:2px solid #fff; box-shadow:0 0 5px #000; }
+                             .rotatable-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }`;
           document.head.appendChild(style);
 
           const status = document.getElementById('remoteStatus');
@@ -1001,9 +1038,8 @@
           
           let remoteStream = null;
           let useFrontCam = false; 
-          let deviceRotation = 0; // Biến lưu góc xoay hiện tại do cảm biến đo được
+          let deviceRotation = 0; 
 
-          // Yêu cầu quyền cảm biến cho iOS
           const reqOverlay = document.getElementById('reqPermOverlay');
           const enableSensors = () => {
               if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -1015,7 +1051,7 @@
           };
           document.getElementById('btnReqPerm').onclick = enableSensors;
 
-          // Thiết lập cảm biến đo xoay và cân bằng
+          // Xoay icon theo cảm biến (hình ảnh vẫn nguyên dạng dọc)
           function setupSensors() {
               window.addEventListener('deviceorientation', (e) => {
                   let beta = e.beta; let gamma = e.gamma; let angle = 0;
@@ -1026,16 +1062,8 @@
 
                   if (angle !== deviceRotation) {
                       deviceRotation = angle;
+                      // Chỉ xoay phần tử icon bên trong nút
                       document.querySelectorAll('.rotatable-icon').forEach(el => { el.style.transform = `rotate(${angle}deg)`; });
-                  }
-                  
-                  // Thước cân bằng (Leveler)
-                  const levelLine = document.getElementById('levelerLine');
-                  if(levelLine) {
-                      let tilt = gamma;
-                      if (angle === -90) tilt = beta; else if (angle === 90) tilt = -beta;
-                      levelLine.style.transform = `rotate(${-tilt}deg)`;
-                      if(Math.abs(tilt) < 3) levelLine.style.background = '#39ff14'; else levelLine.style.background = 'white';
                   }
               });
           }
@@ -1058,7 +1086,6 @@
               else status.innerText = "Lỗi mạng P2P (Kiểm tra 4G)";
           });
 
-          // CẤU HÌNH CAMERA GỐC
           const startRemoteCamera = async () => {
               if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
               try {
@@ -1067,17 +1094,6 @@
                   });
                   video.srcObject = remoteStream;
                   video.style.transform = useFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
-                  
-                  // Kích hoạt Zoom nếu phần cứng hỗ trợ
-                  const track = remoteStream.getVideoTracks()[0];
-                  const capabilities = track.getCapabilities();
-                  const zoomInp = document.getElementById('remoteZoom');
-                  if (capabilities.zoom) {
-                      zoomInp.min = capabilities.zoom.min; zoomInp.max = capabilities.zoom.max; zoomInp.step = capabilities.zoom.step;
-                      zoomInp.oninput = (e) => { track.applyConstraints({advanced: [{zoom: e.target.value}]}); }
-                      document.getElementById('zoomControls').style.display = 'flex';
-                  } else { document.getElementById('zoomControls').style.display = 'none'; }
-                  
               } catch (err) { status.innerText = "Lỗi Camera!"; status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; }
           };
 
@@ -1085,14 +1101,13 @@
           document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
           document.getElementById('btnFullScreen').onclick = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
 
-          // CHỤP ẢNH
+          // CHỤP ẢNH (CHỈ CHỤP, KHÔNG XOAY HÌNH)
           document.getElementById('remoteCaptureBtn').onclick = async () => {
               if (!conn || !conn.open) return alert("Chưa kết nối PC!");
               
               previewCanvas.width = video.videoWidth; previewCanvas.height = video.videoHeight;
               const ctx = previewCanvas.getContext('2d');
               
-              // Cố gắng chụp ảnh RAW từ cảm biến ImageCapture
               try {
                   const track = remoteStream.getVideoTracks()[0];
                   const ic = new ImageCapture(track);
@@ -1102,61 +1117,39 @@
                   if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); }
                   ctx.drawImage(bmp, 0, 0);
               } catch(e) {
-                  // Fallback vẽ từ Video
                   if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); }
                   ctx.drawImage(video, 0, 0);
               }
 
-              video.style.display = 'none';
-              previewCanvas.style.display = 'block';
-              
-              document.getElementById('captureControls').style.display = 'none';
-              document.getElementById('reviewControls').style.display = 'flex';
+              video.style.display = 'none'; previewCanvas.style.display = 'block';
+              document.getElementById('captureControls').style.display = 'none'; document.getElementById('reviewControls').style.display = 'flex';
           };
 
           // CHỤP LẠI
           document.getElementById('btnRetake').onclick = () => {
-              previewCanvas.style.display = 'none';
-              video.style.display = 'block';
-              document.getElementById('captureControls').style.display = 'flex';
-              document.getElementById('reviewControls').style.display = 'none';
+              previewCanvas.style.display = 'none'; video.style.display = 'block';
+              document.getElementById('captureControls').style.display = 'flex'; document.getElementById('reviewControls').style.display = 'none';
           };
 
-          // GỬI ẢNH (KÈM XOAY THEO CẢM BIẾN VÀ THANH TIẾN TRÌNH)
+          // GỬI ẢNH (Giữ nguyên dạng dọc của thiết bị)
           document.getElementById('btnSend').onclick = () => {
               document.getElementById('reviewControls').style.display = 'none';
-              const prog = document.getElementById('remoteProgress');
-              prog.style.width = '30%'; // Bắt đầu hiệu ứng gửi
+              const prog = document.getElementById('remoteProgress'); prog.style.width = '30%'; 
               
               setTimeout(() => {
-                  const finalCvs = document.createElement('canvas');
-                  const fCtx = finalCvs.getContext('2d');
+                  const finalB64 = previewCanvas.toDataURL('image/jpeg', 1.0);
+                  conn.send(finalB64); 
+                  prog.style.width = '100%'; 
                   
-                  // Xoay ảnh dựa vào deviceRotation để ảnh gửi lên PC đúng chiều
-                  let sw = previewCanvas.width; let sh = previewCanvas.height;
-                  if (deviceRotation === 90 || deviceRotation === -90) { finalCvs.width = sh; finalCvs.height = sw; } 
-                  else { finalCvs.width = sw; finalCvs.height = sh; }
-                  
-                  fCtx.translate(finalCvs.width/2, finalCvs.height/2);
-                  fCtx.rotate(-deviceRotation * Math.PI / 180);
-                  fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
-                  
-                  const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0);
-                  conn.send(finalB64); // Truyền P2P
-                  
-                  prog.style.width = '100%'; // Hoàn tất thanh tiến trình
-                  
-                  // Thêm vào thanh xem lại ảnh
+                  // Xem lại
                   const gal = document.getElementById('remoteGallery');
-                  const imgThumb = document.createElement('img');
-                  imgThumb.src = finalB64;
-                  gal.prepend(imgThumb);
+                  const imgThumb = document.createElement('img'); imgThumb.src = finalB64; gal.prepend(imgThumb);
                   
                   setTimeout(() => {
                       prog.style.width = '0%';
                       status.innerText = "Đã gửi!"; status.style.opacity = '1'; status.style.background = "rgba(40, 167, 69, 0.8)";
                       setTimeout(() => status.style.opacity = '0', 2000);
-                      document.getElementById('btnRetake').click(); // Quay lại mode chụp
+                      document.getElementById('btnRetake').click(); 
                   }, 400);
               }, 100);
           };
@@ -1211,7 +1204,7 @@
                       newFilesFound = true;
                       
                       if (this.autoInsertSynced) {
-                          const autoCopies = parseInt(document.getElementById('autoCopies').value) || 1; // Sửa dùng chung 1 ID
+                          const autoCopies = parseInt(document.getElementById('autoCopies').value) || 1; 
                           for(let c = 0; c < autoCopies; c++) { this.autoFillFirstEmptySlot(img); }
                       }
                       
@@ -1664,6 +1657,7 @@
         const r = new FileReader();
         r.onload = (evt) => { 
            const b64 = evt.target.result; const img = new Image(); const photoRecord = { imgObj: img, driveId: null };
+
            img.onload = () => { 
               this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery();
               let targetIdx = this.pendingSlotIndex !== -1 ? this.pendingSlotIndex : (this.activeSlotIndex !== -1 ? this.activeSlotIndex : 0);
