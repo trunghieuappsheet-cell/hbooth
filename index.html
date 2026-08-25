@@ -9,7 +9,7 @@
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lora:ital,wght@0,600;1,600&family=Dancing+Script:wght@700&family=Oswald:wght@700&family=Pacifico&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -47,9 +47,13 @@
     .left-panel { flex: 6.5; display: flex; flex-direction: column; padding: 12px; border-right: 1px solid var(--border-color); overflow: hidden; background: transparent; }
     .right-panel { flex: 3.5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; }
     
+    /* ICON VIỀN TRÒN */
+    .btn-circle-custom { width: 34px; height: 34px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: 1.5px solid currentColor; }
+    .btn-circle-custom:hover { transform: scale(1.1); }
+
     .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; transition: 0.3s; }
     .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-    .action-control-col { width: 150px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; transition: 0.3s; }
+    .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; transition: 0.3s; }
     
     .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--accent); box-shadow: var(--accent-glow); display: flex; align-items: center; justify-content: center; }
     .viewport-wrapper.vertical { aspect-ratio: 9/16; }
@@ -94,34 +98,10 @@
     .progress-tiny { height: 4px; background-color: var(--input-bg); width: 120px; border-radius: 2px; overflow: hidden; display: none; margin-right: 10px; }
     .progress-bar-tiny { background-color: var(--accent); box-shadow: var(--accent-glow); transition: width 0.3s; height: 100%; }
 
-    /* CANVAS - Chống dư viền trắng */
-    .canvas-container { 
-        width: 100%; height: 100%; 
-        display: flex; align-items: center; justify-content: center; 
-        min-height: 0; padding: 10px; 
-        overflow: hidden; 
-    }
-    #finalCanvas { 
-        max-width: 100%; max-height: 100%; 
-        object-fit: contain; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-        background: #fff; cursor: crosshair; 
-        transition: 0.3s ease-in-out;
-    }
+    .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 10px; overflow: hidden; }
+    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #fff; cursor: crosshair; transition: 0.3s ease-in-out; }
 
-    /* SLOT TOOLBAR MỚI (Glassmorphism & Bo góc) */
-    .slot-toolbar { 
-        position: absolute; top: 20px; left: 50%; 
-        transform: translateX(-50%) translateY(-20px); 
-        background: rgba(15, 23, 42, 0.85); 
-        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        padding: 6px 12px; border-radius: 12px; 
-        box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
-        visibility: hidden; opacity: 0; 
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); 
-        border: 1px solid rgba(255,255,255,0.15); 
-        z-index: 100; display: flex; gap: 8px; align-items: center; width: max-content; 
-    }
+    .slot-toolbar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 6px 12px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.15); z-index: 100; display: flex; gap: 8px; align-items: center; width: max-content; }
     .slot-toolbar.active { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
     .toolbar-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 4px; }
     .toolbar-range-wrap { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.3); padding: 2px 10px; border-radius: 8px;}
@@ -137,7 +117,6 @@
       .print-page { width: 100vw; height: 100vh; object-fit: contain; page-break-after: always; display: block; }
     }
 
-    /* CSS ĐÁP ỨNG MÀN HÌNH DỌC VÀ THIẾT BỊ NHỎ */
     @media (max-width: 992px), (orientation: portrait) {
         body { height: auto !important; overflow-y: auto !important; }
         .app-container { flex-direction: column !important; height: auto !important; }
@@ -153,35 +132,12 @@
         .gallery-container { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     }
 
-    /* =========================================================
-       CSS TỐI ƯU KHI TẮT LIVECAM (CHUNG 1 HÀNG NGANG)
-       ========================================================= */
     body.hide-livecam .camera-control-col { display: none !important; }
     body.hide-livecam .viewport-wrapper { display: none !important; }
     body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; flex-shrink: 0; }
-    
-    body.hide-livecam .action-control-col { 
-        width: 100% !important; 
-        flex-direction: row !important; 
-        flex-wrap: nowrap !important; 
-        overflow-x: auto !important;
-        gap: 15px; 
-        align-items: center; 
-        justify-content: flex-start;
-        background: rgba(0,0,0,0.15);
-        padding: 10px 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
+    body.hide-livecam .action-control-col { width: 100% !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 15px; align-items: center; justify-content: flex-start; background: rgba(0,0,0,0.15); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
     body.hide-livecam .action-control-col > * { flex: 0 0 auto !important; width: auto !important; margin: 0 !important; }
-    body.hide-livecam .action-control-col::-webkit-scrollbar { height: 6px; }
-    body.hide-livecam .action-control-col::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 
-    /* =========================================================
-       GIAO DIỆN CAMERA ĐIỆN THOẠI & ALBUM KHÁCH (LƯỚI VUÔNG)
-       ========================================================= */
     .rotatable-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
     .remote-progress { position: absolute; top: 0; left: 0; height: 5px; background: #39ff14; width: 0%; transition: width 0.3s; z-index: 100; box-shadow: 0 0 10px #39ff14; }
     .remote-grid-overlay { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; pointer-events: none; opacity: 0.3; z-index: 10; }
@@ -189,7 +145,6 @@
 
     .client-album-wrapper { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; flex-direction: column; overflow-y: auto; color: var(--text-main); }
     .album-header { padding: 15px; background: var(--panel-bg); display: flex; align-items: center; justify-content: center; gap: 10px; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    
     .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; padding: 15px; }
     .album-item { position: relative; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); aspect-ratio: 1/1; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
     .album-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
@@ -218,7 +173,6 @@
   </div>
 
   <div id="mainAppWrapper">
-      <!-- HEADER MỚI CHUYÊN NGHIỆP CÓ DỰ ÁN & IN ẤN GỘP CHUNG -->
       <div class="app-header">
         <div class="d-flex align-items-center gap-2">
           <img id="headerLogo" src="https://hbooth.hama.io.vn/favicon.png" alt="Logo" style="height: 24px; border-radius:4px;">
@@ -226,27 +180,30 @@
         </div>
         
         <div class="d-flex align-items-center gap-2">
-          <!-- BỘ QUẢN LÝ DỰ ÁN -->
-          <div class="input-group input-group-sm me-2" style="width: 220px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-             <span class="input-group-text bg-dark border-secondary text-muted" title="Thư mục Dự án"><i class="bi bi-folder-fill"></i></span>
+          <!-- BỘ QUẢN LÝ DỰ ÁN CÓ THÊM ICON BÊN TRONG OPTION THÌ KHÔNG ĐƯỢC (HTML KHÔNG HỖ TRỢ ICON TRONG OPTION), ĐÃ THÊM LABEL RÕ RÀNG -->
+          <div class="input-group input-group-sm me-2" style="width: 240px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+             <span class="input-group-text bg-dark border-secondary text-info" title="Thư mục Dự án"><i class="bi bi-folder-fill"></i></span>
              <select id="projectSelect" class="form-select bg-dark border-secondary text-white fw-bold" onchange="app.switchProject()"></select>
              <button class="btn btn-outline-success border-secondary" onclick="app.createNewProject()" title="Tạo dự án mới"><i class="bi bi-plus-lg"></i></button>
           </div>
 
-          <!-- Nút QR tròn, ẩn chữ -->
-          <button class="btn btn-sm btn-outline-warning rounded-circle p-1 px-2" onclick="app.showAlbumQRModal()" title="Mã QR Khách lấy ảnh"><i class="bi bi-images fs-5"></i></button>
-          <button class="btn btn-sm btn-outline-info rounded-circle p-1 px-2" onclick="app.showQRModal()" title="Mã QR Remote Camera"><i class="bi bi-qr-code-scan fs-5"></i></button>
+          <!-- NÚT ICON VIỀN TRÒN 1 & 2 -->
+          <button class="btn btn-outline-warning btn-circle-custom me-1" onclick="app.showAlbumQRModal()" title="Mã QR Khách lấy ảnh"><i class="bi bi-images fs-6"></i></button>
+          <button class="btn btn-outline-info btn-circle-custom" onclick="app.showQRModal()" title="Mã QR Remote Camera"><i class="bi bi-qr-code-scan fs-6"></i></button>
           
-          <div class="vr bg-secondary mx-1"></div>
+          <div class="vr bg-secondary mx-2"></div>
           
-          <!-- BỘ CÔNG CỤ IN GỘP SỐ LƯỢNG -->
-          <div class="d-flex align-items-center shadow-sm" style="border-radius: 50px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);">
-              <input type="number" id="printCopies" value="1" min="1" max="10" class="form-control form-control-sm border-0 bg-transparent text-center text-white fw-bold" style="width: 40px; box-shadow: none;" title="Số lượng bản in">
-              <div class="vr bg-secondary" style="height: 20px; align-self: center;"></div>
-              <button class="btn btn-sm btn-primary-custom border-0" style="border-radius: 0 50px 50px 0; padding: 4px 15px;" onclick="app.printAllPages()" title="In Ngay"><i class="bi bi-printer fs-5"></i></button>
+          <!-- BỘ CÔNG CỤ IN CÓ THÊM PHÍM +/- -->
+          <div class="d-flex align-items-center shadow-sm" style="border-radius: 50px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 2px;">
+              <button class="btn btn-sm text-white border-0 px-2 fw-bold" onclick="app.adjustValue('printCopies', -1)">-</button>
+              <input type="number" id="printCopies" value="1" min="1" max="10" class="form-control form-control-sm border-0 bg-transparent text-center text-white fw-bold p-0" style="width: 30px; box-shadow: none;" title="Số lượng bản in">
+              <button class="btn btn-sm text-white border-0 px-2 fw-bold" onclick="app.adjustValue('printCopies', 1)">+</button>
+              
+              <div class="vr bg-secondary mx-1" style="height: 20px; align-self: center;"></div>
+              <button class="btn btn-sm btn-primary-custom border-0 rounded-pill px-3" onclick="app.printAllPages()" title="In Ngay"><i class="bi bi-printer fs-5"></i></button>
           </div>
           
-          <button class="btn btn-sm text-muted p-0 ms-2" onclick="app.toggleFullScreenApp()" title="Toàn màn hình (F11)"><i class="bi bi-arrows-fullscreen fs-5" style="color: var(--accent);"></i></button>
+          <button class="btn btn-sm text-muted p-0 ms-3" onclick="app.toggleFullScreenApp()" title="Toàn màn hình (F11)"><i class="bi bi-arrows-fullscreen fs-5" style="color: var(--accent);"></i></button>
           <button class="btn btn-sm text-muted p-0 ms-2" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt chung"><i class="bi bi-gear-fill fs-5" style="color: var(--accent);"></i></button>
         </div>
       </div>
@@ -297,13 +254,13 @@
               <div id="liveGalleryStrip" class="live-gallery-strip"></div>
             </div>
             
-            <!-- ACTION CONTROL (Hiển thị dọc khi bật Camera, nằm ngang khi tắt Camera) -->
             <div class="action-control-col">
-              
-              <!-- CỤM TÁCH GỘP TỰ ĐỘNG & NHÂN BẢN YÊU CẦU MỚI (Luôn hiển thị) -->
-              <div class="d-flex align-items-center bg-dark p-1 rounded border border-secondary w-100 shadow-sm mb-1" style="background: rgba(0,0,0,0.2) !important;">
-                  <span class="text-muted small ms-2 me-1" title="Nhân bản ảnh"><i class="bi bi-files fs-6"></i></span>
-                  <input type="number" id="autoCopies" class="form-control form-control-sm text-center border-0 bg-transparent fw-bold text-white" value="1" min="1" max="8" title="Số lượng nhân bản mỗi ảnh">
+              <!-- NHÂN BẢN CÓ PHÍM +/- -->
+              <div class="d-flex align-items-center bg-dark p-1 rounded border border-secondary w-100 shadow-sm mb-1 justify-content-center" style="background: rgba(0,0,0,0.2) !important;">
+                  <span class="text-muted small ms-1 me-1" title="Nhân bản ảnh"><i class="bi bi-files fs-6"></i></span>
+                  <button class="btn btn-sm text-white border-0 px-2 fw-bold" onclick="app.adjustValue('autoCopies', -1)">-</button>
+                  <input type="number" id="autoCopies" class="form-control form-control-sm text-center border-0 bg-transparent fw-bold text-white p-0" value="1" min="1" max="8" style="width:25px;" title="Số lượng nhân bản mỗi ảnh">
+                  <button class="btn btn-sm text-white border-0 px-2 fw-bold" onclick="app.adjustValue('autoCopies', 1)">+</button>
               </div>
               <button id="btnAutoInsert" class="btn btn-outline-custom btn-sm w-100 mb-1 fw-bold" onclick="app.toggleAutoInsert()" title="Bật/Tắt Tự động xếp ảnh vào khung"><i class="bi bi-magic fs-5"></i></button>
 
@@ -332,27 +289,26 @@
                 </div>
               </div>
               <div class="d-flex flex-wrap gap-2">
-                  <button class="btn btn-sm btn-outline-secondary py-0 rounded-circle px-2" onclick="app.selectAndWatchFolder()" title="Tải thư mục chứa ảnh (Auto)"><i class="bi bi-folder-symlink fs-5"></i></button>
-                  <label class="btn btn-sm btn-outline-custom m-0 px-2 py-0 rounded-circle fw-bold" style="cursor: pointer;" title="Chèn thêm ảnh thủ công"><i class="bi bi-plus-circle fs-5"></i>
+                  <!-- NÚT ICON VIỀN TRÒN 3 & 4 -->
+                  <button class="btn btn-outline-secondary btn-circle-custom" onclick="app.selectAndWatchFolder()" title="Tải thư mục chứa ảnh (Auto)"><i class="bi bi-folder-symlink fs-5"></i></button>
+                  <label class="btn btn-outline-custom btn-circle-custom m-0" style="cursor: pointer;" title="Chèn thêm ảnh thủ công"><i class="bi bi-plus-circle fs-5"></i>
                     <input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden>
                   </label>
               </div>
             </div>
-            <!-- Hiển thị theo Project -->
             <div class="gallery-container" id="capturedGallery">
               <span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;"><i class="bi bi-folder-x fs-3"></i><br>Dự án này chưa có ảnh. Bấm biểu tượng Thư mục để tải ảnh.</span>
             </div>
           </div>
         </div>
-
-        <div class="right-panel d-flex flex-column">
+<div class="right-panel d-flex flex-column">
           <!-- SLOT TOOLBAR HIỆN ĐẠI (Glassmorphism) -->
           <div class="slot-toolbar active" id="slotToolbar">
             <span class="badge bg-primary rounded-pill px-2 py-1 fs-6 shadow-sm">#<span id="stIndex">1</span></span>
             <div class="toolbar-divider"></div>
             
-            <button class="btn btn-sm btn-outline-info rounded-circle p-1" onclick="app.openPhotoSelector(app.activeSlotIndex)" title="Thay ảnh khác"><i class="bi bi-image fs-5"></i></button>
-            <button class="btn btn-sm btn-outline-light rounded-circle p-1" onclick="app.rotateActiveSlot()" title="Xoay 90 độ"><i class="bi bi-arrow-clockwise fs-5"></i></button>
+            <button class="btn btn-sm btn-outline-info rounded-circle p-1 btn-circle-custom" onclick="app.openPhotoSelector(app.activeSlotIndex)" title="Thay ảnh khác"><i class="bi bi-image fs-5"></i></button>
+            <button class="btn btn-sm btn-outline-light rounded-circle p-1 btn-circle-custom" onclick="app.rotateActiveSlot()" title="Xoay 90 độ"><i class="bi bi-arrow-clockwise fs-5"></i></button>
             
             <div class="toolbar-divider"></div>
             
@@ -366,7 +322,7 @@
             </div>
             
             <div class="toolbar-divider"></div>
-            <button class="btn btn-sm btn-danger rounded-circle p-1 shadow-sm" onclick="app.removeActiveSlot()" title="Xóa ảnh khỏi khung"><i class="bi bi-trash fs-6"></i></button>
+            <button class="btn btn-sm btn-danger rounded-circle p-1 shadow-sm btn-circle-custom" onclick="app.removeActiveSlot()" title="Xóa ảnh khỏi khung"><i class="bi bi-trash fs-6"></i></button>
           </div>
 
           <div class="canvas-container">
@@ -397,9 +353,9 @@
           <div class="mt-3 p-3 rounded flex-shrink-0" style="background: var(--input-bg); border: 1px solid var(--border-color);">
             <div class="d-flex align-items-center justify-content-center mb-3">
               <div class="input-group input-group-lg" style="width: 250px;">
-                <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="document.getElementById('modalCopies').value = Math.max(1, parseInt(document.getElementById('modalCopies').value)-1)">-</button>
+                <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="app.adjustValue('modalCopies', -1)">-</button>
                 <input type="number" id="modalCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-3" style="color: var(--accent);" title="Số lượng nhân bản">
-                <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="document.getElementById('modalCopies').value = parseInt(document.getElementById('modalCopies').value)+1">+</button>
+                <button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4" onclick="app.adjustValue('modalCopies', 1)">+</button>
               </div>
             </div>
             <div class="text-center d-flex justify-content-center">
@@ -431,9 +387,9 @@
             <input type="hidden" id="prepPanX" value="0"> <input type="hidden" id="prepPanY" value="0">
             <div class="col-12 mt-3 d-flex justify-content-center align-items-center bg-dark p-3 rounded">
               <div class="input-group input-group-lg" style="width: 160px;">
-                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3 fs-4" onclick="app.adjustPrepCopies(-1)">-</button>
+                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3 fs-4" onclick="app.adjustValue('prepCopies', -1)">-</button>
                 <input type="number" id="prepCopies" value="1" min="1" max="20" class="form-control text-center bg-transparent fw-bold fs-4 p-0" style="color: var(--accent);" readonly>
-                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3 fs-4" onclick="app.adjustPrepCopies(1)">+</button>
+                <button type="button" class="btn btn-outline-secondary py-1 fw-bold px-3 fs-4" onclick="app.adjustValue('prepCopies', 1)">+</button>
               </div>
             </div>
           </div>
@@ -481,14 +437,20 @@
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Bố cục & In ấn</h6>
         <div class="bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.1) !important;">
-            <select id="layoutSelect" class="form-select form-select-sm mb-2" onchange="app.changeLayout(); app.saveSettings()">
+            <label class="small text-muted w-100 mb-1 fw-bold">Chọn máy in (Web Browser)</label>
+            <select id="printerSelect" class="form-select form-select-sm mb-2" onchange="app.saveSettings()">
+                <option value="default">Mặc định (Mở hộp thoại In)</option>
+                <option value="kiosk">In tự động (Cần bật --kiosk-printing)</option>
+            </select>
+
+            <select id="layoutSelect" class="form-select form-select-sm mb-2 mt-2" onchange="app.changeLayout(); app.saveSettings()">
               <option value="1">10x15 cm (1 ảnh)</option>
               <option value="2">6x9 cm (2 ô)</option>
               <option value="4">4x6 cm (4 ô)</option>
               <option value="8" selected>3x4 cm (8 ô)</option>
             </select>
             
-            <div class="form-check form-switch mb-2">
+            <div class="form-check form-switch mb-2 d-none">
                 <input class="form-check-input" type="checkbox" id="quickPrintToggle" onchange="app.saveSettings()">
                 <label class="form-check-label small text-muted">In nhanh (Cần bật --kiosk-printing)</label>
             </div>
@@ -679,8 +641,8 @@
         this.qrModalInstance = new bootstrap.Modal(document.getElementById('qrModal'));
         this.albumQRModalInstance = new bootstrap.Modal(document.getElementById('albumQRModal'));
         
-        this.loadLocalSettings(); // Tải cài đặt mặc định tạm thời
-        await this.loadProjects(); // Lấy dự án từ Cloud (Sẽ tự load Setting của Dự án đó)
+        this.loadLocalSettings(); 
+        await this.loadProjects(); 
         
         await this.loadDeviceList();
         this.startCamera();
@@ -688,14 +650,19 @@
         this.bindCanvasEvents();
         this.bindPrepModalEvents();
         this.updateMirrorUI();
-
-        // Đồng bộ ô nhập số lượng nhân bản
-        const autoC = document.getElementById('autoCopies');
-        const offAutoC = document.getElementById('offlineAutoCopies');
-        if(autoC && offAutoC) {
-            autoC.addEventListener('input', (e) => offAutoC.value = e.target.value);
-            offAutoC.addEventListener('input', (e) => autoC.value = e.target.value);
-        }
+      },
+      
+      // HÀM MỚI: Chỉnh sửa giá trị input bằng nút +/-
+      adjustValue: function(inputId, delta) {
+          const input = document.getElementById(inputId);
+          if(!input) return;
+          let val = parseInt(input.value) || 0;
+          let min = parseInt(input.min) || 1;
+          let max = parseInt(input.max) || 100;
+          val += delta;
+          if(val < min) val = min;
+          if(val > max) val = max;
+          input.value = val;
       },
 
       /* =========================================
@@ -755,10 +722,7 @@
               this.capturedPhotos = [];
               this.renderCapturedGallery();
               
-              // 1. Tải thiết lập riêng của dự án
               await this.syncSettingsFromCloud();
-              
-              // 2. Tải ảnh của dự án
               this.loadProjectImages();
           }
       },
@@ -795,9 +759,6 @@
           } catch(e) { console.error("Lỗi tải ảnh dự án", e); }
       },
 
-      /* =========================================
-       * COPY LINK MÃ QR
-       * ========================================= */
       copyQRLink: function(type) {
           let url = "";
           if (type === 'album') {
@@ -816,9 +777,6 @@
           }
       },
 
-      /* =========================================
-       * GIAO DIỆN ALBUM KHÁCH HÀNG
-       * ========================================= */
       showAlbumQRModal: function() {
           if(!this.currentProjectId) return Swal.fire('Lỗi', 'Vui lòng tạo Dự án trước!', 'error');
           if (!this.albumQRModalInstance) { this.albumQRModalInstance = new bootstrap.Modal(document.getElementById('albumQRModal')); }
@@ -880,27 +838,17 @@
           loadGallery(); setInterval(loadGallery, 5000);
       },
 
-
-      /* --- QUẢN LÝ ẨN/HIỆN LIVECAM & TẮT HẲN CAMERA --- */
       toggleLiveCamUI: function() {
           const isHidden = document.getElementById('hideLiveCamToggle').checked;
           const offlineRow = document.getElementById('offlineAutoRow');
           if (isHidden) { 
               document.body.classList.add('hide-livecam'); 
               if(offlineRow) { offlineRow.classList.remove('d-none'); offlineRow.classList.add('d-flex'); }
-              
-              // Tắt hẳn luồng Camera
-              if(this.stream) {
-                  this.stream.getTracks().forEach(t => t.stop());
-                  this.stream = null;
-              }
+              if(this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; }
               if(this.video) this.video.srcObject = null;
-
           } else { 
               document.body.classList.remove('hide-livecam'); 
               if(offlineRow) { offlineRow.classList.add('d-none'); offlineRow.classList.remove('d-flex'); }
-              
-              // Bật lại Camera
               this.startCamera();
           }
       },
@@ -955,10 +903,10 @@
           }
       },
 
-      /* --- LƯU & TẢI CÀI ĐẶT (ĐỒNG BỘ LÊN CLOUD THEO DỰ ÁN) --- */
       saveSettings: function() {
           const settings = {
               hideLiveCam: document.getElementById('hideLiveCamToggle').checked,
+              printerSelect: document.getElementById('printerSelect').value,
               headerTitle: document.getElementById('appHeaderTitle').value,
               headerLogo: document.getElementById('headerLogo').src,
               folderFilterMode: document.getElementById('folderFilterMode').value,
@@ -971,7 +919,6 @@
               marginBottom: document.getElementById('marginBottom').value,
               marginLeft: document.getElementById('marginLeft').value,
               marginRight: document.getElementById('marginRight').value,
-              quickPrint: document.getElementById('quickPrintToggle').checked,
               wmText: document.getElementById('wmText').value,
               wmFont: document.getElementById('wmFont').value,
               wmAlign: document.getElementById('wmAlign').value,
@@ -1002,6 +949,7 @@
               if(s.hideLiveCam !== undefined) { document.getElementById('hideLiveCamToggle').checked = s.hideLiveCam; } else { document.getElementById('hideLiveCamToggle').checked = false; }
               this.toggleLiveCamUI();
 
+              if(s.printerSelect) document.getElementById('printerSelect').value = s.printerSelect;
               if(s.headerTitle) { document.getElementById('appHeaderTitle').value = s.headerTitle; document.getElementById('headerTitleText').innerText = s.headerTitle; }
               if(s.headerLogo && s.headerLogo.startsWith('data:image')) { 
                   document.getElementById('headerLogo').src = s.headerLogo; 
@@ -1019,7 +967,6 @@
               if(s.marginBottom) document.getElementById('marginBottom').value = s.marginBottom;
               if(s.marginLeft) document.getElementById('marginLeft').value = s.marginLeft;
               if(s.marginRight) document.getElementById('marginRight').value = s.marginRight;
-              if(s.quickPrint !== undefined) document.getElementById('quickPrintToggle').checked = s.quickPrint;
               
               if(s.wmText !== undefined) document.getElementById('wmText').value = s.wmText;
               if(s.wmFont) document.getElementById('wmFont').value = s.wmFont;
@@ -1042,22 +989,6 @@
           } catch(e){}
           this.changeTheme(document.getElementById('themeSelect').value);
           this.changeLayout();
-      },
-
-      syncSettingsToCloud: function() {
-          const data = localStorage.getItem('boothSettings_Pro');
-          if(!data) return Swal.fire('Lỗi', 'Chưa có cấu hình nào để lưu!', 'error');
-          Swal.fire({title: 'Đang đồng bộ lên Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-          
-          const fd = new URLSearchParams(); 
-          fd.append('action', 'saveSettings'); 
-          fd.append('data', data);
-          if (this.currentProjectId) fd.append('projectId', this.currentProjectId); // Lưu vào dự án hiện tại
-          
-          fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{
-              if(r.success) Swal.fire('Thành công', 'Đã lưu cấu hình lên Dự án này', 'success');
-              else Swal.fire('Lỗi', 'Lưu thất bại: ' + r.error, 'error');
-          }).catch(()=>Swal.fire('Lỗi', 'Mạng không ổn định', 'error'));
       },
 
       syncSettingsFromCloud: async function() {
@@ -1106,15 +1037,15 @@
       setupPeerJS: function() {
           if (this.peer) return;
           
-          // Sử dụng TURN Server miễn phí của Metered để xuyên tường lửa 4G. 
-          // Nếu chung Wi-Fi nó sẽ tự động dùng LAN.
           this.peer = new Peer({ 
               config: { 
                   'iceServers': [
                       { urls: 'stun:stun.l.google.com:19302' },
+                      { urls: 'stun:stun1.l.google.com:19302' },
                       { urls: 'stun:stun.cloudflare.com:3478' },
                       { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+                      { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
                   ] 
               } 
           }); 
@@ -1226,11 +1157,9 @@
           };
           document.getElementById('btnReqPerm').onclick = enableSensors;
 
-          // Xoay icon bằng cảm biến gia tốc
           function setupSensors() {
               window.addEventListener('deviceorientation', (e) => {
                   let beta = e.beta; let gamma = e.gamma; let angle = 0;
-                  
                   if (Math.abs(beta) < 45) { 
                       if (gamma > 45) angle = -90; else if (gamma < -45) angle = 90;
                   } else if (beta > 135 || beta < -135) { angle = 180; }
@@ -1242,14 +1171,16 @@
               });
           }
 
-          // Cấu hình P2P giống hệt hàm setupPeerJS (Có TURN)
+          // CẤU HÌNH PEERJS Ở ĐIỆN THOẠI CŨNG THÊM NHIỀU TURN SERVER ĐỂ XUYÊN 4G TỐT HƠN
           const peer = new Peer({ 
               config: { 
                   'iceServers': [
                       { urls: 'stun:stun.l.google.com:19302' },
+                      { urls: 'stun:stun1.l.google.com:19302' },
                       { urls: 'stun:stun.cloudflare.com:3478' },
                       { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+                      { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
                   ] 
               } 
           });
@@ -1267,7 +1198,7 @@
           peer.on('error', (err) => {
               status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)";
               if (err.type === 'peer-unavailable') status.innerText = "Lỗi: PC tắt (Quét lại mã!)";
-              else status.innerText = "Lỗi mạng P2P (Kiểm tra 4G)";
+              else status.innerText = "Lỗi mạng (Đang thử qua TURN 4G...)";
           });
 
           const startRemoteCamera = async () => {
@@ -1285,9 +1216,8 @@
           document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
           document.getElementById('btnFullScreen').onclick = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
 
-          // CHỤP ẢNH
           document.getElementById('remoteCaptureBtn').onclick = async () => {
-              if (!conn || !conn.open) return alert("Chưa kết nối PC!");
+              if (!conn || !conn.open) return alert("Chưa kết nối PC! Vui lòng chờ tín hiệu xanh.");
               
               previewCanvas.width = video.videoWidth; previewCanvas.height = video.videoHeight;
               const ctx = previewCanvas.getContext('2d');
@@ -1316,7 +1246,6 @@
               document.getElementById('reviewControls').style.display = 'none';
           };
 
-          // GỬI ẢNH (TỰ ĐỘNG CẮT/XOAY THEO CẢM BIẾN MÀ KHÔNG CẦN APP)
           document.getElementById('btnSend').onclick = () => {
               document.getElementById('reviewControls').style.display = 'none';
               const prog = document.getElementById('remoteProgress'); 
@@ -1329,7 +1258,6 @@
                   let sw = previewCanvas.width; 
                   let sh = previewCanvas.height;
                   
-                  // Đảo Width/Height nếu máy đang nằm ngang
                   if (deviceRotation === 90 || deviceRotation === -90) { 
                       finalCvs.width = sh; 
                       finalCvs.height = sw; 
@@ -1356,7 +1284,6 @@
           };
       },
 
-      /* --- TẢI & ĐỒNG BỘ ẢNH TỪ FOLDER CỤC BỘ --- */
       selectAndWatchFolder: async function() {
           try {
               this.localDirHandle = await window.showDirectoryPicker();
@@ -1416,7 +1343,7 @@
                           this.updateUploadUI();
                           const fd = new URLSearchParams(); 
                           fd.append('image', b64); fd.append('fileName', 'FolderSync_' + new Date().getTime() + '.jpg');
-                          fd.append('projectId', this.currentProjectId); // Gắn với Project
+                          fd.append('projectId', this.currentProjectId);
 
                           fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ 
                              if(res.success) { photoRecord.driveId = res.id; this.totalUploaded++; this.updateUploadUI(); } 
@@ -1432,7 +1359,6 @@
           return new Promise((resolve) => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(file); });
       },
 
-      /* --- CAMERA CƠ BẢN TRÊN PC --- */
       loadDeviceList: async function() {
         try {
           await navigator.mediaDevices.getUserMedia({ video: true });
@@ -1554,7 +1480,6 @@
         }
       },
 
-      /* --- QUẢN LÝ ẢNH TRÊN MÁY CHỦ CỤC BỘ --- */
       handleDragOverSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.add('dragover'); },
       handleDragLeaveSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); },
       handleDropSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); this.processLocalFiles(e.dataTransfer.files); },
@@ -1628,7 +1553,6 @@
         });
       },
 
-      /* --- BỐ CỤC IN & CHÈN ẢNH MODAL --- */
       openPhotoSelector: function(index) {
           this.pendingSlotIndex = index; this.selectedModalIndices = []; 
           document.getElementById('modalSelectedCount').innerText = '0 đã chọn'; document.getElementById('modalCopies').value = 1;
@@ -1700,13 +1624,12 @@
         this.currentPage = 0; this.activeSlotIndex = -1; this.updateToolbarUI();
         const ps = document.getElementById('printStyle');
         
-        // TĂNG ĐỘ PHÂN GIẢI CANVAS 300DPI (Căn lề chuẩn)
         const cvs = this.canvas;
         if (this.slotsPerPage === 2 || this.slotsPerPage === 8) { 
-            cvs.width = 2400; cvs.height = 3600; // Vertical High Res
+            cvs.width = 2400; cvs.height = 3600; 
             ps.innerHTML = `@media print { @page { size: 4in 6in; margin: 0; } }`; 
         } else { 
-            cvs.width = 3600; cvs.height = 2400; // Horizontal High Res
+            cvs.width = 3600; cvs.height = 2400; 
             ps.innerHTML = `@media print { @page { size: 6in 4in; margin: 0; } }`; 
         }
         this.renderPagination(); this.renderCanvas();
@@ -1764,10 +1687,6 @@
         const preview = document.getElementById('prepPreview');
         preview.style.transform = `translate(${s.panX}px, ${s.panY}px) scale(${s.zoom}) rotate(${s.rot}deg)`;
         preview.style.filter = `brightness(${s.br}%) contrast(${s.ct}%)`;
-      },
-      adjustPrepCopies: function(val) {
-        const input = document.getElementById('prepCopies'); let current = parseInt(input.value) + val;
-        if(current < 1) current = 1; if(current > 20) current = 20; input.value = current;
       },
       addToLayout: function() {
           const copies = parseInt(document.getElementById('prepCopies').value) || 1;
@@ -1929,7 +1848,6 @@
         }; r.readAsDataURL(file); e.target.value = ''; 
       },
 
-      /* --- RENDER CANVAS VỚI MARGIN VÀ PHÂN GIẢI 300DPI --- */
       renderCanvas: function() {
         const cvs = this.canvas;
         const config = this.getLayoutConfig();
@@ -2016,9 +1934,9 @@
           this.saveLayoutToDrive(true);
           
           const printCopies = parseInt(document.getElementById('printCopies').value) || 1;
-          const isQuickPrint = document.getElementById('quickPrintToggle').checked;
+          const printerMode = document.getElementById('printerSelect').value;
 
-          if(!isQuickPrint) Swal.fire({title: 'Đang chuẩn bị trang in...', didOpen: () => Swal.showLoading()});
+          if(printerMode !== 'kiosk') Swal.fire({title: 'Đang chuẩn bị trang in...', didOpen: () => Swal.showLoading()});
           
           this.activeSlotIndex = -1; this.updateToolbarUI();
           const printDiv = document.getElementById('printContainer'); printDiv.innerHTML = '';
@@ -2033,7 +1951,7 @@
               }
           }
           this.currentPage = backupPage; this.renderCanvas(); 
-          if(!isQuickPrint) Swal.close();
+          if(printerMode !== 'kiosk') Swal.close();
           setTimeout(() => { window.print(); }, 500);
       },
 
@@ -2055,4 +1973,4 @@
     window.addEventListener('DOMContentLoaded', () => app.init());
   </script>
 </body>
-</html>  
+</html>        
