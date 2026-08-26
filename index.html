@@ -22,6 +22,7 @@
       --bg-color: #0b0f19; --panel-bg: rgba(15, 23, 42, 0.95); --card-bg: rgba(30, 41, 59, 0.95);
       --accent: #0ea5e9; --text-main: #f1f5f9; --border-color: rgba(14, 165, 233, 0.3); --accent-glow: 0 0 15px rgba(14,165,233,0.5);
       --input-bg: rgba(0,0,0,0.2); --input-border: rgba(255,255,255,0.1);
+      --gallery-cols: 4; /* Biến điều khiển số cột lưới ảnh */
     }
     body.theme-professional { --bg-color: #e5e7eb; --panel-bg: #ffffff; --card-bg: #f9fafb; --accent: #111827; --text-main: #1f2937; --border-color: #d1d5db; --accent-glow: none; --input-bg: #fff; --input-border: #ccc; }
     body.theme-simple { --bg-color: #ffffff; --panel-bg: #f3f4f6; --card-bg: #ffffff; --accent: #3b82f6; --text-main: #000000; --border-color: #e5e7eb; --accent-glow: none; --input-bg: #fff; --input-border: #ddd; }
@@ -84,7 +85,7 @@
     .gallery-section.dragover { border-color: var(--accent); border-style: solid; background: rgba(14, 165, 233, 0.05); }
     .gallery-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; flex-wrap: wrap; gap: 5px; }
     
-    .gallery-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: max-content; gap: 6px; align-content: start; align-items: start; flex: 1; overflow-y: auto; overflow-x: hidden; padding: 5px; }
+    .gallery-container { display: grid; grid-template-columns: repeat(var(--gallery-cols), 1fr); grid-auto-rows: max-content; gap: 6px; align-content: start; align-items: start; flex: 1; overflow-y: auto; overflow-x: hidden; padding: 5px; transition: grid-template-columns 0.3s; }
     .gallery-container::-webkit-scrollbar { width: 5px; }
     .gallery-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
     
@@ -130,15 +131,13 @@
         .viewport-wrapper { width: 100%; max-height: 60vh; aspect-ratio: 4/3; margin-bottom: 10px; }
         .action-control-col { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: stretch; justify-content: space-between; }
         .action-control-col > * { flex: 1 1 48%; margin: 2px !important;}
-        .gallery-section { min-height: 350px; }
-        .gallery-container { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     }
 
     body.hide-livecam .camera-control-col { display: none !important; }
     body.hide-livecam .viewport-wrapper { display: none !important; }
     body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; flex-shrink: 0; }
-    body.hide-livecam .action-control-col { width: 100% !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 15px; align-items: center; justify-content: flex-start; background: rgba(0,0,0,0.15); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
-    body.hide-livecam .action-control-col > * { flex: 0 0 auto !important; width: auto !important; margin: 0 !important; }
+    body.hide-livecam .action-control-col { width: 100% !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 10px; align-items: stretch; justify-content: flex-start; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
+    body.hide-livecam .action-control-col > * { flex: 1 !important; display: flex; align-items: center; justify-content: center; margin: 0 !important; }
 
     .rotatable-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
     .remote-progress { position: absolute; top: 0; left: 0; height: 5px; background: #39ff14; width: 0%; transition: width 0.3s; z-index: 100; box-shadow: 0 0 10px #39ff14; }
@@ -256,15 +255,15 @@
             </div>
             
             <div class="action-control-col">
-              <!-- NHÂN BẢN ẢNH ĐƯỢC CHỈNH GIỐNG SỐ LƯỢNG CHỤP -->
+              <!-- NHÂN BẢN ẢNH GIỐNG SỐ LƯỢNG CHỤP -->
               <div class="input-group input-group-lg mb-1 shadow-sm w-100">
                 <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Số lượng nhân bản mỗi ảnh"><i class="bi bi-files fs-4"></i></span>
                 <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="1" min="1" max="8">
               </div>
 
-              <button id="btnAutoInsert" class="btn btn-outline-custom btn-sm w-100 mb-1 fw-bold" onclick="app.toggleAutoInsert()" title="Bật/Tắt Tự động xếp ảnh vào khung"><i class="bi bi-magic fs-5"></i></button>
+              <button id="btnAutoInsert" class="btn btn-outline-custom btn-sm w-100 mb-1 fw-bold p-2" onclick="app.toggleAutoInsert()" title="Bật/Tắt Tự động xếp ảnh vào khung"><i class="bi bi-magic fs-5"></i> Tự động xếp</button>
 
-              <div class="d-flex align-items-center justify-content-between bg-dark p-1 rounded border border-secondary w-100 shadow-sm mb-1 mt-auto" style="background: rgba(0,0,0,0.2) !important;">
+              <div class="d-flex align-items-center justify-content-between bg-dark p-2 rounded border border-secondary w-100 shadow-sm mb-1 mt-auto" style="background: rgba(0,0,0,0.2) !important;">
                 <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.prevPage()" title="Trang trước"><i class="bi bi-chevron-left"></i></button>
                 <span class="fw-bold text-center" id="pageIndicator" style="font-size: 0.8rem; color: var(--accent); flex:1;">1/1</span>
                 <button class="btn btn-sm btn-outline-custom p-1 border-0 rounded-circle" onclick="app.nextPage()" title="Trang sau"><i class="bi bi-chevron-right"></i></button>
@@ -272,8 +271,8 @@
               </div>
               
               <div class="d-flex gap-2 w-100">
-                  <button class="btn btn-outline-custom btn-sm flex-grow-1 fw-bold" onclick="app.saveLayoutToDrive()" title="Lưu ảnh trang hiện tại về máy"><i class="bi bi-cloud-arrow-up fs-5"></i></button>
-                  <button class="btn btn-outline-danger btn-sm flex-grow-1 fw-bold" onclick="app.deleteCurrentPage()" title="Xóa trang hiện tại"><i class="bi bi-trash fs-5"></i></button>
+                  <button class="btn btn-outline-custom btn-sm flex-grow-1 fw-bold p-2" onclick="app.saveLayoutToDrive()" title="Lưu ảnh trang hiện tại về máy"><i class="bi bi-cloud-arrow-up fs-5"></i></button>
+                  <button class="btn btn-outline-danger btn-sm flex-grow-1 fw-bold p-2" onclick="app.deleteCurrentPage()" title="Xóa trang hiện tại"><i class="bi bi-trash fs-5"></i></button>
               </div>
             </div>
 
@@ -283,6 +282,8 @@
             <div class="gallery-title">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-images"></i>
+                <!-- SLIDER LƯỚI ẢNH (MỚI) -->
+                <input type="range" id="galleryGridSlider" min="2" max="8" value="4" class="form-range mx-2" style="width: 80px;" oninput="document.getElementById('capturedGallery').style.setProperty('--gallery-cols', this.value);" title="Thu phóng lưới ảnh">
                 <span id="uploadStatusText" class="small text-muted fw-normal ms-2" style="font-size: 0.7rem; display: none;">Lưu: <span id="uploadCount">0/0</span></span>
                 <div class="progress-tiny" id="uploadProgressBarContainer">
                   <div class="progress-bar-tiny" id="uploadProgress" style="width: 0%"></div>
@@ -439,30 +440,6 @@
     </div>
   </div>
 
-  <div class="modal fade" id="qrModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-      <div class="modal-content" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">
-        <div class="modal-body text-center p-4">
-          <h6 class="fw-bold mb-3" style="color:var(--accent);"><i class="bi bi-camera"></i> REMOTE CAMERA</h6>
-          <div id="qrcode" class="qr-container mb-3 d-flex justify-content-center mx-auto" style="width: 180px; height: 180px;" onclick="app.copyQRLink('remote')" title="Bấm vào để Copy Link"></div>
-          <p class="small text-muted mb-0">Dùng điện thoại (4G/WiFi) quét mã để chụp. <br><b>Bấm vào QR để Copy Link!</b></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="albumQRModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-      <div class="modal-content" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">
-        <div class="modal-body text-center p-4">
-          <h6 class="fw-bold mb-3 text-warning"><i class="bi bi-images"></i> ẢNH KHÁCH HÀNG</h6>
-          <div id="albumQRCode" class="qr-container mb-3 d-flex justify-content-center mx-auto" style="width: 180px; height: 180px;" onclick="app.copyQRLink('album')" title="Bấm vào để Copy Link"></div>
-          <p class="small text-muted mb-0">Khách quét mã này để vào xem ảnh.<br><b>Bấm vào QR để Copy Link!</b></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- OFFCANVAS CÀI ĐẶT CHUNG -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 360px;">
     <div class="offcanvas-header border-bottom" style="border-color: var(--border-color);">
@@ -476,7 +453,6 @@
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Bố cục & In ấn</h6>
         <div class="bg-dark p-2 rounded border border-secondary" style="background: rgba(0,0,0,0.1) !important;">
             
-            <!-- ĐÃ XÓA SELECT CHỌN MÁY IN - THAY THẾ BẰNG MESSAGE -->
             <label class="small text-muted w-100 mb-2 fw-bold"><i class="bi bi-info-circle text-info"></i> Máy in sẽ được chọn tại hộp thoại hệ thống (Select a destination) khi bấm In.</label>
 
             <select id="layoutSelect" class="form-select form-select-sm mb-2 mt-2" onchange="app.changeLayout(); app.saveSettings()">
@@ -504,8 +480,7 @@
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Camera & Giao Diện</h6>
         <div class="form-check form-switch mb-3 mt-2 p-2 rounded" style="background: rgba(0,0,0,0.1); border: 1px solid var(--border-color);">
-            <!-- SET DEFAULT CHECKED ĐỂ TẮT CAMERA LÚC VÀO -->
-            <input class="form-check-input ms-1 me-2" type="checkbox" id="hideLiveCamToggle" onchange="app.toggleLiveCamUI(); app.saveSettings()" checked>
+            <input class="form-check-input ms-1 me-2" type="checkbox" id="hideLiveCamToggle" onchange="app.toggleLiveCamUI(); app.saveSettings()">
             <label class="form-check-label small fw-bold text-muted" for="hideLiveCamToggle">Tắt Camera trực tiếp</label>
         </div>
         <label class="small text-muted fw-bold mb-1">Theme hệ thống</label>
@@ -645,7 +620,7 @@
       connectionModalInstance: null,  
       
       selectedModalIndices: [],
-      connectedRemotes: [], // Mảng lưu các thiết bị { id, isRelay, status }
+      connectedRemotes: [], // Mảng lưu thông tin Remote { peerId, deviceId, name, isRelay, status }
       
       dragPayload: null,
       activeSlotIndex: -1,
@@ -683,7 +658,7 @@
         
         await this.loadDeviceList();
         
-        // Chỉ bật Camera nếu người dùng không check vào ô Tắt Camera
+        // Mặc định bật Camera
         if(!document.getElementById('hideLiveCamToggle').checked) { this.startCamera(); }
         
         this.bindCanvasEvents();
@@ -703,9 +678,6 @@
           input.value = val;
       },
 
-      /* =========================================
-       * QUẢN LÝ DỰ ÁN & ĐỒNG BỘ
-       * ========================================= */
       loadProjects: async function() {
           try {
               const fd = new URLSearchParams(); fd.append('action', 'getProjects');
@@ -794,16 +766,11 @@
                           this.capturedPhotos.push({ imgObj: img, driveId: item.id, date: item.date });
                           checkDone();
                       };
-                      // Bỏ qua lỗi file (404/CORS) để không bị dừng Loading
-                      img.onerror = () => {
-                          console.warn("Lỗi tải ảnh từ Google Drive (có thể bị xóa hoặc file hỏng):", item.url);
-                          checkDone();
-                      };
+                      img.onerror = () => { checkDone(); };
                       img.src = item.url;
                   });
               }
           } catch(e) { 
-              console.error("Lỗi tải ảnh dự án", e); 
               this.renderCapturedGallery();
           }
       },
@@ -941,21 +908,16 @@
       toggleAutoInsert: function() {
           this.autoInsertSynced = !this.autoInsertSynced;
           const btn = document.getElementById('btnAutoInsert');
-          const btnOffline = document.querySelector('#offlineAutoRow button');
-          
           if(this.autoInsertSynced) { 
               if(btn) { btn.classList.remove('btn-outline-custom'); btn.classList.add('btn-primary-custom'); }
-              if(btnOffline) { btnOffline.classList.remove('btn-outline-custom'); btnOffline.classList.add('btn-primary-custom'); }
           } else { 
               if(btn) { btn.classList.remove('btn-primary-custom'); btn.classList.add('btn-outline-custom'); }
-              if(btnOffline) { btnOffline.classList.remove('btn-primary-custom'); btnOffline.classList.add('btn-outline-custom'); }
           }
       },
 
       saveSettings: function() {
           const settings = {
               hideLiveCam: document.getElementById('hideLiveCamToggle').checked,
-              printerSelect: 'default', // Không lưu nữa nhưng giữ biến
               headerTitle: document.getElementById('appHeaderTitle').value,
               headerLogo: document.getElementById('headerLogo').src,
               folderFilterMode: document.getElementById('folderFilterMode').value,
@@ -989,9 +951,11 @@
 
       loadLocalSettings: function() {
           const saved = localStorage.getItem('boothSettings_Pro');
-          if (saved) { this.applySettingsData(saved); } else {
-              // Mặc định bật toggle Hide Live Cam nếu không có setting cũ
-              document.getElementById('hideLiveCamToggle').checked = true;
+          if (saved) { 
+              this.applySettingsData(saved); 
+          } else {
+              // Mặc định luôn bật Camera ở lần đầu tiên sử dụng
+              document.getElementById('hideLiveCamToggle').checked = false;
           }
       },
 
@@ -999,7 +963,7 @@
           try {
               const s = JSON.parse(dataStr);
               if(s.hideLiveCam !== undefined) { document.getElementById('hideLiveCamToggle').checked = s.hideLiveCam; } 
-              else { document.getElementById('hideLiveCamToggle').checked = true; }
+              else { document.getElementById('hideLiveCamToggle').checked = false; }
               this.toggleLiveCamUI();
 
               if(s.headerTitle) { document.getElementById('appHeaderTitle').value = s.headerTitle; document.getElementById('headerTitleText').innerText = s.headerTitle; }
@@ -1054,7 +1018,7 @@
                   localStorage.setItem('boothSettings_Pro', res.data);
                   this.applySettingsData(res.data);
               }
-          } catch(e) { console.log("Không tải được settings Cloud"); }
+          } catch(e) {}
       },
 
       updateHeader: function() {
@@ -1088,7 +1052,6 @@
        * ======================================================== */
       updateConnectionBadge: function() {
           const badge = document.getElementById('remoteConnectionBadge');
-          // Hiện badge xanh nếu có ít nhất 1 thiết bị đang online
           const hasOnline = this.connectedRemotes.some(r => r.status === 'online');
           if(hasOnline) { badge.classList.add('active'); badge.style.backgroundColor = '#28a745'; } 
           else if(this.connectedRemotes.length > 0) { badge.classList.add('active'); badge.style.backgroundColor = '#dc3545'; }
@@ -1109,14 +1072,14 @@
                   return 0;
               });
 
-              sorted.forEach((dev, idx) => {
+              sorted.forEach((dev) => {
                   let isOnline = dev.status === 'online';
-                  let statusStr = isOnline ? (dev.isRelay ? 'Cloud Relay (TURN)' : 'P2P (WebRTC LAN)') : 'Mất kết nối (Offline)';
+                  let statusStr = isOnline ? (dev.isRelay ? 'Cloud Relay' : 'P2P (LAN)') : 'Mất kết nối';
                   let badgeClass = isOnline ? (dev.isRelay ? 'bg-warning text-dark' : 'bg-success') : 'bg-danger';
                   let iconOpacity = isOnline ? '1' : '0.5';
 
                   list.innerHTML += `<li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center" style="opacity: ${iconOpacity}">
-                      <span><i class="bi bi-phone"></i> Thiết bị ${dev.nameIndex} <br><small class="text-muted" style="font-size:10px;">ID: ${dev.id}</small></span>
+                      <span><i class="bi bi-phone"></i> ${dev.name} <br><small class="text-muted" style="font-size:10px;">ID: ${dev.deviceId}</small></span>
                       <span class="badge ${badgeClass} shadow-sm" style="font-size:10px;">${statusStr}</span>
                   </li>`;
               });
@@ -1126,16 +1089,13 @@
 
       setupPeerJS: function() {
           if (this.peer) return;
-          let deviceCounter = 1;
           
           this.peer = new Peer({ 
               config: { 
                   'iceServers': [
                       { urls: 'stun:stun.l.google.com:19302' },
                       { urls: 'stun:stun1.l.google.com:19302' },
-                      { urls: 'stun:stun.cloudflare.com:3478' },
                       { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
                       { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
                   ] 
               } 
@@ -1162,26 +1122,37 @@
                           } catch(e) {}
                       }
                       
-                      let existing = this.connectedRemotes.find(r => r.id === conn.peer);
-                      if (existing) {
-                          existing.status = 'online'; existing.isRelay = isRelay;
-                      } else {
-                          this.connectedRemotes.push({ id: conn.peer, isRelay: isRelay, status: 'online', nameIndex: deviceCounter++ });
-                      }
-                      
-                      this.updateConnectionBadge();
-                      Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: isRelay ? 'Đã kết nối qua Cloud Relay!' : 'Đã kết nối qua LAN P2P!', showConfirmButton: false, timer: 3000 });
+                      // Cập nhật isRelay tạm thời cho connection này
+                      conn._isRelay = isRelay;
                   };
                   setTimeout(checkTransport, 1500); 
               });
 
               conn.on('close', () => {
-                  let existing = this.connectedRemotes.find(r => r.id === conn.peer);
+                  let existing = this.connectedRemotes.find(r => r.peerId === conn.peer);
                   if(existing) { existing.status = 'offline'; }
                   this.updateConnectionBadge();
               });
 
               conn.on('data', (data) => {
+                  try {
+                      // Bắt Data dạng JSON để nhận diện thiết bị
+                      if(typeof data === 'string' && data.startsWith('{')) {
+                          const msg = JSON.parse(data);
+                          if(msg.type === 'identify') {
+                              let existing = this.connectedRemotes.find(r => r.deviceId === msg.deviceId);
+                              if (existing) {
+                                  existing.status = 'online'; existing.peerId = conn.peer; existing.isRelay = conn._isRelay || false;
+                              } else {
+                                  this.connectedRemotes.push({ peerId: conn.peer, deviceId: msg.deviceId, name: msg.deviceName, isRelay: conn._isRelay || false, status: 'online' });
+                              }
+                              this.updateConnectionBadge();
+                          }
+                          return;
+                      }
+                  } catch(e) {}
+
+                  // Nhận ảnh
                   if (typeof data === 'string' && data.startsWith('data:image/')) {
                       Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Đã nhận ảnh từ Điện thoại!', showConfirmButton: false, timer: 3000 });
                       this.processRemotePhoto(data);
@@ -1235,7 +1206,6 @@
       },
 
       initRemoteMode: async function(targetId) {
-          // Bổ sung các icon và overlay bộ sưu tập trên Mobile
           document.body.innerHTML = `
           <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
               <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
@@ -1284,7 +1254,15 @@
           let remoteStream = null;
           let useFrontCam = false; 
           let deviceRotation = 0; 
-          let sentImagesLocal = []; // Lưu ảnh đã chụp trên đt
+          let sentImagesLocal = []; 
+
+          // Tạo/Lấy Device ID định danh của Điện thoại
+          let myDeviceId = localStorage.getItem('hama_remote_id');
+          if(!myDeviceId) {
+              myDeviceId = 'DEV_' + Math.random().toString(36).substr(2, 9);
+              localStorage.setItem('hama_remote_id', myDeviceId);
+          }
+          let myDeviceName = /iPhone|iPad|iPod/.test(navigator.userAgent) ? "Apple iOS" : (/Android/.test(navigator.userAgent) ? "Android Device" : "Mobile Phone");
 
           const reqOverlay = document.getElementById('reqPermOverlay');
           const enableSensors = () => {
@@ -1316,9 +1294,7 @@
                   'iceServers': [
                       { urls: 'stun:stun.l.google.com:19302' },
                       { urls: 'stun:stun1.l.google.com:19302' },
-                      { urls: 'stun:stun.cloudflare.com:3478' },
                       { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                      { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
                       { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
                   ] 
               } 
@@ -1329,6 +1305,9 @@
           peer.on('open', (id) => {
               conn = peer.connect(targetId, { reliable: true }); 
               conn.on('open', () => {
+                  // Gửi thông điệp định danh ngay khi kết nối
+                  conn.send(JSON.stringify({ type: 'identify', deviceId: myDeviceId, deviceName: myDeviceName }));
+                  
                   status.innerText = "Đã kết nối PC!"; status.style.background = "rgba(40, 167, 69, 0.8)";
                   setTimeout(() => { status.style.opacity = '0'; }, 2000); 
               });
@@ -1337,7 +1316,7 @@
           peer.on('error', (err) => {
               status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)";
               if (err.type === 'peer-unavailable') status.innerText = "Lỗi: PC tắt (Quét lại mã!)";
-              else status.innerText = "Lỗi mạng (Đang thử qua TURN 4G...)";
+              else status.innerText = "Lỗi mạng (Đang thử qua TURN...)";
           });
 
           const startRemoteCamera = async () => {
@@ -1354,7 +1333,6 @@
           await startRemoteCamera();
           document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
           
-          // Logic bật/tắt Gallery Overlay
           const renderLocalGallery = () => {
               const grid = document.getElementById('remoteGalleryGrid');
               if(sentImagesLocal.length === 0) return;
@@ -1430,7 +1408,6 @@
                   const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0);
                   conn.send(finalB64); 
                   
-                  // Lưu ảnh vào local array để xem lại
                   sentImagesLocal.unshift(finalB64);
 
                   prog.style.width = '100%'; 
@@ -1672,6 +1649,29 @@
           }; r.readAsDataURL(file);
         }
       },
+
+      rotateSessionPhoto: function(index) {
+          const record = this.capturedPhotos[index];
+          const cvs = document.createElement('canvas');
+          const ctx = cvs.getContext('2d');
+          cvs.width = record.imgObj.height;
+          cvs.height = record.imgObj.width;
+          
+          ctx.translate(cvs.width/2, cvs.height/2);
+          ctx.rotate(90 * Math.PI / 180);
+          ctx.drawImage(record.imgObj, -record.imgObj.width/2, -record.imgObj.height/2);
+          
+          const newB64 = cvs.toDataURL('image/jpeg', 1.0);
+          const newImg = new Image();
+          newImg.crossOrigin = "anonymous";
+          newImg.onload = () => {
+              record.imgObj = newImg;
+              this.renderCapturedGallery();
+              this.renderCanvas(); // Cập nhật lại khung canvas nếu ảnh đang nằm trên trang in
+          };
+          newImg.src = newB64;
+      },
+
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); cap.innerHTML = '';
         const strip = document.getElementById('liveGalleryStrip'); strip.innerHTML = ''; 
@@ -1679,8 +1679,10 @@
         this.capturedPhotos.forEach((record, index) => {
           const wrapper = document.createElement('div'); wrapper.className = 'thumb-wrapper';
           const img = document.createElement('img'); img.src = record.imgObj.src; 
-          img.draggable = true; img.ondragstart = () => { this.dragPayload = record.imgObj; };
+          img.draggable = true; 
+          img.ondragstart = () => { this.dragPayload = record.imgObj; };
           img.onclick = () => { this.openPrepModal(record.imgObj); };
+          img.ondblclick = (e) => { e.stopPropagation(); this.rotateSessionPhoto(index); }; // DOUBLE CLICK ĐỂ XOAY
           
           const btnDel = document.createElement('button'); btnDel.className = 'btn-del-thumb'; btnDel.innerHTML = '<i class="bi bi-x"></i>';
           btnDel.onclick = (e) => { e.stopPropagation(); this.deleteSessionPhoto(index); };
@@ -1694,6 +1696,7 @@
         
         if(this.capturedPhotos.length === 0) { cap.innerHTML = '<span class="text-muted small w-100 text-center" style="padding: 20px; display: block; grid-column: 1 / -1;"><i class="bi bi-folder-x fs-3"></i><br>Dự án này chưa có ảnh</span>'; }
       },
+
       deleteSessionPhoto: function(index) {
         const record = this.capturedPhotos[index];
         Swal.fire({
@@ -2124,7 +2127,6 @@
           }
           this.currentPage = backupPage; this.renderCanvas(); 
           Swal.close();
-          // Mở hộp thoại In của hệ điều hành, tại đây người dùng có thể chọn máy in mong muốn
           setTimeout(() => { window.print(); }, 500);
       },
 
