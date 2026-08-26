@@ -133,11 +133,13 @@
         .action-control-col > * { flex: 1 1 48%; margin: 2px !important;}
     }
 
+    /* CSS ĐỒNG BỘ CHIỀU CAO CÁC NÚT ACTION KHI OFFLINE */
     body.hide-livecam .camera-control-col { display: none !important; }
     body.hide-livecam .viewport-wrapper { display: none !important; }
     body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; flex-shrink: 0; }
     body.hide-livecam .action-control-col { width: 100% !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 10px; align-items: stretch; justify-content: flex-start; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
-    body.hide-livecam .action-control-col > * { flex: 1 !important; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 !important; }
+    body.hide-livecam .action-control-col > * { flex: 1 !important; display: flex; flex-direction: column; align-items: stretch; justify-content: center; margin: 0 !important; }
+    body.hide-livecam .action-control-col .input-group { flex: 1; align-items: stretch; }
 
     .rotatable-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
     .remote-progress { position: absolute; top: 0; left: 0; height: 5px; background: #39ff14; width: 0%; transition: width 0.3s; z-index: 100; box-shadow: 0 0 10px #39ff14; }
@@ -181,6 +183,7 @@
         </div>
         
         <div class="d-flex align-items-center gap-2">
+          <!-- BỘ QUẢN LÝ DỰ ÁN -->
           <div class="input-group input-group-sm me-2" style="width: 240px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
              <span class="input-group-text bg-dark border-secondary text-info" title="Thư mục Dự án"><i class="bi bi-folder-fill"></i></span>
              <select id="projectSelect" class="form-select bg-dark border-secondary text-white fw-bold" onchange="app.switchProject()"></select>
@@ -251,7 +254,7 @@
             </div>
             
             <div class="action-control-col">
-              <!-- NHÂN BẢN ẢNH ĐƯỢC CHỈNH GIỐNG SỐ LƯỢNG CHỤP -->
+              <!-- GIAO DIỆN NHÂN BẢN GIỐNG Ô SỐ LƯỢNG CHỤP -->
               <div class="input-group input-group-lg mb-1 shadow-sm w-100">
                 <span class="input-group-text bg-transparent text-muted border-secondary justify-content-center" title="Số lượng nhân bản mỗi ảnh"><i class="bi bi-files fs-4"></i></span>
                 <input type="number" id="autoCopies" class="form-control form-control-lg text-center border-secondary fs-4" style="border-left: none;" value="1" min="1" max="8">
@@ -298,7 +301,8 @@
         </div>
         
         <div class="right-panel d-flex flex-column">
-          <div class="slot-toolbar active" id="slotToolbar">
+          <!-- Bỏ class active mặc định -->
+          <div class="slot-toolbar" id="slotToolbar">
             <span class="badge bg-primary rounded-pill px-2 py-1 fs-6 shadow-sm">#<span id="stIndex">1</span></span>
             <div class="toolbar-divider"></div>
             
@@ -475,6 +479,7 @@
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small" style="color:var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Camera & Giao Diện</h6>
         <div class="form-check form-switch mb-3 mt-2 p-2 rounded" style="background: rgba(0,0,0,0.1); border: 1px solid var(--border-color);">
+            <!-- KHÔNG ĐỂ CHECKED Ở ĐÂY ĐỂ MẶC ĐỊNH BẬT CAMERA -->
             <input class="form-check-input ms-1 me-2" type="checkbox" id="hideLiveCamToggle" onchange="app.toggleLiveCamUI(); app.saveSettings()">
             <label class="form-check-label small fw-bold text-muted" for="hideLiveCamToggle">Tắt Camera trực tiếp</label>
         </div>
@@ -630,7 +635,7 @@
       peerId: null,
 
       init: async function() {
-        // Gắn DOM element bên trong init để tránh lỗi DOM Exception tải hụt
+        // Gắn DOM element bên trong init để tránh lỗi tải hụt
         this.video = document.getElementById('videoElement');
         this.canvas = document.getElementById('finalCanvas');
         if(this.canvas) this.ctx = this.canvas.getContext('2d');
@@ -658,7 +663,7 @@
         
         await this.loadDeviceList();
         
-        // Mặc định bật Camera với độ trễ (delay) nhỏ để tránh Race Condition
+        // Mặc định bật Camera với độ trễ nhỏ để tránh Race Condition trên trình duyệt
         if(!document.getElementById('hideLiveCamToggle').checked) { 
             setTimeout(() => { this.startCamera(); }, 200); 
         }
@@ -768,7 +773,7 @@
                           this.capturedPhotos.push({ imgObj: img, driveId: item.id, date: item.date });
                           checkDone();
                       };
-                      img.onerror = () => { checkDone(); }; // Tự động bỏ qua lỗi để kết thúc loading
+                      img.onerror = () => { checkDone(); }; // Bỏ qua file lỗi để hoàn tất vòng lặp
                       img.src = item.url;
                   });
               }
@@ -961,9 +966,11 @@
               } else {
                   // Mặc định luôn bật Camera ở lần đầu tiên sử dụng
                   document.getElementById('hideLiveCamToggle').checked = false;
+                  this.changeLayout(); // Khởi tạo mảng this.pages để chống crash
               }
           } catch(e) {
               document.getElementById('hideLiveCamToggle').checked = false;
+              this.changeLayout();
           }
       },
 
@@ -1490,7 +1497,7 @@
                           document.getElementById('uploadStatusText').style.display = 'inline';
                           document.getElementById('uploadProgressBarContainer').style.display = 'block';
                           this.updateUploadUI();
-                          const fd = new URLSearchParams(); 
+                          const fd = newSearchParams(); 
                           fd.append('image', b64); fd.append('fileName', 'FolderSync_' + new Date().getTime() + '.jpg');
                           fd.append('projectId', this.currentProjectId);
 
@@ -1501,7 +1508,7 @@
                   }
                   if (newFilesFound) { this.renderCapturedGallery(); }
               }
-          } catch (e) { console.error("Lỗi quét thư mục", e); }
+          } catch (e) {}
       },
       
       readFileAsDataURL: function(file) {
@@ -1693,7 +1700,7 @@
           img.draggable = true; 
           img.ondragstart = () => { this.dragPayload = record.imgObj; };
           img.onclick = () => { this.openPrepModal(record.imgObj); };
-          img.ondblclick = (e) => { e.stopPropagation(); this.rotateSessionPhoto(index); }; // DOUBLE CLICK ĐỂ XOAY ẢNH TRONG GALLERY
+          img.ondblclick = (e) => { e.stopPropagation(); this.rotateSessionPhoto(index); }; // DOUBLE CLICK ĐỂ XOAY ẢNH
           
           const btnDel = document.createElement('button'); btnDel.className = 'btn-del-thumb'; btnDel.innerHTML = '<i class="bi bi-x"></i>';
           btnDel.onclick = (e) => { e.stopPropagation(); this.deleteSessionPhoto(index); };
@@ -1799,6 +1806,7 @@
         this.currentPage = 0; this.activeSlotIndex = -1; this.updateToolbarUI();
         const ps = document.getElementById('printStyle');
         
+        if(!this.canvas) return;
         const cvs = this.canvas;
         if (this.slotsPerPage === 2 || this.slotsPerPage === 8) { 
             cvs.width = 2400; cvs.height = 3600; 
