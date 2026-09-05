@@ -9,6 +9,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Flatpickr (Chọn ngày) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -18,7 +23,7 @@
   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
   <style>
-    /* ================= HỆ THỐNG THEME (GIAO DIỆN SÁNG ĐỒNG BỘ) ================= */
+    /* ================= HỆ THỐNG THEME SÁNG ĐỒNG BỘ ================= */
     :root {
       --bg-color: #f4f6f8; --panel-bg: #ffffff; --card-bg: #ffffff;
       --accent: #ff6b2b; --accent-hover: #e85d1f; --text-main: #111111; 
@@ -28,7 +33,7 @@
     
     body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Montserrat', -apple-system, sans-serif; height: 100vh; overflow: hidden; margin: 0; }
     
-    .form-control, .form-select { background-color: var(--input-bg) !important; color: var(--text-main) !important; border: 1px solid var(--input-border) !important; border-radius: 12px; padding: 10px 15px;}
+    .form-control, .form-select { background-color: var(--input-bg) !important; color: var(--text-main) !important; border: 1px solid var(--input-border) !important; border-radius: 12px; padding: 10px 15px; font-weight: 600;}
     .form-control:focus, .form-select:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(255,107,43,0.1) !important;}
     input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     
@@ -40,23 +45,24 @@
     .btn-circle-custom { width: 40px; height: 40px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: none; background: var(--input-bg); color: var(--text-main);}
     .btn-circle-custom:hover { transform: scale(1.1); background: var(--accent); color: #fff; }
 
-    /* ================= MODAL TẠO/SỬA SỰ KIỆN MỚI ================= */
+    /* ================= MODAL TẠO/SỬA SỰ KIỆN MỚI (16:9) ================= */
     #createProjectModal .modal-content { border-radius: 24px; border: none; overflow: hidden; background: #fff; color: #333; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
     .cp-layout { display: flex; flex-direction: row; height: auto; min-height: 500px;}
-    .cp-left { width: 40%; background: #f8fafc; padding: 40px; display: flex; flex-direction: column; border-right: 1px solid #e2e8f0;}
+    .cp-left { width: 40%; background: #f8fafc; padding: 40px; display: flex; flex-direction: column; border-right: 1px solid #e2e8f0; align-items: center;}
     .cp-right { width: 60%; padding: 40px; overflow-y: auto;}
     /* Cover 16:9 */
-    .cp-cover-wrap { width: 100%; aspect-ratio: 16/9; background: #e2e8f0; border-radius: 16px; position: relative; overflow: hidden; margin-bottom: 20px; border: 1px dashed #cbd5e1; cursor: pointer; transition: 0.2s;}
+    .cp-cover-wrap { width: 100%; aspect-ratio: 16/9; background: #e2e8f0; border-radius: 16px; position: relative; overflow: hidden; margin-bottom: 20px; border: 2px dashed #cbd5e1; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;}
     .cp-cover-wrap:hover { border-color: var(--accent); background: #f1f5f9; }
-    .cp-cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: none;}
-    .cp-cover-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; font-weight: 600; font-size: 0.9rem;}
-    .cp-cover-placeholder i { font-size: 2rem; margin-bottom: 5px; color: #94a3b8;}
+    .cp-cover-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 2;}
+    .cp-cover-placeholder { color: #64748b; font-weight: 600; font-size: 0.9rem; text-align: center; z-index: 1;}
+    .cp-cover-placeholder i { font-size: 2.5rem; margin-bottom: 10px; color: #94a3b8; display: block;}
     
-    .cp-input-huge { font-size: 2rem; font-weight: 900; color: #111; border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 20px; outline: none;}
+    .cp-input-huge { font-size: 2rem; font-weight: 900; color: #111; border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 20px; outline: none; box-shadow: none !important;}
     .cp-input-huge::placeholder { color: #cbd5e1; }
-    .cp-date-wrap { display: flex; gap: 10px; margin-bottom: 20px;}
-    .cp-date-input { flex: 1; display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 15px; background: #fff;}
-    .cp-date-input input { border: none; outline: none; font-weight: 700; color: #333; width: 100%; background: transparent; font-size: 0.9rem;}
+    
+    /* Flatpickr input styling */
+    .cp-date-wrap { display: flex; align-items: center; margin-bottom: 20px;}
+    .flatpickr-input { font-weight: 700; color: #333; cursor: pointer;}
     
     .cp-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px;}
     .cp-tag { padding: 8px 16px; border-radius: 30px; border: 1px solid #cbd5e1; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: #64748b; transition: 0.2s; background: #fff;}
@@ -64,51 +70,58 @@
     .cp-tag input { display: none; }
     
     .cp-form-group { margin-bottom: 15px;}
-    .cp-submit-btn { width: 100%; background: var(--accent); color: #fff; border: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; box-shadow: var(--accent-glow);}
-    .cp-submit-btn:hover { background: var(--accent-hover); transform: translateY(-2px);}
+    .cp-submit-btn { width: 100%; background: #e2e8f0; color: #94a3b8; border: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; pointer-events: none;}
+    .cp-submit-btn.ready { background: var(--accent); color: #fff; box-shadow: var(--accent-glow); pointer-events: auto;}
+    .cp-submit-btn.ready:hover { background: var(--accent-hover); transform: translateY(-2px);}
     @media (max-width: 768px) { .cp-layout { flex-direction: column;} .cp-left, .cp-right { width: 100%; border-right: none;} }
 
     /* ================= DASHBOARD UI ================= */
     #dashboardWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); }
     .dash-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;}
-    .dash-title { font-weight: 900; font-size: 1.6rem; margin: 0; display: flex; align-items: center; gap: 10px;}
+    .dash-title { font-weight: 900; font-size: 1.6rem; margin: 0; display: flex; align-items: center; gap: 10px; color: var(--text-main);}
     .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 40px; max-width: 1400px; margin: 0 auto;}
     .project-card { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color); overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;}
     .project-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--accent);}
     .pc-cover { height: 180px; width: 100%; background: #e2e8f0; position: relative;}
     .pc-cover img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
     
-    .status-tag { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.95); padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+    .status-tag { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.95); padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #333;}
     .status-tag.waiting i { color: #f59e0b; } /* Vàng */
     .status-tag.active i { color: #10b981; }  /* Xanh */
     .status-tag.ended i { color: #64748b; }   /* Xám */
     
-    .pc-edit-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #333; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;}
+    .pc-edit-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #333; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;}
     .pc-edit-btn:hover { background: var(--accent); color: #fff; }
 
     .pc-body { padding: 25px; flex: 1; display: flex; flex-direction: column;}
     .pc-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 10px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
     .pc-meta { font-size: 0.85rem; color: #64748b; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; font-weight: 600;}
-    .pc-media-count { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; color: var(--accent); font-size: 1.1rem; margin-bottom: 20px;}
     
-    .pc-actions { display: flex; gap: 10px; margin-top: auto;}
-    .btn-view-album { flex: 1; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 12px; border-radius: 12px; font-weight: 700; transition: 0.2s;}
-    .btn-view-album:hover { background: var(--accent); color: #fff; border-color: var(--accent);}
-    .btn-qr-dash { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 15px; border-radius: 12px; font-weight: 700; transition: 0.2s;}
+    /* Box chứa Media và QR */
+    .pc-stats-box { background: var(--input-bg); border-radius: 16px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color);}
+    .pc-media-count { font-weight: 900; color: var(--accent); font-size: 1.3rem;}
+    .pc-media-count span { font-size: 0.8rem; color: #64748b; font-weight: 600;}
+    .btn-qr-dash { background: #fff; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 10px; font-weight: 700; transition: 0.2s; display: flex; align-items: center; gap: 5px; font-size: 0.85rem;}
     .btn-qr-dash:hover { border-color: var(--accent); color: var(--accent); }
+
+    .pc-actions { display: flex; margin-top: auto;}
+    .btn-view-album { width: 100%; background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 800; transition: 0.2s; box-shadow: var(--accent-glow);}
+    .btn-view-album:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px);}
 
     /* ================= PHOTO WALL (MASONRY & SLIDESHOW) ================= */
     #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main);}
-    .wall-header { padding: 30px 40px; display: flex; justify-content: space-between; align-items: flex-end; position: sticky; top: 0; z-index: 50; background: rgba(244, 246, 248, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color);}
-    .wall-title-area h1 { font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main);}
-    .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.95rem; margin: 0;}
+    .wall-header { padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+    .wall-title-area h1 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main);}
+    .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.9rem; margin: 0;}
     .wall-top-actions { display: flex; gap: 15px;}
+    
+    /* 2 nút màu cam trên Wall */
     .btn-orange-glow { background: var(--accent); color: #fff; padding: 12px 25px; border-radius: 30px; font-weight: 800; font-size: 0.95rem; text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: var(--accent-glow); border: none; cursor: pointer; transition: 0.3s;}
     .btn-orange-glow:hover { background: var(--accent-hover); transform: translateY(-2px); color: #fff;}
     
     .wall-grid { padding: 40px; }
-    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.3s; background: #fff;}
-    .wall-item:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1);}
+    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.3s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
+    .wall-item:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255,107,43,0.15);}
     .wall-item img { width: 100%; display: block; object-fit: cover;}
     @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
     @media (max-width: 768px) { .wall-item { width: calc(50% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px;} }
@@ -127,7 +140,7 @@
     .bg-blob.b2 { width: 600px; height: 600px; background: #0ea5e9; bottom: -200px; right: -100px; animation-delay: -5s;}
     @keyframes floatBlob { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(100px, 50px) scale(1.2); } }
 
-    /* LIGHTBOX WALL (NHƯ ẢNH MẪU ĐEN) */
+    /* LIGHTBOX WALL (NỀN ĐEN ĐỂ XEM CHI TIẾT) */
     .lb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10500; display: none; flex-direction: column;}
     .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 10510;}
     .lb-title { font-weight: 800; font-size: 1.5rem; margin: 0; color: #fff;}
@@ -161,11 +174,11 @@
     .form-control-upload { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; width: 100%; font-family: inherit; margin-bottom: 20px; resize: none; font-weight: 500;}
     #uploadLoadingOverlay { position: absolute; inset: 0; background: rgba(255,255,255,0.95); border-radius: 24px; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
 
-    /* ================= MAIN BOOTH CŨ (BỎ TỰ ĐỘNG XẾP) ================= */
+    /* ================= MAIN BOOTH CHỤP ẢNH (BỎ TỰ ĐỘNG XẾP) ================= */
     .app-header { background: var(--panel-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; height: 60px; border-bottom: 1px solid var(--border-color); }
     .app-container { display: flex; height: calc(100vh - 60px); }
     .left-panel { flex: 6; display: flex; flex-direction: column; padding: 15px; border-right: 1px solid var(--border-color); }
-    .right-panel { flex: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; background: var(--input-bg); position: relative; }
+    .right-panel { flex: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; background: var(--bg-color); position: relative; }
     
     .camera-setup-row { display: flex; gap: 15px; margin-bottom: 15px; flex-shrink: 0; }
     .camera-control-col { width: 180px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
@@ -182,12 +195,12 @@
     .thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
     .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; overflow: hidden; }
-    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: #fff; }
+    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; }
     .slot-toolbar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: #fff; padding: 8px 15px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 8px; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s;}
     .slot-toolbar.active { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);}
     
-    /* MODALS & OTHERS */
-    .modal-content { border-radius: 20px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+    /* MODALS HỆ THỐNG TRẮNG SÁNG */
+    .modal-content { border-radius: 20px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff; color: #333;}
     .qr-container { background: #fff; padding: 10px; border-radius: 12px; border: 4px solid var(--accent); cursor: pointer; transition: 0.2s; }
   </style>
 </head>
@@ -199,7 +212,7 @@
   <input type="file" id="coverUploadInput" accept="image/*" onchange="app.handleCoverUpload(event)" hidden>
   <div id="printContainer" class="d-none"></div>
 
-  <!-- ================= MODAL TẠO/SỬA SỰ KIỆN MỚI (16:9) ================= -->
+  <!-- ================= MODAL TẠO/SỬA SỰ KIỆN MỚI (16:9 + FLATPICKR) ================= -->
   <div class="modal fade" id="createProjectModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
@@ -214,25 +227,20 @@
                     <img id="cpCoverPreviewImg" src="">
                 </div>
                 <div class="text-center">
-                    <button class="btn btn-outline-secondary btn-sm rounded-pill fw-bold" onclick="app.removeCover()">Xóa ảnh</button>
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill fw-bold px-4 border-2" onclick="app.removeCover()">Xóa ảnh đại diện</button>
                 </div>
             </div>
             <div class="cp-right">
-                <div class="d-flex justify-content-end mb-3">
-                    <button class="btn btn-light rounded-pill fw-bold border text-muted" onclick="app.closeCreateModal()"><i class="bi bi-x-lg"></i> Đóng</button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold m-0" id="cpModalTitle">Thông tin sự kiện</h4>
+                    <button class="btn btn-light rounded-pill fw-bold border text-muted px-4" onclick="app.closeCreateModal()"><i class="bi bi-x-lg"></i> Đóng</button>
                 </div>
                 
                 <input type="text" id="cpName" class="form-control cp-input-huge" placeholder="Tên sự kiện..." oninput="app.checkCreateForm()">
                 
                 <div class="cp-date-wrap">
-                    <div class="cp-date-input">
-                        <span class="text-muted fw-bold small me-2">Từ:</span>
-                        <input type="date" id="cpDateStart">
-                    </div>
-                    <div class="cp-date-input">
-                        <span class="text-muted fw-bold small me-2">Đến:</span>
-                        <input type="date" id="cpDateEnd">
-                    </div>
+                    <input type="text" id="cpDateRange" class="form-control text-center fs-6" style="max-width: 250px; background:#fff !important; cursor:pointer;" placeholder="Chọn Ngày (hoặc Khoảng ngày)">
+                    <i class="bi bi-calendar-event text-muted ms-2 fs-5"></i>
                 </div>
                 
                 <div class="cp-tags">
@@ -246,7 +254,6 @@
                 <div class="cp-form-group"><input type="text" id="cpLocation" class="form-control" placeholder="Thêm địa điểm (VD: GEM Center)"></div>
                 <div class="cp-form-group mb-4"><input type="text" id="cpDesc" class="form-control" placeholder="Thêm mô tả ngắn gọn..."></div>
 
-                <!-- Ẩn projectId để phân biệt tạo mới hay update -->
                 <input type="hidden" id="cpEditId" value="">
                 <button class="cp-submit-btn" id="cpSubmitBtn" onclick="app.submitCreateProject()">Lưu sự kiện <i class="bi bi-arrow-right ms-2"></i></button>
             </div>
@@ -268,20 +275,19 @@
       </div>
   </div>
 
-  <!-- MODAL: DASHBOARD QR -->
+  <!-- MODAL: DASHBOARD QR (Bỏ chữ giải thích) -->
   <div class="modal fade" id="dashQRModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content p-4 text-center">
-        <h5 class="fw-bold mb-3 text-dark">MÃ QR SỰ KIỆN</h5>
+        <h5 class="fw-bold mb-4 text-dark">MÃ QR SỰ KIỆN</h5>
         <div id="dashQRCode" class="qr-container mx-auto mb-3" style="width: 200px; height: 200px;" onclick="app.copyDashQRFromModal()"></div>
-        <p class="small text-muted mb-0 fw-bold">Khách quét để xem Photo Wall.<br><span class="text-primary mt-1 d-block" style="cursor:pointer;" onclick="app.copyDashQRFromModal()">Bấm vào QR để Copy Link</span></p>
+        <button class="btn btn-light fw-bold w-100 border text-muted" onclick="app.copyDashQRFromModal()"><i class="bi bi-link-45deg"></i> Copy Link</button>
       </div>
     </div>
   </div>
 
   <!-- ================= 2. PHOTO WALL WRAPPER ================= -->
   <div id="wallWrapper" style="display: none;">
-      <!-- Header Mới (Theme Sáng) -->
       <div class="wall-header" id="wallHeroSection">
           <div class="wall-title-area">
               <h1 id="wallEventName">TÊN SỰ KIỆN</h1>
@@ -293,7 +299,7 @@
           </div>
       </div>
       
-      <!-- Masonry Grid -->
+      <!-- Masonry Grid (Mặc định không cuộn) -->
       <div class="wall-grid" id="wallMasonryGrid"></div>
 
       <!-- Wall Lightbox (Nền Đen) -->
@@ -314,7 +320,7 @@
       </div>
   </div>
 
-  <!-- SLIDESHOW MODE (KHINH KHÍ CẦU NỀN ĐEN) -->
+  <!-- SLIDESHOW MODE (KHINH KHÍ CẦU NỀN ĐEN BÁM ẢNH BÊN BẠN GỬI) -->
   <div id="slideshowWrapper">
       <div class="bg-blob b1"></div>
       <div class="bg-blob b2"></div>
@@ -331,12 +337,11 @@
       <div class="upload-modal">
           <div id="uploadLoadingOverlay">
               <div class="spinner-border" style="color:var(--accent); width: 3rem; height: 3rem;"></div>
-              <h5 class="mt-4 fw-bold text-dark fs-5">Đang nén và tải lên...</h5>
-              <p class="text-muted fw-bold mt-2 small">Vui lòng đợi giây lát</p>
+              <h5 class="mt-4 fw-bold text-dark fs-5">Đang xử lý tải lên...</h5>
           </div>
           <div class="upload-header">
               <h5 id="uploadModalTitle">Chia sẻ khoảnh khắc</h5>
-              <!-- Fix nút X đóng trang -->
+              <!-- Nút đóng bằng onclick chuẩn -->
               <button class="upload-close" onclick="app.closeUploadModal()"><i class="bi bi-x-circle-fill"></i></button>
           </div>
           <div id="uploadOptions">
@@ -357,11 +362,11 @@
       </div>
   </div>
 
-  <!-- ================= 4. MAIN APP BOOTH WRAPPER (TỐI GIẢN TÍNH NĂNG) ================= -->
+  <!-- ================= 4. MAIN APP BOOTH WRAPPER ================= -->
   <div id="mainAppWrapper" style="display: none;">
       <div class="app-header">
         <div class="d-flex align-items-center gap-2">
-          <!-- Bỏ Select Dự án, dùng Tên cố định để biết đang ở dự án nào -->
+          <!-- Bỏ Select Dự án, dùng Badge hiện Tên Dự án -->
           <button class="btn btn-sm btn-outline-secondary me-2" onclick="window.location.href='?'" title="Về Danh sách sự kiện"><i class="bi bi-house-door-fill"></i></button>
           <img id="headerLogo" src="https://hbooth.hama.io.vn/favicon.png" style="height: 28px; border-radius:6px;">
           <h6 class="d-none d-sm-block m-0 fw-bold fs-5 text-dark ms-2">HaMa Booth</h6>
@@ -413,7 +418,7 @@
               <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()"><i class="bi bi-camera-fill"></i></button>
             </div>
             
-            <!-- Đã loại bỏ Auto Xếp & Nhân Bản ảnh theo yêu cầu -->
+            <!-- Đã loại bỏ Auto Xếp -->
             <div class="d-flex flex-column gap-2" style="width: 140px;">
               <div class="d-flex align-items-center justify-content-between p-2 rounded border w-100 bg-white shadow-sm">
                 <button class="btn-circle-custom" style="width:30px; height:30px;" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
@@ -428,13 +433,14 @@
           
           <div class="gallery-section" id="currentSessionZone">
             <div class="gallery-title">
-              <div><i class="bi bi-images"></i> ẢNH SỰ KIỆN <span id="uploadStatusText" class="small text-muted ms-2" style="display:none;">Lưu: <span id="uploadCount">0/0</span></span></div>
+              <div><i class="bi bi-images text-accent"></i> ẢNH SỰ KIỆN</div>
               <div class="d-flex gap-2">
                   <button class="btn-circle-custom" onclick="app.selectAndWatchFolder()" title="Thư mục Máy tính"><i class="bi bi-pc-display text-primary"></i></button>
                   <label class="btn-circle-custom m-0" title="Chèn thủ công"><i class="bi bi-plus-lg text-success"></i><input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden></label>
               </div>
             </div>
             <div class="gallery-container" id="capturedGallery">
+              <!-- JS Sẽ fill ảnh vào đây -->
               <div class="w-100 text-center text-muted py-5" style="grid-column: 1 / -1;"><div class="spinner-border text-primary mb-3"></div><br><span class="fw-bold">Đang tải ảnh...</span></div>
             </div>
           </div>
@@ -458,12 +464,12 @@
       </div>
   </div>
 
-  <!-- ================= CÁC MODAL HỆ THỐNG CỦA BOOTH ================= -->
+  <!-- ================= CÁC MODAL HỆ THỐNG CỦA BOOTH (ÉP NỀN TRẮNG, BỎ CHỮ QR) ================= -->
   <div class="modal fade" id="printConfigModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold text-primary mb-4">SỐ BẢN IN</h5><div class="d-flex align-items-center justify-content-center bg-light p-2 rounded border mb-4"><button class="btn btn-outline-secondary fw-bold px-4 fs-4 border-0" onclick="app.adjustValue('printCopiesModal', -1)">-</button><input type="number" id="printCopiesModal" class="form-control text-center fs-3 fw-bold bg-transparent border-0" value="1" min="1" style="width:100px;"><button class="btn btn-outline-secondary fw-bold px-4 fs-4 border-0" onclick="app.adjustValue('printCopiesModal', 1)">+</button></div><button class="btn-primary-custom w-100 py-3 fs-5" onclick="app.executePrint()"><i class="bi bi-printer"></i> Xác nhận In</button></div></div></div>
-  <div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-info">QR REMOTE CAM</h5><div id="qrcode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('remote')"></div><p class="small text-muted mb-0 fw-bold">Dùng điện thoại quét mã để chụp hình.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
-  <div class="modal fade" id="albumQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-success">QR KHÁCH LẤY ẢNH</h5><div id="albumQRCode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('album')"></div><p class="small text-muted mb-0 fw-bold">Khách quét mã này để vào xem ảnh.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
-  <div class="modal fade" id="wallQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-dark">QR PHOTO WALL</h5><div id="wallQRCode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('wall')"></div><p class="small text-muted mb-0 fw-bold">Chiếu lên Màn LED để xem Photo Wall.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
-  <div class="modal fade" id="uploadQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-danger">QR GUEST UPLOAD</h5><div id="uploadQRCode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('upload')"></div><p class="small text-muted mb-0 fw-bold">Khách quét để gửi ẢNH & LỜI NHẮN.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
+  <div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-4 text-info">QR REMOTE CAM</h5><div id="qrcode" class="qr-container mx-auto mb-3" style="width: 200px; height: 200px;" onclick="app.copyQRLink('remote')"></div><button class="btn btn-light fw-bold w-100 border text-muted" onclick="app.copyQRLink('remote')"><i class="bi bi-link-45deg"></i> Copy Link</button></div></div></div>
+  <div class="modal fade" id="albumQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-4 text-success">QR KHÁCH LẤY ẢNH</h5><div id="albumQRCode" class="qr-container mx-auto mb-3" style="width: 200px; height: 200px;" onclick="app.copyQRLink('album')"></div><button class="btn btn-light fw-bold w-100 border text-muted" onclick="app.copyQRLink('album')"><i class="bi bi-link-45deg"></i> Copy Link</button></div></div></div>
+  <div class="modal fade" id="wallQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-4 text-dark">QR PHOTO WALL</h5><div id="wallQRCode" class="qr-container mx-auto mb-3" style="width: 200px; height: 200px;" onclick="app.copyQRLink('wall')"></div><button class="btn btn-light fw-bold w-100 border text-muted" onclick="app.copyQRLink('wall')"><i class="bi bi-link-45deg"></i> Copy Link</button></div></div></div>
+  <div class="modal fade" id="uploadQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-4 text-danger">QR GUEST UPLOAD</h5><div id="uploadQRCode" class="qr-container mx-auto mb-3" style="width: 200px; height: 200px;" onclick="app.copyQRLink('upload')"></div><button class="btn btn-light fw-bold w-100 border text-muted" onclick="app.copyQRLink('upload')"><i class="bi bi-link-45deg"></i> Copy Link</button></div></div></div>
   <div class="modal fade" id="connectionModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content p-4"><h5 class="fw-bold mb-3 text-primary"><i class="bi bi-broadcast"></i> Thiết bị Remote</h5><ul class="list-group list-group-flush border rounded" id="connectedDevicesList"><li class="list-group-item bg-light text-muted text-center py-4 fw-bold">Chưa có thiết bị nào kết nối.</li></ul><button class="btn btn-light fw-bold border mt-3 w-100 py-2" data-bs-dismiss="modal">Đóng</button></div></div></div>
 
   <!-- MODAL CHỌN ẢNH VÀ CHỈNH SỬA -->
@@ -471,7 +477,7 @@
   
   <div class="modal fade" id="imagePrepModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold text-primary">CHỈNH SỬA</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-center p-4"><div id="prepPreviewContainer" style="width:100%; height: 350px; overflow:hidden; border-radius: 12px; border: 2px solid #e2e8f0; margin-bottom:20px; background:#f8fafc; position:relative; cursor: grab;"><img id="prepPreview" src="" style="width:100%; height:100%; object-fit:contain; pointer-events: none;"><div style="position:absolute; bottom:10px; left:10px; font-size:0.75rem; color:#fff; background:rgba(0,0,0,0.6); padding:4px 10px; border-radius:20px; font-weight:bold;">Cuộn: Zoom | Kéo: Di chuyển</div></div><div class="row g-3 text-start align-items-center"><div class="col-6"><label class="small fw-bold text-muted mb-1">Xén (Zoom)</label><input type="range" class="form-range" id="prepZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updatePrepPreview()"></div><div class="col-6"><label class="small fw-bold text-muted mb-1">Xoay (°)</label><input type="range" class="form-range" id="prepRot" min="0" max="270" step="90" value="0" oninput="app.updatePrepPreview()"></div><div class="col-6"><label class="small fw-bold text-muted mb-1">Độ sáng</label><input type="range" class="form-range" id="prepBr" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div><div class="col-6"><label class="small fw-bold text-muted mb-1">Tương phản</label><input type="range" class="form-range" id="prepCt" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div><input type="hidden" id="prepPanX" value="0"> <input type="hidden" id="prepPanY" value="0"></div></div><div class="modal-footer justify-content-center border-0 pb-4"><button type="button" class="btn btn-primary-custom w-100 py-3 fs-5" onclick="app.addToLayout()"><i class="bi bi-check2-circle me-2"></i> CHÈN VÀO KHUNG IN</button></div></div></div></div>
 
-  <!-- ================= KHÔI PHỤC 100% OFFCANVAS CÀI ĐẶT CHUNG (SÁNG) ================= -->
+  <!-- ================= KHÔI PHỤC TOÀN BỘ OFFCANVAS CÀI ĐẶT CŨ CỦA BẠN ================= -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 380px; box-shadow: -5px 0 25px rgba(0,0,0,0.1);">
     <div class="offcanvas-header bg-light border-bottom">
       <h5 class="offcanvas-title fw-bold text-primary"><i class="bi bi-gear-fill me-2"></i> CÀI ĐẶT CHUNG</h5>
@@ -479,11 +485,11 @@
     </div>
     <div class="offcanvas-body p-4 bg-white">
       
-      <!-- BỐ CỤC & IN ẤN -->
+      <!-- BỐ CỤC & IN ẤN (300DPI) -->
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Bố cục & In ấn</h6>
         <div class="bg-light p-3 rounded border">
-            <label class="small text-muted w-100 mb-2 fw-bold"><i class="bi bi-info-circle text-info"></i> Máy in chọn tại hộp thoại hệ thống.</label>
+            <label class="small text-muted w-100 mb-2 fw-bold"><i class="bi bi-info-circle text-info"></i> Máy in 100x148mm (300dpi) chọn tại hộp thoại in.</label>
             <select id="layoutSelect" class="form-select mb-3 fw-bold" onchange="app.changeLayout(); app.saveSettings()">
               <option value="1">10x15 cm (1 ảnh)</option>
               <option value="2">6x9 cm (2 ô)</option>
@@ -521,6 +527,25 @@
         <input type="text" id="appHeaderTitle" class="form-control mb-3" placeholder="HaMa PhotoBooth..." onkeyup="app.updateHeader(); app.saveSettings()">
         <label class="small fw-bold text-dark w-100 mb-2">Logo góc trái (Hình ảnh/Favicon)</label>
         <input type="file" id="appHeaderLogoInput" class="form-control bg-white" accept="image/*" onchange="app.loadHeaderLogo(event)">
+      </div>
+
+      <!-- NGUỒN ẢNH CỤC BỘ -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Nguồn ảnh Cục bộ (Máy tính)</h6>
+        <div class="p-3 border rounded bg-light">
+            <label class="small fw-bold text-dark mb-2">Chế độ lọc ảnh tự động:</label>
+            <select id="folderFilterMode" class="form-select fw-bold mb-3" onchange="app.toggleFilterUI(); app.saveSettings()">
+                <option value="new" selected>Chỉ tải ảnh MỚI (Từ lúc kết nối)</option>
+                <option value="time">Lọc theo khoảng thời gian</option>
+                <option value="all">Tải tất cả</option>
+            </select>
+            <div id="timeFilterInputs" style="display: none;">
+                <div class="row g-3 mb-2">
+                    <div class="col-12"><label class="small fw-bold text-muted mb-1">Từ:</label><input type="datetime-local" id="filterFromDate" class="form-control" onchange="app.saveSettings()"></div>
+                    <div class="col-12"><label class="small fw-bold text-muted mb-1">Đến:</label><input type="datetime-local" id="filterToDate" class="form-control" onchange="app.saveSettings()"></div>
+                </div>
+            </div>
+        </div>
       </div>
 
       <!-- WATERMARK TRANG IN -->
@@ -622,12 +647,29 @@
       wlZoom: 1, wlPanX: 0, wlPanY: 0,
       isWlPanning: false, wlStartX: 0, wlStartY: 0,
       slideInterval: null,
+      wallFetchInterval: null,
       guestUploadImageB64: null,
       currentDashQRUrl: "",
+      datePicker: null,
 
       init: async function() {
+        // Khởi tạo Flatpickr cho Modal tạo sự kiện
+        if (document.getElementById('cpDateRange')) {
+            this.datePicker = flatpickr("#cpDateRange", {
+                mode: "range",
+                dateFormat: "d/m/Y",
+                locale: "vn"
+            });
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         
+        const albumId = urlParams.get('album');
+        if (albumId) { this.initAlbumMode(albumId); return; }
+
+        const remoteId = urlParams.get('remote');
+        if (remoteId) { this.initRemoteMode(remoteId); return; }
+
         const wallId = urlParams.get('wall');
         if (wallId) { this.initWallMode(wallId); return; }
 
@@ -642,7 +684,6 @@
             return; 
         }
 
-        // Khởi tạo các Modal chung
         this.dashQRModalInstance = new bootstrap.Modal(document.getElementById('dashQRModal'));
         this.createModalInstance = new bootstrap.Modal(document.getElementById('createProjectModal'));
         
@@ -667,32 +708,32 @@
                       grid.innerHTML = '<div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><i class="bi bi-folder-x fs-1"></i><br>Chưa có sự kiện nào. Hãy tạo mới!</div>';
                   } else {
                       res.data.forEach(p => {
-                          // Tính toán trạng thái sự kiện
-                          let datesStr = p.date || '';
-                          let startDate = new Date(p.created);
-                          let endDate = new Date(p.created);
-                          
-                          if(datesStr.includes('|')) {
-                              let parts = datesStr.split('|');
-                              if(parts[0]) startDate = new Date(parts[0]);
-                              if(parts[1]) endDate = new Date(parts[1]);
-                          } else if(datesStr) {
-                              startDate = new Date(datesStr);
-                              endDate = new Date(datesStr);
-                          }
-                          
-                          startDate.setHours(0,0,0,0);
-                          endDate.setHours(23,59,59,999);
-                          let now = new Date();
-                          
+                          let displayDateStr = p.date ? p.date : new Date(p.created).toLocaleDateString('vi-VN');
                           let statusClass = 'active', statusText = 'Đang diễn ra', statusIcon = 'bi-record-circle-fill';
-                          if (now < startDate) { statusClass = 'waiting'; statusText = 'Sắp diễn ra'; statusIcon = 'bi-clock-fill'; }
-                          else if (now > endDate) { statusClass = 'ended'; statusText = 'Đã kết thúc'; statusIcon = 'bi-check-circle-fill'; }
+                          
+                          // Tính toán logic Trạng thái sự kiện dựa trên ngày (nếu có thể parse)
+                          try {
+                              let startDateStr = displayDateStr;
+                              let endDateStr = displayDateStr;
+                              if(displayDateStr.includes(' to ')) {
+                                  let pts = displayDateStr.split(' to ');
+                                  startDateStr = pts[0]; endDateStr = pts[1];
+                              } else if (displayDateStr.includes(' đến ')) {
+                                  let pts = displayDateStr.split(' đến ');
+                                  startDateStr = pts[0]; endDateStr = pts[1];
+                              }
+                              
+                              let parseDate = (str) => {
+                                  let p = str.split('/'); return new Date(p[2], p[1]-1, p[0]);
+                              };
+                              let sDate = parseDate(startDateStr);
+                              let eDate = parseDate(endDateStr);
+                              eDate.setHours(23,59,59,999);
+                              let now = new Date();
 
-                          let displayDateStr = startDate.toLocaleDateString('vi-VN');
-                          if(startDate.getTime() !== endDate.getTime()) {
-                              displayDateStr += ' - ' + endDate.toLocaleDateString('vi-VN');
-                          }
+                              if (now < sDate) { statusClass = 'waiting'; statusText = 'Sắp diễn ra'; statusIcon = 'bi-clock-fill'; }
+                              else if (now > eDate) { statusClass = 'ended'; statusText = 'Đã kết thúc'; statusIcon = 'bi-check-circle-fill'; }
+                          } catch(err){}
 
                           const coverImg = p.coverUrl || ((p.thumbs && p.thumbs.length > 0) ? p.thumbs[0] : 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80');
 
@@ -710,10 +751,12 @@
                                       <span><i class="bi bi-calendar3"></i> ${displayDateStr}</span>
                                       <span><i class="bi bi-geo-alt-fill"></i> ${p.location || 'Chưa cập nhật'}</span>
                                   </div>
-                                  <div class="pc-media-count">${p.totalMedia || 0} Media</div>
+                                  <div class="pc-stats-box">
+                                      <div class="pc-media-count">${p.totalMedia || 0} <span>Media</span></div>
+                                      <button class="btn-qr-dash" onclick="app.showDashQRModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code fs-5"></i></button>
+                                  </div>
                                   <div class="pc-actions">
                                       <button class="btn-view-album" onclick="window.location.href='?booth=${p.id}'">Vào Sự Kiện</button>
-                                      <button class="btn-qr-dash" onclick="app.showDashQRModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code"></i></button>
                                   </div>
                               </div>
                           `;
@@ -746,8 +789,7 @@
           document.getElementById('cpName').value = "";
           document.getElementById('cpLocation').value = "";
           document.getElementById('cpDesc').value = "";
-          document.getElementById('cpDateStart').valueAsDate = new Date();
-          document.getElementById('cpDateEnd').valueAsDate = new Date();
+          if(this.datePicker) this.datePicker.clear();
           this.removeCover();
           this.checkCreateForm();
           this.createModalInstance.show();
@@ -761,13 +803,9 @@
           document.getElementById('cpLocation').value = proj.location || '';
           document.getElementById('cpDesc').value = proj.description || '';
           
-          if(proj.date && proj.date.includes('|')) {
-              let pts = proj.date.split('|');
-              document.getElementById('cpDateStart').value = pts[0];
-              document.getElementById('cpDateEnd').value = pts[1];
-          } else if(proj.date) {
-              document.getElementById('cpDateStart').value = proj.date;
-              document.getElementById('cpDateEnd').value = proj.date;
+          if(proj.date && this.datePicker) {
+              // Flatpickr nhận lại chuỗi ngày
+              this.datePicker.setDate(proj.date.split(' to '));
           }
 
           if(proj.category) {
@@ -817,15 +855,11 @@
           const name = document.getElementById('cpName').value.trim();
           if(!name) return Swal.fire('Lỗi', 'Vui lòng nhập tên sự kiện!', 'error');
 
-          const dateStart = document.getElementById('cpDateStart').value;
-          const dateEnd = document.getElementById('cpDateEnd').value;
+          const dateVal = document.getElementById('cpDateRange').value;
           const locVal = document.getElementById('cpLocation').value.trim();
           const descVal = document.getElementById('cpDesc').value.trim();
           const catVal = document.querySelector('input[name="cpCategory"]:checked').value;
           const editId = document.getElementById('cpEditId').value;
-
-          let rawDate = dateStart;
-          if(dateStart && dateEnd && dateStart !== dateEnd) { rawDate = dateStart + '|' + dateEnd; }
 
           this.closeCreateModal();
           Swal.fire({title: 'Đang lưu sự kiện...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
@@ -834,7 +868,7 @@
           fd.append('action', editId ? 'updateProjectInfo' : 'createProject'); 
           if(editId) fd.append('projectId', editId);
           fd.append('projectName', name);
-          fd.append('eventDate', rawDate);
+          fd.append('eventDate', dateVal);
           fd.append('eventLocation', locVal);
           fd.append('eventCategory', catVal);
           fd.append('eventDesc', descVal);
@@ -844,21 +878,22 @@
               const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json());
               if(res.success) { 
                   Swal.close(); 
-                  if(editId) { window.location.reload(); } // Load lại Dashboard
-                  else { window.location.href = '?booth=' + res.id; } // Vào thẳng Booth mới
+                  if(editId) { window.location.reload(); } 
+                  else { window.location.href = '?booth=' + res.id; } 
               }
           } catch(e) { Swal.fire('Lỗi', 'Không thể lưu sự kiện', 'error'); }
       },
 
       /* =========================================
-       * GUEST UPLOAD (CHỐNG LAG VÀ NÚT ĐÓNG X CHUẨN)
+       * GUEST UPLOAD (CHỐNG LAG & NÚT X ĐÓNG TRANG)
        * ========================================= */
       initUploadMode: async function(projectId) {
           document.getElementById('uploadWrapper').style.display = 'flex';
           this.currentProjectId = projectId;
       },
       closeUploadModal: function() {
-          document.getElementById('uploadWrapper').style.display = 'none'; // Ẩn giao diện đi mượt mà
+          // Bấm X sẽ ẩn form hoặc đóng trang
+          document.getElementById('uploadWrapper').style.display = 'none';
       },
       showGuestMessageForm: function() {
           this.guestUploadImageB64 = null;
@@ -935,7 +970,8 @@
       wrapText: function(context, text, x, y, maxWidth, lineHeight) {
           const words = text.split(' '); let line = ''; let lines = [];
           for(let n = 0; n < words.length; n++) { let testLine = line + words[n] + ' '; let metrics = context.measureText(testLine); if (metrics.width > maxWidth && n > 0) { lines.push(line); line = words[n] + ' '; } else { line = testLine; } }
-          lines.push(line); let startY = y - ((lines.length - 1) * lineHeight) / 2;
+          lines.push(line);
+          let startY = y - ((lines.length - 1) * lineHeight) / 2;
           for(let i = 0; i < lines.length; i++) { context.fillText(lines[i], x, startY + (i * lineHeight)); }
       },
 
@@ -952,16 +988,7 @@
                   document.getElementById('wallEventName').innerText = r.meta.name || "Sự kiện";
                   document.getElementById('slideEventName').innerText = r.meta.name || "Sự kiện";
                   document.getElementById('wallLocation').innerText = r.meta.location || "Chưa cập nhật";
-                  
-                  let dateStr = r.meta.date;
-                  if(dateStr && dateStr.includes('|')) {
-                      let p = dateStr.split('|');
-                      document.getElementById('wallDate').innerText = new Date(p[0]).toLocaleDateString('vi-VN') + ' - ' + new Date(p[1]).toLocaleDateString('vi-VN');
-                  } else if (dateStr) {
-                      document.getElementById('wallDate').innerText = new Date(dateStr).toLocaleDateString('vi-VN');
-                  } else {
-                      document.getElementById('wallDate').innerText = new Date().toLocaleDateString('vi-VN');
-                  }
+                  document.getElementById('wallDate').innerText = r.meta.date || new Date().toLocaleDateString('vi-VN');
               }
           }).catch(()=>{});
 
@@ -999,10 +1026,9 @@
           };
 
           fetchWallImages();
-          setInterval(fetchWallImages, 5000); // 5s lấy ảnh 1 lần
+          this.wallFetchInterval = setInterval(fetchWallImages, 5000); 
       },
       
-      // Khởi chạy Slideshow (Bay lơ lửng)
       startSlideshow: function() {
           document.getElementById('wallHeroSection').style.display = 'none';
           document.getElementById('wallMasonryGrid').style.display = 'none';
@@ -1026,10 +1052,9 @@
           const el = document.createElement('div');
           el.className = 'floating-item show';
           
-          // Kích thước ngẫu nhiên
           const size = Math.random() * 200 + 250; 
           const left = Math.random() * 75; 
-          const duration = Math.random() * 10 + 15; // 15 đến 25 giây bay
+          const duration = Math.random() * 10 + 15; 
           
           el.style.width = size + 'px';
           el.style.height = size + 'px';
@@ -1097,7 +1122,7 @@
       },
 
       /* =========================================
-       * KHỞI TẠO MAIN BOOTH CHÍNH CŨ
+       * KHỞI TẠO MAIN BOOTH CHÍNH CŨ & IN ẤN CHUẨN 300DPI
        * ========================================= */
       initMainBooth: async function() {
         this.prepModalInstance = new bootstrap.Modal(document.getElementById('imagePrepModal'));
@@ -1111,7 +1136,6 @@
         
         this.loadLocalSettings(); 
         
-        // Tải Project để lấy thông tin Tên Dự án & Ảnh vào Gallery
         const fd = new URLSearchParams(); fd.append('action', 'getProjects');
         try {
             const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json());
@@ -1135,9 +1159,6 @@
         this.updateMirrorUI();
       },
 
-      /* =========================================
-       * CÁC HÀM XỬ LÝ ẢNH, CAMERA & CANVAS (BẢN GỐC TỐI ƯU)
-       * ========================================= */
       adjustValue: function(inputId, delta) {
           const input = document.getElementById(inputId); if(!input) return;
           let val = parseInt(input.value) || 0; let min = parseInt(input.min) || 1; let max = parseInt(input.max) || 100;
@@ -1175,6 +1196,27 @@
       showAlbumQRModal: function() { this.albumQRModalInstance.show(); const qrContainer = document.getElementById('albumQRCode'); qrContainer.innerHTML = ""; new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?album=" + this.currentProjectId, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" }); },
       showWallQRModal: function() { this.wallQRModalInstance.show(); const qrContainer = document.getElementById('wallQRCode'); qrContainer.innerHTML = ""; new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?wall=" + this.currentProjectId, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" }); },
       showUploadQRModal: function() { this.uploadQRModalInstance.show(); const qrContainer = document.getElementById('uploadQRCode'); qrContainer.innerHTML = ""; new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?upload=" + this.currentProjectId, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" }); },
+      
+      initAlbumMode: function(projectId) {
+          document.body.innerHTML += `<div class="client-album-wrapper" style="background:#f4f6f8; color:#333;"><div class="album-header" style="background:#fff;"><img id="clientLogo" src="" style="height: 30px; display:none; border-radius:4px;"><div><h6 class="m-0 fw-bold text-uppercase" id="clientTitle" style="color: var(--accent);">THƯ VIỆN ẢNH</h6><p class="small text-muted m-0" style="font-size:0.7rem;">Cập nhật theo thời gian thực</p></div></div><div class="album-grid" id="clientAlbumGrid"><div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><div class="spinner-border text-info mb-2" role="status"></div><br>Đang tải dữ liệu...</div></div></div>`;
+          const s = JSON.parse(localStorage.getItem('boothSettings_Pro') || '{}');
+          if(s.headerTitle) document.getElementById('clientTitle').innerText = s.headerTitle;
+          if(s.headerLogo) { document.getElementById('clientLogo').src = s.headerLogo; document.getElementById('clientLogo').style.display = 'block'; }
+          const loadGallery = () => {
+              const fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', projectId);
+              fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
+                  const grid = document.getElementById('clientAlbumGrid');
+                  if (!r.success || r.data.length === 0) { grid.innerHTML = '<div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><i class="bi bi-images fs-1"></i><br>Sự kiện này chưa có ảnh.</div>'; return; }
+                  grid.innerHTML = '';
+                  r.data.forEach(item => {
+                      const div = document.createElement('div'); div.className = 'album-item';
+                      div.onclick = () => { document.getElementById('lightboxImg').src = item.url; document.getElementById('lightboxDownloadBtn').href = item.url; document.getElementById('lightbox').style.display = 'flex'; };
+                      const img = document.createElement('img'); img.src = item.url; img.loading = "lazy"; div.appendChild(img); grid.appendChild(div);
+                  });
+              }).catch(e => console.log(e));
+          };
+          loadGallery(); setInterval(loadGallery, 5000);
+      },
       toggleLiveCamUI: function() {
           const isHidden = document.getElementById('hideLiveCamToggle').checked;
           if (isHidden) { document.body.classList.add('hide-livecam'); if(this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; } if(this.video) this.video.srcObject = null; } 
@@ -1227,7 +1269,7 @@
       },
       refreshConnectionListUI: function() {
           const list = document.getElementById('connectedDevicesList'); if(!list) return; list.innerHTML = '';
-          if(this.connectedRemotes.length === 0) { list.innerHTML = '<li class="list-group-item bg-light text-muted text-center py-4 fw-bold">Chưa có thiết bị nào kết nối.</li>'; } 
+          if(this.connectedRemotes.length === 0) { list.innerHTML = '<li class="list-group-item bg-light text-muted text-center py-4 fw-bold border-0">Chưa có thiết bị nào kết nối.</li>'; } 
           else {
               let sorted = [...this.connectedRemotes].sort((a,b) => { if (a.status === 'online' && b.status !== 'online') return -1; if (a.status !== 'online' && b.status === 'online') return 1; return 0; });
               sorted.forEach((dev) => {
@@ -1272,11 +1314,10 @@
           const img = new Image(); img.crossOrigin = "anonymous"; const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0 };
           img.onload = () => { 
               this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery(); 
-              // Đã loại bỏ AutoInsert theo yêu cầu
+              // Đã loại bỏ AutoInsert
               if(API_URL && this.currentProjectId) {
-                this.totalToUpload++; document.getElementById('uploadStatusText').style.display = 'inline';
                 const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'RemoteCam_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
-                fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; this.totalUploaded++; this.updateUploadUI(); } }).catch(()=>{ this.updateUploadUI(); });
+                fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; } }).catch(()=>{});
               }
           }; img.src = b64; 
       },
@@ -1285,6 +1326,7 @@
           <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
               <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
               <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:15;"></canvas>
+              <div class="remote-grid-overlay"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
               <div id="captureControls" style="position:absolute; bottom:40px; left:0; width:100%; display:flex; justify-content:space-evenly; align-items:center; z-index:20; padding:0 20px;">
                   <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-arrow-repeat"></i></button>
@@ -1376,11 +1418,10 @@
                   for(let file of newFiles) {
                       const b64 = await this.readFileAsDataURL(file); const img = new Image(); img.crossOrigin = "anonymous"; img.src = b64; await new Promise(r => img.onload = r);
                       const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0 }; this.capturedPhotos.unshift(photoRecord); newFilesFound = true;
-                      // Đã bỏ Auto Insert
+                      
                       if(API_URL && this.currentProjectId) {
-                          this.totalToUpload++; document.getElementById('uploadStatusText').style.display = 'inline'; this.updateUploadUI();
                           const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'FolderSync_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
-                          fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; this.totalUploaded++; this.updateUploadUI(); } }).catch(()=>{ this.updateUploadUI(); });
+                          fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; } }).catch(()=>{});
                       }
                   }
                   if (newFilesFound) { this.renderCapturedGallery(); }
@@ -1440,17 +1481,12 @@
         imgObj.onload = () => {
           this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery();
           if(targetSlot !== -1) { this.pages[this.currentPage][targetSlot] = { img: imgObj, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 }; this.activeSlotIndex = targetSlot; this.updateToolbarUI(); this.renderCanvas(); } 
-          // Đã bỏ auto Copies ở Live Cam theo yêu cầu
+          
           if(API_URL && this.currentProjectId) {
-            this.totalToUpload++; document.getElementById('uploadStatusText').style.display = 'inline'; this.updateUploadUI();
             const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Booth_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
-            fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ if(r.success) { photoRecord.driveId = r.id; this.totalUploaded++; this.updateUploadUI(); } }).catch(()=>{ this.updateUploadUI(); });
+            fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ if(r.success) { photoRecord.driveId = r.id; } }).catch(()=>{});
           }
         }; imgObj.src = b64;
-      },
-      updateUploadUI: function() {
-        document.getElementById('uploadCount').innerText = `${this.totalUploaded}/${this.totalToUpload}`; 
-        if(this.totalUploaded >= this.totalToUpload && this.totalToUpload > 0) { setTimeout(() => { document.getElementById('uploadStatusText').style.display = 'none'; this.totalUploaded = 0; this.totalToUpload = 0; }, 2000); }
       },
       handleDragOverSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.add('dragover'); },
       handleDragLeaveSession: function(e) { e.preventDefault(); document.getElementById('currentSessionZone').classList.remove('dragover'); },
@@ -1465,9 +1501,8 @@
             img.onload = () => { 
               this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery(); 
               if(API_URL && this.currentProjectId) {
-                this.totalToUpload++; document.getElementById('uploadStatusText').style.display = 'inline'; this.updateUploadUI();
                 const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Local_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
-                fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; this.totalUploaded++; this.updateUploadUI(); } }).catch(()=>{ this.updateUploadUI(); });
+                fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; } }).catch(()=>{});
               }
             }; img.src = b64; 
           }; r.readAsDataURL(file);
@@ -1551,11 +1586,18 @@
           });
       },
       getLayoutConfig: function() { const val = parseInt(document.getElementById('layoutSelect').value); if(val === 2) return { cols: 1, rows: 2 }; if(val === 4) return { cols: 2, rows: 2 }; if(val === 8) return { cols: 2, rows: 4 }; return { cols: 1, rows: 1 }; },
+      
+      // FIX LẠI CỠ IN CHUẨN 300 DPI CHO KHỔ 100x148mm (TƯƠNG ĐƯƠNG 1181x1748 px)
       changeLayout: function() {
         const config = this.getLayoutConfig(); this.slotsPerPage = config.cols * config.rows; this.pages = [new Array(this.slotsPerPage).fill(null)]; this.currentPage = 0; this.activeSlotIndex = -1; this.updateToolbarUI();
         const ps = document.getElementById('printStyle'); const cvs = this.canvas;
-        // Chuẩn 300DPI cho ảnh in (Đã giữ nguyên theo base 2400x3600 px)
-        if (this.slotsPerPage === 2 || this.slotsPerPage === 8) { cvs.width = 2400; cvs.height = 3600; ps.innerHTML = `@media print { @page { size: 4in 6in; margin: 0; } }`; } else { cvs.width = 3600; cvs.height = 2400; ps.innerHTML = `@media print { @page { size: 6in 4in; margin: 0; } }`; }
+        if (this.slotsPerPage === 2 || this.slotsPerPage === 8) { 
+            cvs.width = 1181; cvs.height = 1748; // Khổ Dọc
+            ps.innerHTML = `@media print { @page { size: 100mm 148mm; margin: 0; } }`; 
+        } else { 
+            cvs.width = 1748; cvs.height = 1181; // Khổ Ngang
+            ps.innerHTML = `@media print { @page { size: 148mm 100mm; margin: 0; } }`; 
+        }
         this.renderPagination(); this.renderCanvas();
       },
       clearLayout: function() { this.pages = [new Array(this.slotsPerPage).fill(null)]; this.currentPage = 0; this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderPagination(); this.renderCanvas(); },
@@ -1615,7 +1657,7 @@
         this.dragPayload = null;
       },
       getSlotIndexFromEvent: function(e) {
-        const rect = this.canvas.getBoundingClientRect(); const config = this.getLayoutConfig(); const pxPerMm = 23.62; 
+        const rect = this.canvas.getBoundingClientRect(); const config = this.getLayoutConfig(); const pxPerMm = 11.81; // Chuyển đổi px per mm mới cho 300dpi (300dpi = 11.81px/mm)
         const mTop = (parseFloat(document.getElementById('marginTop').value) || 0) * pxPerMm; const mBot = (parseFloat(document.getElementById('marginBottom').value) || 0) * pxPerMm; const mLeft = (parseFloat(document.getElementById('marginLeft').value) || 0) * pxPerMm; const mRight = (parseFloat(document.getElementById('marginRight').value) || 0) * pxPerMm;
         const drawW = this.canvas.width - mLeft - mRight; const drawH = this.canvas.height - mTop - mBot;
         const scaleX = this.canvas.width / rect.width; const scaleY = this.canvas.height / rect.height;
@@ -1660,9 +1702,8 @@
               }
               this.pendingSlotIndex = -1; this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderPagination(); this.renderCanvas();
               if(API_URL && this.currentProjectId) {
-                this.totalToUpload++; document.getElementById('uploadStatusText').style.display = 'inline'; this.updateUploadUI();
                 const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Uploaded_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
-                fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ if(r.success) { this.totalUploaded++; this.updateUploadUI(); } }).catch(()=>{ this.updateUploadUI(); });
+                fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ if(r.success) {} }).catch(()=>{});
               }
            }; img.src = b64; 
         }; r.readAsDataURL(file); e.target.value = ''; 
@@ -1670,8 +1711,9 @@
       renderCanvas: function() {
         const cvs = this.canvas; const config = this.getLayoutConfig(); const cw = cvs.width; const ch = cvs.height;
         this.ctx.clearRect(0, 0, cw, ch); this.ctx.fillStyle = "#ffffff"; this.ctx.fillRect(0, 0, cw, ch);
-        const pxPerMm = 23.62; const mTop = (parseFloat(document.getElementById('marginTop').value) || 0) * pxPerMm; const mBot = (parseFloat(document.getElementById('marginBottom').value) || 0) * pxPerMm; const mLeft = (parseFloat(document.getElementById('marginLeft').value) || 0) * pxPerMm; const mRight = (parseFloat(document.getElementById('marginRight').value) || 0) * pxPerMm;
-        const drawW = cw - mLeft - mRight; const drawH = ch - mTop - mBot; const cellW = drawW / config.cols; const cellH = drawH / config.rows; const sBorder = (parseInt(document.getElementById('slotBorder').value) || 0) * 4; 
+        const pxPerMm = 11.81; // 300DPI
+        const mTop = (parseFloat(document.getElementById('marginTop').value) || 0) * pxPerMm; const mBot = (parseFloat(document.getElementById('marginBottom').value) || 0) * pxPerMm; const mLeft = (parseFloat(document.getElementById('marginLeft').value) || 0) * pxPerMm; const mRight = (parseFloat(document.getElementById('marginRight').value) || 0) * pxPerMm;
+        const drawW = cw - mLeft - mRight; const drawH = ch - mTop - mBot; const cellW = drawW / config.cols; const cellH = drawH / config.rows; const sBorder = (parseInt(document.getElementById('slotBorder').value) || 0) * 12; // Viền dày hơn do canvas lớn
         for(let r = 0; r < config.rows; r++) {
           for(let c = 0; c < config.cols; c++) {
             const index = r * config.cols + c; const slot = this.pages[this.currentPage][index]; const x = mLeft + c * cellW; const y = mTop + r * cellH;
@@ -1680,9 +1722,10 @@
               this.ctx.save(); this.ctx.filter = `brightness(${slot.br}%) contrast(${slot.ct}%)`;
               const imgRatio = slot.img.width / slot.img.height; const isRotated = (slot.rotate === 90 || slot.rotate === 270); let targetRatio = isRotated ? (cellH / cellW) : (cellW / cellH);
               let dw = cellW, dh = cellH; if (imgRatio > targetRatio) { dw = cellH * imgRatio; } else { dh = cellW / imgRatio; } if(isRotated) { if (imgRatio > (cellH/cellW)) { dh = cellW; dw = cellW * imgRatio; } else { dw = cellH; dh = cellH / imgRatio; } }
-              this.ctx.translate(x + cellW / 2, y + cellH / 2); this.ctx.translate(slot.panX, slot.panY); this.ctx.scale(slot.zoom, slot.zoom); this.ctx.rotate(slot.rotate * Math.PI / 180); this.ctx.drawImage(slot.img, -dw / 2, -dh / 2, dw, dh); this.ctx.restore(); 
+              this.ctx.translate(x + cellW / 2, y + cellH / 2); this.ctx.translate(slot.panX * 2, slot.panY * 2); // Nhân 2 vì canvas quá lớn
+              this.ctx.scale(slot.zoom, slot.zoom); this.ctx.rotate(slot.rotate * Math.PI / 180); this.ctx.drawImage(slot.img, -dw / 2, -dh / 2, dw, dh); this.ctx.restore(); 
             } else {
-              this.ctx.fillStyle = "#f1f5f9"; this.ctx.fillRect(x, y, cellW, cellH); this.ctx.fillStyle = "#94a3b8"; this.ctx.font = "40px Arial"; this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle"; this.ctx.fillText("Bấm để chụp / chèn ảnh", x + cellW/2, y + cellH/2);
+              this.ctx.fillStyle = "#f1f5f9"; this.ctx.fillRect(x, y, cellW, cellH); this.ctx.fillStyle = "#94a3b8"; this.ctx.font = "80px Montserrat"; this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle"; this.ctx.fillText("Bấm để chụp / chèn ảnh", x + cellW/2, y + cellH/2);
             }
             if (this.printLogo) { 
               const logoScale = parseInt(document.getElementById('logoSize').value) / 100; const posX = parseInt(document.getElementById('logoX').value) / 100; const posY = parseInt(document.getElementById('logoY').value) / 100;
@@ -1693,12 +1736,12 @@
               const sizePct = parseInt(document.getElementById('wmSize').value) / 100; const fontSize = cellH * sizePct;
               this.ctx.font = `bold ${fontSize}px ${document.getElementById('wmFont').value}`; this.ctx.fillStyle = document.getElementById('wmColor').value; this.ctx.textBaseline = "middle"; this.ctx.textAlign = document.getElementById('wmAlign').value;
               const wmX = parseInt(document.getElementById('wmX').value) / 100; const wmY = parseInt(document.getElementById('wmY').value) / 100; let textX = x + cellW * wmX; let textY = y + cellH * wmY;
-              if(document.getElementById('wmHasOutline').checked) { this.ctx.strokeStyle = document.getElementById('wmOutline').value; this.ctx.lineWidth = parseInt(document.getElementById('wmOutlineThick').value)*3; this.ctx.strokeText(text, textX, textY); }
+              if(document.getElementById('wmHasOutline').checked) { this.ctx.strokeStyle = document.getElementById('wmOutline').value; this.ctx.lineWidth = parseInt(document.getElementById('wmOutlineThick').value)*5; this.ctx.strokeText(text, textX, textY); }
               this.ctx.fillText(text, textX, textY);
             }
             if(sBorder > 0) { this.ctx.lineWidth = sBorder * 2; this.ctx.strokeStyle = "#ffffff"; this.ctx.strokeRect(x, y, cellW, cellH); }
-            if (this.activeSlotIndex === index) { this.ctx.strokeStyle = "rgba(255, 107, 43, 0.8)"; this.ctx.lineWidth = 25; this.ctx.strokeRect(x, y, cellW, cellH); } 
-            else { this.ctx.strokeStyle = "#cbd5e1"; this.ctx.lineWidth = 4; this.ctx.setLineDash([20, 20]); this.ctx.strokeRect(x, y, cellW, cellH); this.ctx.setLineDash([]); }
+            if (this.activeSlotIndex === index) { this.ctx.strokeStyle = "rgba(255, 107, 43, 0.8)"; this.ctx.lineWidth = 40; this.ctx.strokeRect(x, y, cellW, cellH); } 
+            else { this.ctx.strokeStyle = "#cbd5e1"; this.ctx.lineWidth = 8; this.ctx.setLineDash([40, 40]); this.ctx.strokeRect(x, y, cellW, cellH); this.ctx.setLineDash([]); }
             this.ctx.restore();
           }
         }
@@ -1708,9 +1751,9 @@
       printAllPages: async function() {
           this.saveLayoutToDrive(true);
           const printCopies = parseInt(document.getElementById('printCopiesModal').value) || 1;
-          Swal.fire({title: 'Đang chuẩn bị trang in...', didOpen: () => Swal.showLoading()});
+          Swal.fire({title: 'Đang chuẩn bị trang in (300dpi)...', didOpen: () => Swal.showLoading()});
           this.activeSlotIndex = -1; this.updateToolbarUI(); const printDiv = document.getElementById('printContainer'); printDiv.innerHTML = ''; const backupPage = this.currentPage;
-          // Chất lượng JPG được đặt là 1.0 (100%) để đảm bảo 300DPI sắc nét
+          // Chất lượng JPG được đặt là 1.0 (100%) để đảm bảo nét nhất khi in
           for(let copy = 0; copy < printCopies; copy++) {
               for(let i=0; i < this.pages.length; i++) { this.currentPage = i; this.renderCanvas(); const dataUrl = this.canvas.toDataURL('image/jpeg', 1.0); const img = document.createElement('img'); img.src = dataUrl; img.className = 'print-page'; printDiv.appendChild(img); }
           }
