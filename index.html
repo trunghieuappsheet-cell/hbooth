@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" data-bs-theme="dark">
+<html lang="vi" data-bs-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,7 +8,7 @@
   <link rel="icon" id="dynamicFavicon" href="https://hbooth.hama.io.vn/favicon.png" type="image/png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -18,166 +18,282 @@
   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
   <style>
-    /* ================= HỆ THỐNG THEME CHÍNH ================= */
+    /* ================= HỆ THỐNG THEME (ÉP GIAO DIỆN SÁNG) ================= */
     :root {
-      --bg-color: #f4f6f8; --panel-bg: #ffffff; --card-bg: #ffffff;
+      --bg-color: #f0f2f5; --panel-bg: #ffffff; --card-bg: #ffffff;
       --accent: #ff6b2b; --accent-hover: #e85d1f; --text-main: #111111; 
       --border-color: #e2e8f0; --accent-glow: 0 0 15px rgba(255,107,43,0.3);
       --input-bg: #f8fafc; --input-border: #cbd5e1; --grid-size: 110px; 
     }
-    body.theme-dark { --bg-color: #0b0f19; --panel-bg: #111827; --card-bg: #1f2937; --text-main: #f1f5f9; --border-color: #334155; --input-bg: #0f172a; --input-border: #334155;}
     
     body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Montserrat', -apple-system, sans-serif; height: 100vh; overflow: hidden; margin: 0; transition: 0.3s; }
     
-    .form-control, .form-select { background-color: var(--input-bg) !important; color: var(--text-main) !important; border: 1px solid var(--input-border) !important; border-radius: 12px; padding: 10px 15px;}
+    .offcanvas { background-color: var(--panel-bg) !important; color: var(--text-main) !important; border-left: 1px solid var(--border-color); }
+    .form-control, .form-select { background-color: var(--input-bg) !important; color: var(--text-main) !important; border: 1px solid var(--input-border) !important; }
     .form-control:focus, .form-select:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(255,107,43,0.2) !important;}
     input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     
-    /* ================= NÚT BẤM DÙNG CHUNG ================= */
-    .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 700; border-radius: 12px; transition: 0.3s; }
-    .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,107,43,0.3); }
-    .btn-outline-custom { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); font-weight: 700; border-radius: 12px; transition: 0.3s; }
+    /* Các class tùy biến nút */
+    .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 700; transition: 0.3s; }
+    .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: var(--accent-glow); }
+    .btn-outline-custom { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); font-weight: 700; transition: 0.3s; }
     .btn-outline-custom:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,107,43,0.05);}
-    .btn-circle-custom { width: 40px; height: 40px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: none; background: var(--input-bg); color: var(--text-main);}
-    .btn-circle-custom:hover { transform: scale(1.1); background: var(--accent); color: #fff; }
+    .btn-circle-custom { width: 34px; height: 34px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: 1.5px solid var(--border-color); background: var(--panel-bg); color: var(--text-main);}
+    .btn-circle-custom:hover { transform: scale(1.1); border-color: var(--accent); color: var(--accent); }
+
+    /* ================= MAIN BOOTH (GIAO DIỆN CHỤP CHÍNH) ================= */
+    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 0 15px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); height: 55px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .app-container { display: flex; height: calc(100vh - 55px); }
+    .left-panel { flex: 6.5; display: flex; flex-direction: column; padding: 12px; border-right: 1px solid var(--border-color); overflow: hidden; background: transparent; }
+    .right-panel { flex: 3.5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; }
+    
+    .status-badge { position: absolute; top: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--panel-bg); display: none; }
+    .status-badge.active { display: block; background-color: #28a745; box-shadow: 0 0 5px #28a745; }
+
+    .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; transition: 0.3s; }
+    .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; transition: 0.3s; }
+    
+    .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; }
+    .viewport-wrapper.vertical { aspect-ratio: 9/16; }
+    #videoElement { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s; }
+    
+    .camera-modes { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
+    .btn-cam-mode { background: rgba(255,255,255,0.8); color: #333; border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold;}
+    .btn-cam-mode.active { background: var(--accent); color: #fff; border-color: var(--accent);}
+
+    .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 72px; height: 72px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); border: 3px solid #fff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(5px); transition: 0.2s; }
+    .btn-capture-overlay:hover { background: rgba(255, 255, 255, 0.8); transform: translateX(-50%) scale(1.05); color: var(--accent); }
+    .btn-capture-overlay:active { transform: translateX(-50%) scale(0.95); }
+    
+    #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.5), 0 0 10px var(--accent); pointer-events: none; }
+
+    .live-gallery-strip { display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 15vh; background: rgba(255,255,255,0.85); padding: 10px; gap: 10px; overflow-x: auto; align-items: center; justify-content: center; z-index: 1001; border-top: 1px solid var(--border-color);}
+    .live-gallery-strip img { height: 100%; object-fit: contain; border-radius: 6px; border: 2px solid var(--border-color); cursor: pointer; transition: 0.2s;}
+    .live-gallery-strip img:hover { transform: scale(1.05); border-color: var(--accent);}
+    #viewport:fullscreen { display: flex; flex-direction: column; justify-content: flex-start; background: #000; }
+    #viewport:fullscreen #videoElement { height: 85vh; }
+    #viewport:fullscreen .live-gallery-strip { display: flex !important; }
+    #viewport:fullscreen #mainCaptureBtn { bottom: 18vh; transform: translateX(-50%) scale(0.8); }
+
+    .gallery-section { background: var(--panel-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+    .gallery-section.dragover { border-color: var(--accent); border-style: dashed; background: rgba(255, 107, 43, 0.05); }
+    .gallery-title { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0; flex-wrap: wrap; gap: 5px; }
+    
+    .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); grid-auto-rows: max-content; gap: 8px; align-content: start; align-items: start; flex: 1; overflow-y: auto; overflow-x: hidden; padding: 5px; transition: 0.3s; }
+    .gallery-container::-webkit-scrollbar { width: 6px; }
+    .gallery-container::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 4px; }
+    
+    .thumb-wrapper { position: relative; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); background: #fff; overflow: hidden; display: flex; flex-direction: column; justify-content: center; min-height: 40px; aspect-ratio: 1/1; border: 1px solid var(--border-color);}
+    .thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: grab; transition: transform 0.2s; }
+    .thumb-wrapper:hover { transform: scale(1.03); z-index: 2; box-shadow: var(--accent-glow); border-color: var(--accent); }
+    .thumb-wrapper.selected { border: 3px solid var(--accent); box-shadow: var(--accent-glow); opacity: 0.8; }
+    .thumb-wrapper.selected::after { content: '\F26A'; font-family: 'bootstrap-icons'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; background: var(--accent); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 10px rgba(0,0,0,0.2); pointer-events: none;}
+    .btn-del-thumb { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; background: rgba(255, 255, 255, 0.9); color: #dc3545; border: 1px solid #dc3545; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; opacity: 0; transition: 0.2s; }
+    .thumb-wrapper:hover .btn-del-thumb { opacity: 1; }
+    .btn-del-thumb:hover { background: #dc3545; color: #fff; transform: scale(1.1); }
+    
+    .rotate-badge { position: absolute; bottom: 5px; left: 5px; background: rgba(255,255,255,0.9); color: var(--accent); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 10px; font-weight: bold; pointer-events: none; display: none; }
+    .thumb-wrapper.rotated .rotate-badge { display: block; }
+
+    .progress-tiny { height: 6px; background-color: var(--input-bg); width: 120px; border-radius: 3px; overflow: hidden; display: none; margin-right: 10px; border: 1px solid var(--border-color);}
+    .progress-bar-tiny { background-color: var(--accent); transition: width 0.3s; height: 100%; }
+
+    .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 10px; overflow: hidden; }
+    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; cursor: crosshair; transition: 0.3s ease-in-out; border-radius: 4px;}
+
+    .slot-toolbar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 8px 15px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); visibility: hidden; opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 10px; align-items: center; width: max-content; }
+    .slot-toolbar.active { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toolbar-divider { width: 1px; height: 24px; background: var(--input-border); margin: 0 5px; }
+    .toolbar-range-wrap { display: flex; align-items: center; gap: 8px; background: var(--input-bg); padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border-color);}
+
+    @media print {
+      body > *:not(#printContainer) { display: none !important; }
+      #printContainer { display: block !important; position: absolute; left: 0; top: 0; width: 100vw; background: #fff; }
+      .print-page { width: 100vw; height: 100vh; object-fit: contain; page-break-after: always; display: block; }
+    }
+
+    @media (max-width: 992px), (orientation: portrait) {
+        body:not(#dashboardWrapper):not(#wallWrapper):not(#uploadWrapper) { height: auto !important; overflow-y: auto !important; }
+        .app-container { flex-direction: column !important; height: auto !important; }
+        .left-panel { flex: none !important; width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border-color); overflow: visible !important;}
+        .right-panel { flex: none !important; width: 100% !important; height: 100vh !important; }
+        .camera-setup-row { flex-direction: column; height: auto !important; margin-bottom: 20px; }
+        .camera-control-col { width: 100%; flex-direction: row; flex-wrap: wrap; margin-bottom: 10px; justify-content: space-between; }
+        .camera-control-col > * { flex: 1 1 48%; margin-bottom: 5px !important;}
+        .viewport-wrapper { width: 100%; max-height: 60vh; aspect-ratio: 4/3; margin-bottom: 10px; }
+        .action-control-col { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: stretch; justify-content: space-between; }
+        .action-control-col > * { flex: 1 1 48%; margin: 2px !important;}
+        .gallery-section { min-height: 350px; }
+    }
+
+    body.hide-livecam .camera-control-col { display: none !important; }
+    body.hide-livecam .viewport-wrapper { display: none !important; }
+    body.hide-livecam .camera-setup-row { margin-bottom: 10px !important; flex-shrink: 0; }
+    body.hide-livecam .action-control-col { 
+        width: 100% !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 12px; align-items: stretch; justify-content: flex-start; background: var(--input-bg); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--border-color); height: 65px; 
+    }
+    body.hide-livecam .action-control-col > * { flex: 0 0 auto !important; width: auto !important; margin: 0 !important; height: 100% !important; display: flex; align-items: center; }
 
     /* ================= MODAL TẠO SỰ KIỆN MỚI ================= */
-    #createProjectModal .modal-content { border-radius: 24px; border: none; overflow: hidden; background: #fff; color: #333; }
-    .cp-layout { display: flex; flex-direction: row; height: 600px;}
-    .cp-left { width: 40%; background: #f8f9fa; padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #eee;}
-    .cp-right { width: 60%; padding: 30px 40px; overflow-y: auto;}
-    .cp-cover-wrap { width: 100%; aspect-ratio: 4/5; background: #e9ecef; border-radius: 20px; position: relative; overflow: hidden; margin-bottom: 20px;}
+    #createProjectModal .modal-content { border-radius: 24px; border: none; overflow: hidden; background: #fff; color: #333; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
+    .cp-layout { display: flex; flex-direction: row; height: auto; min-height: 550px;}
+    .cp-left { width: 40%; background: #f8fafc; padding: 40px; display: flex; flex-direction: column; border-right: 1px solid #e2e8f0;}
+    .cp-right { width: 60%; padding: 40px; overflow-y: auto;}
+    .cp-cover-wrap { width: 100%; aspect-ratio: 4/5; background: #e2e8f0; border-radius: 20px; position: relative; overflow: hidden; margin-bottom: 25px; border: 1px solid #cbd5e1;}
     .cp-cover-wrap img { width: 100%; height: 100%; object-fit: cover;}
-    .cp-cover-btn { position: absolute; bottom: 15px; right: 15px; width: 40px; height: 40px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
-    .cp-package { background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 15px;}
-    .cp-input-huge { font-size: 2.2rem; font-weight: 900; color: #111; border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 20px;}
-    .cp-input-huge::placeholder { color: #ccc; }
-    .cp-date-wrap { display: inline-flex; align-items: center; border: 1px solid #eee; border-radius: 12px; padding: 8px 15px; font-weight: 700; margin-bottom: 15px; color: #333;}
-    .cp-date-wrap input { border: none; outline: none; font-weight: 700; color: #333; width: 120px;}
-    .cp-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px;}
-    .cp-tag { padding: 8px 16px; border-radius: 30px; border: 1px solid #eee; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: #555; transition: 0.2s;}
-    .cp-tag.active { background: var(--accent); border-color: var(--accent); color: #fff;}
+    .cp-package { background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+    .cp-input-huge { font-size: 2.2rem; font-weight: 900; color: #111; border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 25px; outline: none;}
+    .cp-input-huge::placeholder { color: #cbd5e1; }
+    .cp-date-wrap { display: inline-flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 15px; font-weight: 700; margin-bottom: 20px; color: #333; background: #fff;}
+    .cp-date-wrap input { border: none; outline: none; font-weight: 700; color: #333; width: 130px; background: transparent;}
+    .cp-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;}
+    .cp-tag { padding: 10px 20px; border-radius: 30px; border: 1px solid #cbd5e1; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: #64748b; transition: 0.2s; background: #fff;}
+    .cp-tag.active { background: #fff5f0; border-color: var(--accent); color: var(--accent);}
     .cp-tag input { display: none; }
     .cp-form-group { margin-bottom: 15px;}
-    .cp-form-group input, .cp-form-group textarea { width: 100%; border: 1px solid #eee; border-radius: 12px; padding: 15px; font-size: 0.95rem; font-weight: 500; outline: none;}
-    .cp-submit-btn { width: 100%; background: #f0f0f0; color: #888; border: none; padding: 15px; border-radius: 30px; font-weight: 700; margin-top: 20px; transition: 0.3s;}
-    .cp-submit-btn.ready { background: var(--accent); color: #fff; box-shadow: 0 5px 15px rgba(255,107,43,0.3);}
-    @media (max-width: 768px) { .cp-layout { flex-direction: column; height: auto;} .cp-left, .cp-right { width: 100%; border-right: none;} .cp-cover-wrap { aspect-ratio: 16/9;} }
+    .cp-form-group input { width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px 20px; font-size: 1rem; font-weight: 600; outline: none; background: #fff; transition: 0.2s;}
+    .cp-form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,43,0.1);}
+    .cp-submit-btn { width: 100%; background: #e2e8f0; color: #94a3b8; border: none; padding: 18px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; margin-top: 30px; transition: 0.3s; pointer-events: none;}
+    .cp-submit-btn.ready { background: var(--accent); color: #fff; box-shadow: 0 8px 25px rgba(255,107,43,0.3); pointer-events: auto;}
+    .cp-submit-btn.ready:hover { background: var(--accent-hover); transform: translateY(-2px);}
+    @media (max-width: 768px) { .cp-layout { flex-direction: column;} .cp-left, .cp-right { width: 100%; border-right: none;} .cp-cover-wrap { aspect-ratio: 16/9;} }
 
-    /* ================= DASHBOARD UI ================= */
-    #dashboardWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main); }
-    .dash-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;}
-    .dash-title { font-weight: 900; font-size: 1.5rem; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 10px;}
-    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 40px; max-width: 1400px; margin: 0 auto;}
-    .project-card { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color); overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;}
-    .project-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--accent);}
-    .pc-cover { height: 160px; width: 100%; background: #f0f0f0; position: relative;}
+    /* ================= DASHBOARD UI SÁNG SỦA ================= */
+    #dashboardWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: #f4f6f8; color: #111; font-family: 'Montserrat', sans-serif; }
+    .dash-header { padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; background: #fff; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;}
+    .dash-title { font-weight: 900; font-size: 1.8rem; color: #111; margin: 0; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px;}
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; padding: 40px 50px; max-width: 1400px; margin: 0 auto;}
+    .project-card { background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; transition: 0.3s; border: 1px solid #e2e8f0; display: flex; flex-direction: column;}
+    .project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); border-color: #cbd5e1;}
+    .pc-cover { height: 200px; width: 100%; background: #f8fafc; position: relative; overflow: hidden;}
     .pc-cover img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-    .pc-status { position: absolute; top: 15px; left: 15px; background: #fff; padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; color: #333; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
-    .pc-status i { color: #10b981; font-size: 8px;}
+    .project-card:hover .pc-cover img { transform: scale(1.05); }
+    .pc-status { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.95); padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 800; color: #111; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+    .pc-status i { color: #10b981; font-size: 10px;}
     .pc-body { padding: 25px; flex: 1; display: flex; flex-direction: column;}
-    .pc-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 10px; color: var(--text-main);}
-    .pc-meta { font-size: 0.85rem; color: #777; margin-bottom: 20px; font-weight: 600; display: flex; flex-direction: column; gap: 8px;}
-    .pc-stats-box { background: var(--input-bg); border-radius: 16px; padding: 15px; margin-bottom: 20px;}
-    .pc-thumbs { display: flex; gap: 6px; margin-bottom: 15px;}
-    .pc-thumb-item { width: 38px; height: 38px; border-radius: 8px; background: #fff; overflow: hidden; border: 1px solid var(--border-color);}
+    .pc-title { font-weight: 900; font-size: 1.5rem; color: #111; margin-bottom: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    .pc-meta { font-size: 0.9rem; color: #64748b; display: flex; flex-direction: column; gap: 8px; margin-bottom: 25px; font-weight: 600;}
+    .pc-meta i { color: var(--accent); width: 20px; text-align: center; font-size: 1.1rem;}
+    .pc-stats-box { background: #f8fafc; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border: 1px solid #e2e8f0;}
+    .pc-thumbs { display: flex; gap: 8px; }
+    .pc-thumb-item { width: 45px; height: 45px; border-radius: 10px; background: #fff; border: 1px solid #cbd5e1; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
     .pc-thumb-item img { width: 100%; height: 100%; object-fit: cover;}
-    .pc-stat-num { font-size: 1.2rem; font-weight: 900; color: var(--accent);}
-    .pc-stat-num span { font-size: 0.8rem; font-weight: 600; color: #888;}
-    .pc-actions { display: flex; gap: 10px; margin-top: auto;}
-    .btn-view-album { flex: 1; background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 700; transition: 0.2s;}
-    .btn-qr-dash { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); padding: 12px 15px; border-radius: 12px; font-weight: 700; transition: 0.2s;}
+    .pc-stats-row { display: flex; justify-content: flex-start; align-items: center;}
+    .pc-stat-col { display: flex; align-items: baseline; gap: 8px;}
+    .pc-stat-num { font-size: 1.6rem; font-weight: 900; color: var(--accent); line-height: 1;}
+    .pc-stat-label { font-size: 0.9rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;}
+    .pc-actions { display: flex; gap: 12px; margin-top: auto;}
+    .btn-view-album { flex: 1; background: var(--accent); color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 1rem; transition: 0.2s; box-shadow: 0 4px 15px rgba(255, 107, 43, 0.3);}
+    .btn-view-album:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 107, 43, 0.4);}
+    .btn-qr-dash { background: #fff; border: 2px solid #cbd5e1; color: #334155; padding: 14px 20px; border-radius: 14px; font-weight: 800; font-size: 1.1rem; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
+    .btn-qr-dash:hover { background: #f8fafc; border-color: var(--accent); color: var(--accent); }
 
-    /* ================= PHOTO WALL (MASONRY CHI TIẾT SỰ KIỆN) ================= */
-    #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: #111; color: #fff;}
-    .wall-header { padding: 30px 40px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: flex-end;}
-    .wall-title-area h1 { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: #fff;}
-    .wall-title-area p { color: #888; font-weight: 600; font-size: 0.9rem;}
-    .wall-top-actions { display: flex; gap: 15px;}
-    .btn-orange-glow { background: var(--accent); color: #fff; padding: 12px 25px; border-radius: 30px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(255,107,43,0.4); border: none; cursor: pointer; transition: 0.3s;}
-    .btn-orange-glow:hover { background: var(--accent-hover); transform: translateY(-2px); color: #fff;}
-    .btn-dark-glow { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 25px; border-radius: 30px; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s;}
-    .btn-dark-glow:hover { background: rgba(255,255,255,0.2); }
-    .wall-grid { padding: 40px; }
-    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid #333; transition: 0.3s;}
-    .wall-item:hover { border-color: var(--accent); transform: translateY(-5px);}
+    /* ================= PHOTO WALL & SLIDESHOW ================= */
+    #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: #111; color: #fff; font-family: 'Montserrat', sans-serif; position: relative;}
+    .wall-hero { position: relative; padding: 40px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); pointer-events: none;}
+    .wall-hero-content { pointer-events: auto; }
+    .wall-badge { background: #28a745; color: #fff; font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 12px; display: inline-block; }
+    .wall-title { font-size: 3rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 15px rgba(0,0,0,0.8);}
+    .wall-meta { font-size: 1rem; font-weight: 600; color: #ddd; text-shadow: 0 2px 5px rgba(0,0,0,0.8);}
+    .wall-actions { pointer-events: auto; display: flex; gap: 15px;}
+    .btn-share-moment { background: #ff6b2b; color: #fff; border: none; padding: 14px 28px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(255, 107, 43, 0.4); cursor: pointer; transition: 0.3s; text-decoration: none;}
+    .btn-share-moment:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 107, 43, 0.6); color: #fff; }
+    .btn-slideshow { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; cursor: pointer; transition: 0.3s;}
+    .btn-slideshow:hover { background: rgba(255,255,255,0.25); transform: scale(1.1);}
+    
+    .wall-grid { padding: 0 40px 40px 40px; width: 100%; margin: 0 auto; z-index: 5; position: relative;}
+    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 16px; overflow: hidden; background: #222; box-shadow: 0 5px 20px rgba(0,0,0,0.5); cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1);}
+    .wall-item:hover { transform: translateY(-8px) scale(1.02); z-index: 10; box-shadow: 0 15px 40px rgba(255, 107, 43, 0.4); border-color: rgba(255, 107, 43, 0.6);}
     .wall-item img { width: 100%; display: block; object-fit: cover;}
-    @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
-    @media (max-width: 768px) { .wall-item { width: calc(50% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 20px;} }
+    
+    /* Wall Lightbox Nâng cao */
+    .lb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10500; display: none; flex-direction: column; backdrop-filter: blur(10px);}
+    .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 10510;}
+    .lb-title { font-weight: 800; font-size: 1.5rem; margin: 0;}
+    .lb-actions { display: flex; gap: 15px;}
+    .lb-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; text-decoration: none;}
+    .lb-btn:hover { background: #fff; color: #000; transform: scale(1.1);}
+    .lb-btn.download { background: #ff6b2b; border-color: #ff6b2b;}
+    .lb-btn.download:hover { background: #f05a1a; color: #fff;}
+    .lb-main { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden;}
+    .lb-img-wrap { max-width: 85%; max-height: 80vh; display: flex; justify-content: center; align-items: center; cursor: grab;}
+    .lb-img-wrap:active { cursor: grabbing;}
+    .lb-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: transform 0.2s ease-out;}
+    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); font-size: 2rem; border-radius: 50%; cursor: pointer; transition: 0.2s; z-index: 10510;}
+    .lb-nav:hover { background: rgba(255,255,255,0.2); scale: 1.1;}
+    .lb-nav.prev { left: 40px; } .lb-nav.next { right: 40px; }
+    .lb-strip { height: 100px; display: flex; justify-content: center; gap: 12px; padding: 15px; background: #000; overflow-x: auto;}
+    .lb-thumb { width: 70px; height: 70px; border-radius: 8px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 2px solid transparent;}
+    .lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px;}
+    .lb-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.1);}
 
-    /* ================= SLIDESHOW MODE (KHINH KHÍ CẦU) ================= */
+    /* SLIDESHOW MODE */
     #slideshowWrapper { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; overflow: hidden; perspective: 1000px;}
     .slide-exit { position: absolute; top: 30px; right: 40px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 10000; backdrop-filter: blur(5px); transition: 0.3s;}
     .slide-exit:hover { background: rgba(255,255,255,0.3); transform: scale(1.1);}
     .slide-title-overlay { position: absolute; top: 40px; left: 40px; z-index: 10000; color: #fff;}
     .slide-title-overlay h2 { font-size: 3rem; font-weight: 900; margin: 0; text-shadow: 0 4px 15px rgba(0,0,0,0.8); text-transform: uppercase;}
-    .floating-item { position: absolute; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; transform: scale(0.5) translateY(100px); transition: opacity 1s, transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; background: #111;}
+    .floating-item { position: absolute; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; transform: scale(0.5) translateY(100px); transition: opacity 1s, transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid rgba(255,255,255,0.1); background: #111;}
     .floating-item.show { opacity: 1; transform: scale(1) translateY(0); }
     .floating-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px;}
-    .floating-item.has-msg { height: auto !important;}
-    .floating-item.has-msg img { border-bottom-left-radius: 0; border-bottom-right-radius: 0;}
-    .floating-msg { padding: 15px; background: rgba(0,0,0,0.8); color: #fff; font-size: 1.1rem; font-weight: 600; text-align: center; border-top: 1px solid #333;}
-    /* Background anim mờ ảo */
     .bg-blob { position: absolute; filter: blur(80px); opacity: 0.4; z-index: 0; animation: floatBlob 10s infinite alternate ease-in-out;}
     .bg-blob.b1 { width: 500px; height: 500px; background: #ff6b2b; top: -100px; left: -100px; }
     .bg-blob.b2 { width: 600px; height: 600px; background: #0ea5e9; bottom: -200px; right: -100px; animation-delay: -5s;}
     @keyframes floatBlob { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(100px, 50px) scale(1.2); } }
 
-    /* ================= LIGHTBOX NÂNG CAO CỦA WALL ================= */
-    .lb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10500; display: none; flex-direction: column;}
-    .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 10510;}
-    .lb-title { font-weight: 700; font-size: 1.5rem; margin: 0;}
-    .lb-actions { display: flex; gap: 15px;}
-    .lb-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; text-decoration: none;}
-    .lb-btn:hover { background: #fff; color: #000;}
-    .lb-main { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden;}
-    .lb-img-wrap { max-width: 85%; max-height: 85vh; display: flex; justify-content: center; align-items: center;}
-    .lb-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);}
-    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; background: rgba(255,255,255,0.05); color: #fff; border: none; font-size: 2rem; border-radius: 50%; cursor: pointer; transition: 0.2s;}
-    .lb-nav:hover { background: rgba(255,255,255,0.2); scale: 1.1;}
-    .lb-nav.prev { left: 40px; } .lb-nav.next { right: 40px; }
-    .lb-strip { height: 100px; display: flex; justify-content: center; gap: 10px; padding: 15px; background: #000; overflow-x: auto;}
-    .lb-thumb { width: 70px; height: 70px; border-radius: 8px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 2px solid transparent;}
-    .lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px;}
-    .lb-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.1);}
+    /* Wall Settings Panel (Dark UI) */
+    #wallSettingsPanel { position: fixed; top: 0; right: -400px; width: 360px; height: 100vh; background: #111111; border-left: 1px solid rgba(255,255,255,0.1); z-index: 10200; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.8); color: #fff;}
+    #wallSettingsPanel.open { right: 0; }
+    .ws-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #111111; z-index: 10;}
+    .ws-title { font-size: 1rem; font-weight: 800; margin: 0;}
+    .ws-close { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
+    .ws-close:hover { color: #fff; }
+    .ws-section { padding: 20px; }
+    .ws-label { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-bottom: 10px; display: block;}
+    .ws-select { width: 100%; background: #1c1c1c; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; outline: none;}
+    .ws-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 20px 0;}
+    .ws-option-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; color: rgba(255,255,255,0.5); text-align: left;}
+    .ws-option-btn.active { background: rgba(255,107,43,0.12); border-color: rgba(255,107,43,0.35); color: var(--accent);}
+    .ws-option-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1rem;}
+    .ws-option-btn.active .ws-option-icon { background: rgba(255,107,43,0.2); }
+    .ws-option-text { font-size: 0.8rem; font-weight: 700; flex: 1;}
+    .ws-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: none;}
+    .ws-option-btn.active .ws-dot { display: block;}
 
-    /* ================= GUEST UPLOAD ================= */
-    #uploadWrapper { width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000; }
-    .upload-modal { background: #fff; border-radius: 24px; width: 90%; max-width: 400px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; position: relative; overflow: hidden;}
+    /* ================= GUEST UPLOAD (MODAL SÁNG MƯỢT) ================= */
+    #uploadWrapper { width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000;}
+    .upload-modal { background: #fff; border-radius: 24px; width: 90%; max-width: 420px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; position: relative; color: #333;}
     .upload-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .upload-header h5 { margin: 0; font-weight: 800; color: #111; font-size: 1.2rem; }
-    .upload-close { background: transparent; border: none; font-size: 1.5rem; color: #888; cursor: pointer; }
-    .upload-btn-big { display: block; width: 100%; background: #f8f9fa; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 25px; margin-bottom: 15px; cursor: pointer; transition: 0.2s; color: #333; text-decoration: none; }
-    .upload-btn-big:hover { background: rgba(255,107,43,0.05); border-color: var(--accent); color: var(--accent);}
-    .upload-btn-big i { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-    .upload-btn-big span { font-weight: 700; display: block; font-size: 1.1rem;}
-    #uploadPreview { width: 100%; border-radius: 12px; margin-bottom: 15px; display: none; object-fit: cover; max-height: 250px; }
-    .form-control-upload { background: #f8f9fa; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; width: 100%; font-family: inherit; margin-bottom: 20px; resize: none; font-weight: 500;}
-    #uploadLoadingOverlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 10; display: none; align-items: center; justify-content: center; flex-direction: column;}
+    .upload-close { background: transparent; border: none; font-size: 1.8rem; color: #94a3b8; cursor: pointer; transition: 0.2s; line-height: 1;}
+    .upload-close:hover { color: #ff6b2b; transform: scale(1.1);}
+    .upload-btn-big { display: block; width: 100%; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; cursor: pointer; transition: 0.2s; color: #333; text-decoration: none; }
+    .upload-btn-big:hover { background: #fff5f0; border-color: var(--accent); color: var(--accent);}
+    .upload-btn-big i { font-size: 2.5rem; margin-bottom: 10px; display: block; color: inherit; }
+    .upload-btn-big span { font-weight: 800; display: block; margin-bottom: 5px; font-size: 1.1rem;}
+    .upload-btn-big small { font-size: 0.8rem; color: #64748b; font-weight: 600; }
+    #uploadFormArea { display: none; text-align: left; }
+    #uploadPreview { width: 100%; border-radius: 16px; margin-bottom: 15px; display: none; object-fit: cover; max-height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+    .form-control-upload { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 16px; padding: 15px; width: 100%; color: #333; font-family: inherit; margin-bottom: 20px; resize: none; font-size: 0.95rem; font-weight: 500; transition: 0.2s;}
+    .form-control-upload:focus { border-color: var(--accent); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(255,107,43,0.1);}
+    .btn-submit-upload { background: var(--accent); color: #fff; border: none; width: 100%; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 107, 43, 0.3); transition: 0.2s;}
+    .btn-submit-upload:hover { background: var(--accent-hover); transform: translateY(-2px);}
+    #uploadLoadingOverlay { position: absolute; inset: 0; background: rgba(255,255,255,0.95); border-radius: 24px; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10; backdrop-filter: blur(5px);}
 
-    /* ================= MAIN BOOTH CŨ (KHÔNG ĐỔI CẤU TRÚC) ================= */
-    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 0 15px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); height: 55px; z-index: 1000;}
-    .app-container { display: flex; height: calc(100vh - 55px); }
-    .left-panel { flex: 6.5; display: flex; flex-direction: column; padding: 12px; border-right: 1px solid var(--border-color); overflow: hidden; }
-    .right-panel { flex: 3.5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; background: var(--card-bg); overflow: hidden; position: relative; }
-    .camera-setup-row { display: flex; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
-    .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-    .action-control-col { width: 165px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-    .viewport-wrapper { flex: 1; position: relative; aspect-ratio: 16/9; max-height: 48vh; background: #000; border-radius: 12px; overflow: hidden; border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; }
-    .viewport-wrapper.vertical { aspect-ratio: 9/16; }
-    #videoElement { width: 100%; height: 100%; object-fit: contain; }
-    .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 3px solid #fff; color: #fff; font-size: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; backdrop-filter: blur(5px);}
-    #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9); }
-    .gallery-section { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; flex: 1; min-height: 0; }
-    .gallery-title { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); }
-    .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); gap: 10px; align-content: start; flex: 1; overflow-y: auto; padding: 5px; }
-    .thumb-wrapper { position: relative; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); background: #000; overflow: hidden; aspect-ratio: 1/1; cursor: grab;}
-    .thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .canvas-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 10px; overflow: hidden; }
-    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: #fff; cursor: crosshair; }
-    .slot-toolbar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--panel-bg); padding: 6px 12px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 8px; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s;}
-    .slot-toolbar.active { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);}
-    .qr-container { background: #fff; padding: 10px; border-radius: 8px; border: 4px solid var(--accent); cursor: pointer; transition: 0.2s; }
+    /* ================= CÁC MODAL HỆ THỐNG KHÁC (ÉP NỀN TRẮNG) ================= */
+    .modal-content { background: #ffffff !important; color: #333333 !important; border: 1px solid #e2e8f0; border-radius: 20px;}
+    .modal-header { border-bottom: 1px solid #e2e8f0; }
+    .modal-footer { border-top: 1px solid #e2e8f0; }
+    .list-group-item { background: #ffffff !important; color: #333 !important; border-color: #e2e8f0;}
+    .qr-container { background: #fff; padding: 10px; border-radius: 12px; border: 4px solid var(--accent); cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
+    .qr-container:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(255,107,43,0.3); }
+
+    @media print {
+      body > *:not(#printContainer) { display: none !important; }
+      #printContainer { display: block !important; position: absolute; left: 0; top: 0; width: 100vw; background: #fff; }
+      .print-page { width: 100vw; height: 100vh; object-fit: contain; page-break-after: always; display: block; }
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -187,7 +303,7 @@
   <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
   <div id="printContainer" class="d-none"></div>
 
-  <!-- ================= MODAL TẠO SỰ KIỆN MỚI (CHÍNH XÁC THEO ẢNH) ================= -->
+  <!-- ================= MODAL TẠO SỰ KIỆN MỚI (CHUẨN THIẾT KẾ MỚI) ================= -->
   <div class="modal fade" id="createProjectModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
@@ -195,15 +311,14 @@
             <div class="cp-left">
                 <div class="cp-cover-wrap" id="cpCoverPreview">
                     <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80" alt="Cover">
-                    <!-- Fake button trang trí -->
-                    <button class="cp-cover-btn"><i class="bi bi-camera"></i></button>
+                    <button class="cp-cover-btn"><i class="bi bi-camera-fill"></i></button>
                 </div>
                 <div class="cp-package">
                     <h6 class="fw-bold mb-2 text-muted" style="font-size:0.8rem;"><i class="bi bi-ticket-detailed"></i> Gói dùng cho sự kiện</h6>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fw-bold fs-6">Khởi Đầu</div>
-                            <div class="text-muted" style="font-size:0.75rem;">100 ảnh/video · Nhận ảnh 7 ngày</div>
+                            <div class="text-muted" style="font-size:0.75rem;">Không giới hạn ảnh · Tốc độ cao</div>
                         </div>
                         <i class="bi bi-chevron-down text-muted"></i>
                     </div>
@@ -213,29 +328,29 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="cp-date-wrap">
                         <input type="date" id="cpDate" value="">
-                        <i class="bi bi-calendar"></i>
+                        <i class="bi bi-calendar-event text-muted ms-2"></i>
                     </div>
-                    <button class="btn btn-light rounded-pill fw-bold border" onclick="app.closeCreateModal()"><i class="bi bi-x-lg"></i> Hủy</button>
+                    <button class="btn btn-light rounded-pill fw-bold border text-muted" onclick="app.closeCreateModal()"><i class="bi bi-x-lg"></i> Đóng</button>
                 </div>
                 
                 <input type="text" id="cpName" class="form-control cp-input-huge" placeholder="Tên sự kiện..." oninput="app.checkCreateForm()">
                 
                 <div class="cp-tags">
-                    <label class="cp-tag active"><input type="radio" name="cpCategory" value="Đám cưới" checked onchange="app.updateTags(this)"> <i class="bi bi-heart"></i> Đám cưới</label>
-                    <label class="cp-tag"><input type="radio" name="cpCategory" value="Sinh nhật" onchange="app.updateTags(this)"> <i class="bi bi-cake"></i> Sinh nhật</label>
+                    <label class="cp-tag active"><input type="radio" name="cpCategory" value="Đám cưới" checked onchange="app.updateTags(this)"> <i class="bi bi-heart-fill"></i> Đám cưới</label>
+                    <label class="cp-tag"><input type="radio" name="cpCategory" value="Sinh nhật" onchange="app.updateTags(this)"> <i class="bi bi-cake2-fill"></i> Sinh nhật</label>
                     <label class="cp-tag"><input type="radio" name="cpCategory" value="Tiệc tùng" onchange="app.updateTags(this)"> <i class="bi bi-music-note-beamed"></i> Tiệc tùng</label>
-                    <label class="cp-tag"><input type="radio" name="cpCategory" value="Hội nghị" onchange="app.updateTags(this)"> <i class="bi bi-mic"></i> Hội nghị</label>
-                    <label class="cp-tag"><input type="radio" name="cpCategory" value="Du lịch" onchange="app.updateTags(this)"> <i class="bi bi-airplane"></i> Du lịch</label>
+                    <label class="cp-tag"><input type="radio" name="cpCategory" value="Hội nghị" onchange="app.updateTags(this)"> <i class="bi bi-mic-fill"></i> Hội nghị</label>
+                    <label class="cp-tag"><input type="radio" name="cpCategory" value="Du lịch" onchange="app.updateTags(this)"> <i class="bi bi-airplane-fill"></i> Du lịch</label>
                 </div>
 
                 <div class="cp-form-group">
                     <input type="text" id="cpLocation" placeholder="Thêm địa điểm (VD: GEM Center)">
                 </div>
                 <div class="cp-form-group mb-4">
-                    <input type="text" id="cpDesc" placeholder="Thêm mô tả ngắn...">
+                    <input type="text" id="cpDesc" placeholder="Thêm mô tả ngắn gọn...">
                 </div>
 
-                <button class="cp-submit-btn" id="cpSubmitBtn" onclick="app.submitCreateProject()">Tạo sự kiện ngay <i class="bi bi-chevron-right"></i></button>
+                <button class="cp-submit-btn" id="cpSubmitBtn" onclick="app.submitCreateProject()">Tạo sự kiện ngay <i class="bi bi-arrow-right ms-2"></i></button>
             </div>
         </div>
       </div>
@@ -245,42 +360,103 @@
   <!-- ================= 1. DASHBOARD WRAPPER ================= -->
   <div id="dashboardWrapper" style="display: none;">
       <div class="dash-header">
-          <h1 class="dash-title"><img src="https://hbooth.hama.io.vn/favicon.png" style="height:35px; border-radius:6px;"> HaMa Dash</h1>
-          <button class="btn-primary-custom px-4 py-2" onclick="app.openCreateModal()"><i class="bi bi-plus-lg"></i> TẠO SỰ KIỆN MỚI</button>
+          <h1 class="dash-title"><img src="https://hbooth.hama.io.vn/favicon.png" style="height:35px; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"> HaMa Dash</h1>
+          <button class="btn-primary-custom px-4 py-3 rounded-pill" onclick="app.openCreateModal()" style="font-size:0.95rem; letter-spacing:0.5px;"><i class="bi bi-plus-lg me-1"></i> TẠO SỰ KIỆN MỚI</button>
       </div>
-      <div class="project-grid" id="dashboardProjectList"></div>
+      <div class="project-grid" id="dashboardProjectList">
+          <div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;">
+              <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div><br><span class="fw-bold fs-5">Đang tải sự kiện...</span>
+          </div>
+      </div>
+  </div>
+
+  <!-- MODAL: DASHBOARD QR -->
+  <div class="modal fade" id="dashQRModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content p-4 text-center">
+        <h5 class="fw-bold mb-3" style="color:#111;">MÃ QR SỰ KIỆN</h5>
+        <div id="dashQRCode" class="qr-container mx-auto mb-3" style="width: 200px; height: 200px;" onclick="app.copyDashQRFromModal()"></div>
+        <p class="small text-muted mb-0 fw-bold">Khách quét để tham gia Bức Tường Ảnh.<br><span class="text-primary mt-1 d-block" style="cursor:pointer;" onclick="app.copyDashQRFromModal()"><i class="bi bi-link-45deg"></i> Bấm vào QR để Copy Link</span></p>
+      </div>
+    </div>
   </div>
 
   <!-- ================= 2. PHOTO WALL WRAPPER ================= -->
   <div id="wallWrapper" style="display: none;">
-      <div class="wall-header">
-          <div class="wall-title-area">
-              <h1 id="wallEventName">TÊN SỰ KIỆN</h1>
-              <p><span id="wallDate">--.--.----</span> &nbsp;&nbsp;|&nbsp;&nbsp; <span id="wallLocation">Địa điểm</span></p>
+      <!-- Hero Top -->
+      <div class="wall-hero" id="wallHeroSection">
+          <div class="wall-hero-content">
+              <div class="wall-badge"><i class="bi bi-record-circle-fill text-warning"></i> Đang diễn ra</div>
+              <h1 class="wall-title" id="wallEventName">TÊN SỰ KIỆN</h1>
+              <div class="wall-meta" id="wallEventMeta">
+                  <i class="bi bi-calendar-event text-warning"></i> <span id="wallDate">--.--.----</span> &nbsp;&nbsp;|&nbsp;&nbsp; 
+                  <i class="bi bi-geo-alt-fill text-warning"></i> <span id="wallLocation">Địa điểm</span> &nbsp;&nbsp;|&nbsp;&nbsp; 
+                  <span id="wallPhotoCount" class="text-warning">0</span> Media
+              </div>
           </div>
-          <div class="wall-top-actions">
-              <button class="btn-dark-glow" onclick="app.startSlideshow()"><i class="bi bi-play-circle-fill"></i> Slide Show</button>
-              <a href="#" id="btnShareMoment" class="btn-orange-glow"><i class="bi bi-camera-fill"></i> Gửi Khoảnh khắc</a>
+          <div class="wall-actions">
+              <button class="btn-dark-glow" onclick="app.openWallSettings()" title="Cài đặt Trình chiếu"><i class="bi bi-play-circle-fill fs-5"></i> Slide Show</button>
+              <a href="#" id="btnShareMoment" class="btn-orange-glow"><i class="bi bi-camera-fill fs-5"></i> Gửi Khoảnh khắc</a>
           </div>
       </div>
+      
+      <!-- Masonry Grid -->
       <div class="wall-grid" id="wallMasonryGrid"></div>
-  </div>
 
-  <!-- ================= LIGHTBOX CỦA WALL ================= -->
-  <div class="lb-overlay" id="wallLightbox">
-      <div class="lb-header">
-          <h4 class="lb-title" id="lbTitleText">Tên sự kiện</h4>
-          <div class="lb-actions">
-              <a href="#" id="lbDownload" class="lb-btn" download><i class="bi bi-download"></i></a>
-              <button class="lb-btn" onclick="app.closeWallLightbox()"><i class="bi bi-x-lg"></i></button>
+      <!-- Wall Lightbox Nâng Cao -->
+      <div class="lb-overlay" id="wallLightbox">
+          <div class="lb-header">
+              <h4 class="lb-title" id="lbTitleText">Chi tiết</h4>
+              <div class="lb-actions">
+                  <a href="#" id="lbDownload" class="lb-btn download" target="_blank" title="Tải ảnh về"><i class="bi bi-cloud-arrow-down-fill"></i></a>
+                  <button class="lb-btn" onclick="app.closeWallLightbox()" title="Đóng"><i class="bi bi-x-lg"></i></button>
+              </div>
+          </div>
+          <div class="lb-main" id="lbContainer">
+              <button class="lb-nav prev" onclick="app.navWallLightbox(-1)"><i class="bi bi-chevron-left"></i></button>
+              <div class="lb-img-wrap" id="wlImgContainer"><img id="lbImage" src=""></div>
+              <button class="lb-nav next" onclick="app.navWallLightbox(1)"><i class="bi bi-chevron-right"></i></button>
+          </div>
+          <div class="lb-strip" id="lbStrip"></div>
+      </div>
+
+      <!-- Wall Settings Panel (Dark UI bên phải) -->
+      <div id="wallSettingsPanel">
+          <div class="ws-header">
+              <h3 class="ws-title"><i class="bi bi-sliders text-warning me-2"></i> Tùy chỉnh Trình chiếu</h3>
+              <button class="ws-close" onclick="app.closeWallSettings()"><i class="bi bi-x-lg"></i></button>
+          </div>
+          <div class="ws-section">
+              <label class="ws-label">Nội dung trình chiếu</label>
+              <select class="ws-select"><option value="all">Tất cả khoảnh khắc</option></select>
+              <p class="text-[9px] text-muted mt-2 mb-0" style="font-size:0.75rem;">Chỉ chiếu ảnh thuộc sự kiện hiện tại.</p>
+              
+              <div class="ws-divider"></div>
+              
+              <label class="ws-label">Chế độ hiển thị</label>
+              <button class="ws-option-btn" onclick="app.stopSlideshow()">
+                  <div class="ws-option-icon"><i class="bi bi-grid-fill"></i></div>
+                  <span class="ws-option-text">Masonry Grid (Lưới)</span>
+                  <div class="ws-dot"></div>
+              </button>
+              <button class="ws-option-btn active" onclick="app.startSlideshow()">
+                  <div class="ws-option-icon"><i class="bi bi-balloon-fill"></i></div>
+                  <span class="ws-option-text">Floating Balloon (Trôi nổi)</span>
+                  <div class="ws-dot"></div>
+              </button>
+
+              <div class="ws-divider"></div>
+              
+              <label class="ws-label">Tốc độ cuộn (Masonry Grid)</label>
+              <div class="d-flex align-items-center gap-2 bg-dark p-2 rounded" style="border: 1px solid rgba(255,255,255,0.1);">
+                  <input id="wallScrollSpeed" min="0" max="60" class="form-control text-center bg-transparent border-0 text-white fw-bold" type="number" value="10" style="width: 80px;">
+                  <span class="text-muted fw-bold" style="font-size:0.85rem;">giây/trang</span>
+              </div>
+              <p class="text-muted mt-2" style="font-size:0.75rem;">Nhập 0 để tắt tự động cuộn.</p>
+              
+              <button class="btn-primary-custom w-100 py-3 mt-4" style="border-radius: 12px; font-size:1.1rem;" onclick="app.closeWallSettings()">Xác nhận</button>
           </div>
       </div>
-      <div class="lb-main" id="lbContainer">
-          <button class="lb-nav prev" onclick="app.navLightbox(-1)"><i class="bi bi-chevron-left"></i></button>
-          <div class="lb-img-wrap"><img id="lbImage" src=""></div>
-          <button class="lb-nav next" onclick="app.navLightbox(1)"><i class="bi bi-chevron-right"></i></button>
-      </div>
-      <div class="lb-strip" id="lbStrip"></div>
   </div>
 
   <!-- ================= SLIDESHOW MODE (BONG BÓNG) ================= -->
@@ -299,8 +475,9 @@
   <div id="uploadWrapper" style="display: none;">
       <div class="upload-modal">
           <div id="uploadLoadingOverlay">
-              <div class="spinner-border" style="color:var(--accent); width: 3rem; height: 3rem;"></div>
-              <h5 class="mt-3 fw-bold">Đang tải lên...</h5>
+              <div class="spinner-border" style="color:var(--accent); width: 3.5rem; height: 3.5rem;"></div>
+              <h5 class="mt-4 fw-bold text-dark fs-4">Đang gửi lên Wall...</h5>
+              <p class="text-muted fw-bold mt-2">Vui lòng không đóng màn hình này</p>
           </div>
           <div class="upload-header">
               <h5 id="uploadModalTitle">Chia sẻ khoảnh khắc</h5>
@@ -308,18 +485,18 @@
           </div>
           <div id="uploadOptions">
               <label class="upload-btn-big">
-                  <i class="bi bi-camera text-primary"></i><span>Gửi ảnh / video</span><small>Chọn từ thư viện</small>
+                  <i class="bi bi-camera text-primary"></i><span>Gửi Ảnh / Video</span><small>Chọn từ thư viện điện thoại</small>
                   <input type="file" accept="image/*" hidden onchange="app.handleGuestFileSelect(event)">
               </label>
               <button class="upload-btn-big" onclick="app.showGuestMessageForm()">
-                  <i class="bi bi-chat-heart text-danger"></i><span>Gửi lời nhắn</span><small>Gửi lời chúc</small>
+                  <i class="bi bi-chat-heart text-danger"></i><span>Gửi Lời Nhắn</span><small>Viết lời chúc mừng</small>
               </button>
           </div>
           <div id="uploadFormArea">
               <img id="uploadPreview" src="">
               <textarea id="guestMessage" class="form-control-upload" rows="3" placeholder="Nhập lời nhắn..."></textarea>
-              <button class="btn-submit-upload" onclick="app.submitGuestUpload()">Gửi lên Photo Wall</button>
-              <button class="btn btn-link text-muted w-100 mt-2 fw-bold" style="text-decoration:none;" onclick="app.backToUploadOptions()">Quay lại</button>
+              <button class="btn-submit-upload" onclick="app.submitGuestUpload()"><i class="bi bi-send-fill me-2"></i> Gửi lên Photo Wall</button>
+              <button class="btn btn-link text-muted w-100 mt-3 fw-bold" style="text-decoration:none; font-size:1.05rem;" onclick="app.backToUploadOptions()"><i class="bi bi-arrow-left"></i> Quay lại chọn cách khác</button>
           </div>
       </div>
   </div>
@@ -328,21 +505,30 @@
   <div id="mainAppWrapper" style="display: none;">
       <div class="app-header">
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-sm btn-outline-secondary me-2" onclick="window.location.href='?'"><i class="bi bi-house-door-fill"></i></button>
-          <img id="headerLogo" src="https://hbooth.hama.io.vn/favicon.png" style="height: 24px; border-radius:4px;">
-          <h6 id="headerTitleText" class="d-none d-sm-block m-0 fw-bold" style="color:var(--accent);">HaMa Booth</h6>
+          <!-- Chỉ giữ nút Back, BỎ projectSelect ở đây -->
+          <button class="btn btn-sm btn-outline-secondary me-2" onclick="window.location.href='?'" title="Về Danh sách sự kiện"><i class="bi bi-house-door-fill"></i></button>
+          <img id="headerLogo" src="https://hbooth.hama.io.vn/favicon.png" style="height: 28px; border-radius:6px;">
+          <h6 id="headerTitleText" class="d-none d-sm-block m-0 fw-bold fs-5" style="color:var(--accent);">HaMa Booth</h6>
+          <!-- Tên dự án hiện tại thay thế cho dropdown -->
+          <span class="badge bg-light text-dark border ms-3 py-2 px-3 fw-bold fs-6 shadow-sm" id="currentProjectBadge">Tên Dự án</span>
         </div>
+        
         <div class="d-flex align-items-center gap-2">
-          <div class="input-group input-group-sm me-2" style="width: 220px;">
-             <span class="input-group-text"><i class="bi bi-folder-fill"></i></span>
-             <select id="projectSelect" class="form-select fw-bold" onchange="app.switchProject()"></select>
-          </div>
-          <button class="btn btn-outline-secondary btn-circle-custom me-1" onclick="app.showWallQRModal()" title="QR Photo Wall"><i class="bi bi-easel2 fs-6"></i></button>
-          <button class="btn btn-outline-secondary btn-circle-custom me-1" onclick="app.showUploadQRModal()" title="QR Guest Upload"><i class="bi bi-cloud-arrow-up fs-6"></i></button>
-          <button class="btn btn-outline-secondary btn-circle-custom me-1" onclick="app.showQRModal()" title="QR Remote Cam"><i class="bi bi-qr-code-scan fs-6"></i></button>
-          <div class="vr bg-secondary mx-2"></div>
-          <button class="btn btn-sm btn-primary-custom px-3" onclick="app.showPrintConfigModal()"><i class="bi bi-printer fs-5"></i> In</button>
-          <button class="btn btn-sm text-muted p-0 ms-2" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas"><i class="bi bi-gear-fill fs-5"></i></button>
+          <button class="btn btn-outline-custom btn-circle-custom me-1" onclick="app.showWallQRModal()" title="QR Photo Wall"><i class="bi bi-easel2 fs-5"></i></button>
+          <button class="btn btn-outline-custom btn-circle-custom me-1" onclick="app.showUploadQRModal()" title="QR Guest Upload"><i class="bi bi-cloud-arrow-up fs-5"></i></button>
+          <button class="btn btn-outline-custom btn-circle-custom me-1" onclick="app.showAlbumQRModal()" title="QR Khách lấy ảnh"><i class="bi bi-images fs-5"></i></button>
+          <button class="btn btn-outline-custom btn-circle-custom me-1" onclick="app.showQRModal()" title="QR Remote Cam"><i class="bi bi-qr-code-scan fs-5"></i></button>
+          
+          <button class="btn btn-outline-custom btn-circle-custom position-relative" onclick="app.showConnectionModal()" title="Thiết bị kết nối">
+             <i class="bi bi-phone fs-5"></i>
+             <div id="remoteConnectionBadge" class="status-badge"></div>
+          </button>
+          
+          <div class="vr bg-secondary mx-3"></div>
+          
+          <button class="btn btn-primary-custom px-4 py-2 me-2" onclick="app.showPrintConfigModal()"><i class="bi bi-printer fs-5 me-1"></i> IN NGAY</button>
+          <button class="btn btn-outline-custom btn-circle-custom me-1" onclick="app.toggleFullScreenApp()" title="Toàn màn hình"><i class="bi bi-arrows-fullscreen"></i></button>
+          <button class="btn btn-outline-custom btn-circle-custom" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt"><i class="bi bi-gear-fill"></i></button>
         </div>
       </div>
 
@@ -351,37 +537,58 @@
         <div class="left-panel">
           <div class="camera-setup-row">
             <div class="camera-control-col">
-              <select id="cameraSelect" class="form-select mb-2" onchange="app.switchCamera()"></select>
-              <div class="input-group mb-2"><span class="input-group-text"><i class="bi bi-camera"></i></span><input type="number" id="photoCount" class="form-control text-center" value="1"></div>
-              <div class="input-group mb-2"><span class="input-group-text"><i class="bi bi-stopwatch"></i></span><input type="number" id="timerCount" class="form-control text-center" value="3"></div>
+              <select id="cameraSelect" class="form-select mb-2 fw-bold" onchange="app.switchCamera()"></select>
+              <div class="input-group mb-2"><span class="input-group-text bg-light text-muted fw-bold"><i class="bi bi-camera"></i></span><input type="number" id="photoCount" class="form-control text-center fw-bold" value="1"></div>
+              <div class="input-group mb-2"><span class="input-group-text bg-light text-muted fw-bold"><i class="bi bi-stopwatch"></i></span><input type="number" id="timerCount" class="form-control text-center fw-bold" value="3"></div>
+              <div class="p-2 rounded mb-1 border mt-auto bg-light">
+                  <label class="small text-muted d-block text-center mb-1 fw-bold" style="font-size:0.7rem;">GÓC CAM</label>
+                  <div class="d-flex gap-1 align-items-center mb-2"><i class="bi bi-zoom-in text-muted"></i><input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()"></div>
+                  <div class="d-flex gap-2"><input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()"><input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()"></div>
+              </div>
+              <div class="d-flex gap-1 mb-1">
+                  <button id="btnMirror" class="btn btn-primary-custom flex-fill py-2 shadow-sm" onclick="app.toggleMirror()"><i class="bi bi-symmetry-horizontal"></i></button>
+                  <button class="btn btn-outline-custom flex-fill py-2 shadow-sm" onclick="app.resetCamTransform()"><i class="bi bi-arrow-counterclockwise"></i></button>
+              </div>
             </div>
+            
             <div class="viewport-wrapper" id="viewport">
+              <div class="camera-modes">
+                <button class="btn-cam-mode active" id="btnModeH" onclick="app.setCameraMode('horizontal')"><i class="bi bi-phone-landscape"></i></button>
+                <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')"><i class="bi bi-phone"></i></button>
+              </div>
               <video id="videoElement" autoplay playsinline></video>
               <div id="countdownOverlay">3</div>
               <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()"><i class="bi bi-camera-fill"></i></button>
+              <div id="liveGalleryStrip" class="live-gallery-strip"></div>
             </div>
+            
             <div class="action-control-col">
-              <div class="input-group mb-2"><span class="input-group-text"><i class="bi bi-files"></i></span><input type="number" id="autoCopies" class="form-control text-center" value="1"></div>
-              <button id="btnAutoInsert" class="btn btn-outline-custom w-100 mb-2" onclick="app.toggleAutoInsert()"><i class="bi bi-magic"></i> Auto Xếp</button>
+              <div class="input-group mb-2"><span class="input-group-text bg-light text-muted fw-bold"><i class="bi bi-files"></i></span><input type="number" id="autoCopies" class="form-control text-center fw-bold" value="1"></div>
+              <button id="btnAutoInsert" class="btn btn-outline-custom w-100 mb-2 py-2" onclick="app.toggleAutoInsert()"><i class="bi bi-magic fs-5"></i> Xếp Khung</button>
               <div class="d-flex align-items-center justify-content-between p-2 rounded border w-100 mb-2 mt-auto bg-light">
-                <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
-                <span class="fw-bold" id="pageIndicator">1/1</span>
-                <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="app.nextPage()"><i class="bi bi-chevron-right"></i></button>
+                <button class="btn btn-sm btn-outline-custom rounded-circle" style="width:30px; height:30px;" onclick="app.prevPage()"><i class="bi bi-chevron-left"></i></button>
+                <span class="fw-bold fs-5 text-primary" id="pageIndicator">1/1</span>
+                <button class="btn btn-sm btn-outline-custom rounded-circle" style="width:30px; height:30px;" onclick="app.nextPage()"><i class="bi bi-chevron-right"></i></button>
               </div>
-              <div class="d-flex gap-2 w-100"><button class="btn btn-outline-custom flex-grow-1" onclick="app.saveLayoutToDrive()"><i class="bi bi-cloud-arrow-up"></i></button><button class="btn btn-outline-danger flex-grow-1" onclick="app.deleteCurrentPage()"><i class="bi bi-trash"></i></button></div>
+              <button class="btn btn-outline-custom w-100 mb-2 py-2" onclick="app.addEmptyPage()"><i class="bi bi-plus-lg"></i> Trang mới</button>
+              <div class="d-flex gap-2 w-100">
+                  <button class="btn btn-outline-custom flex-grow-1 py-2 text-success border-success" onclick="app.saveLayoutToDrive()" title="Lưu máy"><i class="bi bi-cloud-arrow-up fs-5"></i></button>
+                  <button class="btn btn-outline-custom flex-grow-1 py-2 text-danger border-danger" onclick="app.deleteCurrentPage()" title="Xóa trang"><i class="bi bi-trash fs-5"></i></button>
+              </div>
             </div>
           </div>
+          
           <div class="gallery-section" id="currentSessionZone">
             <div class="gallery-title">
-              <div><i class="bi bi-images"></i> Ảnh Sự Kiện <span id="uploadStatusText" class="small text-muted ms-2" style="display:none;">Lưu: <span id="uploadCount">0/0</span></span></div>
+              <div><i class="bi bi-images fs-5"></i> ẢNH SỰ KIỆN <span id="uploadStatusText" class="small text-muted ms-2" style="display:none;">Lưu: <span id="uploadCount">0/0</span></span></div>
               <div class="d-flex gap-2">
-                  <button class="btn-circle-custom" onclick="app.selectAndWatchFolder()"><i class="bi bi-folder-symlink"></i></button>
-                  <label class="btn-circle-custom m-0"><i class="bi bi-plus-lg"></i><input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden></label>
+                  <button class="btn-circle-custom" onclick="app.selectAndWatchFolder()" title="Thư mục Máy tính"><i class="bi bi-pc-display text-primary fs-5"></i></button>
+                  <label class="btn-circle-custom m-0" title="Chèn thủ công"><i class="bi bi-plus-lg text-success fs-5"></i><input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden></label>
               </div>
             </div>
             <div class="gallery-container" id="capturedGallery">
-              <!-- KHẮC PHỤC LỖI: Load ảnh đúng cách ở JS -->
-              <span class="text-muted small w-100 text-center py-4"><i class="bi bi-folder-x fs-3"></i><br>Chưa có ảnh.</span>
+              <!-- JS Sẽ fill ảnh của Dự án vào đây -->
+              <div class="w-100 text-center text-muted py-5" style="grid-column: 1 / -1;"><div class="spinner-border text-primary mb-3"></div><br><span class="fw-bold fs-5">Đang tải ảnh...</span></div>
             </div>
           </div>
         </div>
@@ -389,37 +596,178 @@
         <!-- Khối Phải (Canvas) -->
         <div class="right-panel d-flex flex-column">
           <div class="slot-toolbar active" id="slotToolbar">
-            <span class="badge bg-primary rounded-pill px-2 py-1 fs-6 shadow-sm">#<span id="stIndex">1</span></span>
+            <span class="badge bg-primary rounded-pill px-3 py-2 fs-6 shadow-sm">#<span id="stIndex">1</span></span>
             <div class="toolbar-divider"></div>
-            <button class="btn btn-sm btn-outline-info rounded-circle p-1 btn-circle-custom" onclick="app.openPhotoSelector(app.activeSlotIndex)"><i class="bi bi-image fs-5"></i></button>
-            <button class="btn btn-sm btn-outline-light rounded-circle p-1 btn-circle-custom" onclick="app.rotateActiveSlot()"><i class="bi bi-arrow-clockwise fs-5"></i></button>
+            <button class="btn btn-sm btn-outline-custom rounded-circle btn-circle-custom" onclick="app.openPhotoSelector(app.activeSlotIndex)" title="Đổi ảnh"><i class="bi bi-image fs-5"></i></button>
+            <button class="btn btn-sm btn-outline-custom rounded-circle btn-circle-custom" onclick="app.rotateActiveSlot()" title="Xoay 90"><i class="bi bi-arrow-clockwise fs-5"></i></button>
             <div class="toolbar-divider"></div>
-            <div class="toolbar-range-wrap"><i class="bi bi-brightness-high text-warning"></i><input type="range" class="form-range" id="stBr" min="50" max="150" value="100" style="width: 60px;" oninput="app.applyDirectEdit()"></div>
-            <div class="toolbar-range-wrap"><i class="bi bi-circle-half text-info"></i><input type="range" class="form-range" id="stCt" min="50" max="150" value="100" style="width: 60px;" oninput="app.applyDirectEdit()"></div>
+            <div class="toolbar-range-wrap"><i class="bi bi-brightness-high text-warning fs-5"></i><input type="range" class="form-range" id="stBr" min="50" max="150" value="100" style="width: 70px;" oninput="app.applyDirectEdit()"></div>
+            <div class="toolbar-range-wrap"><i class="bi bi-circle-half text-info fs-5"></i><input type="range" class="form-range" id="stCt" min="50" max="150" value="100" style="width: 70px;" oninput="app.applyDirectEdit()"></div>
             <div class="toolbar-divider"></div>
-            <button class="btn btn-sm btn-danger rounded-circle p-1 btn-circle-custom" onclick="app.removeActiveSlot()"><i class="bi bi-trash fs-6"></i></button>
+            <button class="btn btn-sm btn-outline-custom text-danger border-danger rounded-circle btn-circle-custom" onclick="app.removeActiveSlot()"><i class="bi bi-trash fs-5"></i></button>
           </div>
           <div class="canvas-container"><canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)"></canvas></div>
         </div>
       </div>
   </div>
 
-  <!-- CÁC MODAL HỆ THỐNG CỦA BOOTH CŨ (GIỮ NGUYÊN) -->
-  <div class="modal fade" id="printConfigModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-3 text-center"><h5 class="fw-bold text-primary mb-3">Số bản in</h5><input type="number" id="printCopiesModal" class="form-control text-center fs-4 fw-bold mb-3" value="1" min="1"><button class="btn btn-primary fw-bold" onclick="app.executePrint()">In Ngay</button></div></div></div>
-  <div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3">MÃ QR REMOTE</h6><div id="qrcode" class="qr-container mx-auto" style="width: 180px; height: 180px;"></div></div></div></div>
-  <div class="modal fade" id="wallQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3">MÃ QR WALL</h6><div id="wallQRCode" class="qr-container mx-auto" style="width: 180px; height: 180px;"></div></div></div></div>
-  <div class="modal fade" id="uploadQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3">MÃ QR UPLOAD</h6><div id="uploadQRCode" class="qr-container mx-auto" style="width: 180px; height: 180px;"></div></div></div></div>
+  <!-- ================= CÁC MODAL HỆ THỐNG CỦA BOOTH CŨ (ÉP NỀN TRẮNG) ================= -->
+  <div class="modal fade" id="printConfigModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold text-primary mb-4">SỐ BẢN IN</h5><div class="d-flex align-items-center justify-content-center bg-light p-2 rounded border mb-4"><button class="btn btn-outline-secondary fw-bold px-4 fs-4 border-0" onclick="app.adjustValue('printCopiesModal', -1)">-</button><input type="number" id="printCopiesModal" class="form-control text-center fs-3 fw-bold bg-transparent border-0" value="1" min="1" style="width:100px;"><button class="btn btn-outline-secondary fw-bold px-4 fs-4 border-0" onclick="app.adjustValue('printCopiesModal', 1)">+</button></div><button class="btn-primary-custom w-100 py-3 fs-5" onclick="app.executePrint()"><i class="bi bi-printer"></i> Xác nhận In</button></div></div></div>
+  <div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-info">QR REMOTE CAM</h5><div id="qrcode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('remote')"></div><p class="small text-muted mb-0 fw-bold">Dùng điện thoại quét mã để chụp hình.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
+  <div class="modal fade" id="albumQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-success">QR KHÁCH LẤY ẢNH</h5><div id="albumQRCode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('album')"></div><p class="small text-muted mb-0 fw-bold">Khách quét mã này để vào xem ảnh.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
+  <div class="modal fade" id="wallQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-dark">QR PHOTO WALL</h5><div id="wallQRCode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('wall')"></div><p class="small text-muted mb-0 fw-bold">Chiếu lên Màn LED để xem Photo Wall.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
+  <div class="modal fade" id="uploadQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h5 class="fw-bold mb-3 text-danger">QR GUEST UPLOAD</h5><div id="uploadQRCode" class="qr-container mx-auto mb-3" style="width: 180px; height: 180px;" onclick="app.copyQRLink('upload')"></div><p class="small text-muted mb-0 fw-bold">Khách quét để gửi ẢNH & LỜI NHẮN lên Wall.<br><span class="text-primary mt-1 d-block">Bấm vào QR để Copy Link</span></p></div></div></div>
+  <div class="modal fade" id="connectionModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content p-4"><h5 class="fw-bold mb-3 text-primary"><i class="bi bi-broadcast"></i> Thiết bị Remote</h5><ul class="list-group list-group-flush border rounded" id="connectedDevicesList"><li class="list-group-item bg-light text-muted text-center py-4 fw-bold">Chưa có thiết bị nào kết nối.</li></ul><button class="btn btn-light fw-bold border mt-3 w-100 py-2" data-bs-dismiss="modal">Đóng</button></div></div></div>
 
-  <!-- OFFCANVAS CÀI ĐẶT (GIỮ NGUYÊN CSS ẨN BÊN TRONG CỦA BẠN) -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 360px;">
-      <div class="offcanvas-header border-bottom"><h6 class="fw-bold m-0"><i class="bi bi-gear-fill"></i> CÀI ĐẶT CHUNG</h6><button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button></div>
-      <div class="offcanvas-body">
-          <label class="small fw-bold">Chọn Layout</label>
-          <select id="layoutSelect" class="form-select form-select-sm mb-3" onchange="app.changeLayout(); app.saveSettings()"><option value="1">1 ảnh</option><option value="2">2 ảnh</option><option value="4">4 ảnh</option><option value="8" selected>8 ảnh</option></select>
-          <label class="small fw-bold">Viền trắng: <span id="vBorder">0px</span></label>
-          <input type="range" class="form-range mb-3" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas();">
-          <!-- Các cài đặt cũ của bạn được thu gọn vào đây để đủ Text Limit -->
+  <!-- MODAL NGUỒN ẢNH VÀ CHỈNH SỬA -->
+  <div class="modal fade" id="selectPhotoModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold text-primary">CHỌN NGUỒN ẢNH</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 d-flex flex-column" style="height: 75vh;"><div class="d-flex gap-3 mb-4 flex-shrink-0"><button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.startCaptureSession(app.pendingSlotIndex); app.selectModalInstance.hide();"><i class="bi bi-camera me-2"></i> Chụp ngay</button><button class="btn btn-outline-custom flex-fill py-3 fs-5" onclick="document.getElementById('slotFileInput').click(); app.selectModalInstance.hide();"><i class="bi bi-folder2-open me-2"></i> Tải file lên</button></div><div class="d-flex align-items-center justify-content-between mb-3 flex-shrink-0"><h6 class="fw-bold m-0 text-muted"><i class="bi bi-grid-fill me-2"></i> ẢNH TRONG SỰ KIỆN</h6><span class="badge bg-primary px-3 py-2 fs-6" id="modalSelectedCount">0 đã chọn</span></div><div class="gallery-container flex-grow-1 border rounded bg-light p-3" id="modalGalleryContainer" style="grid-template-columns: repeat(4, 1fr);"></div><div class="mt-4 p-4 rounded bg-light border flex-shrink-0"><div class="d-flex align-items-center justify-content-center gap-4"><div class="d-flex align-items-center bg-white p-2 rounded border"><button type="button" class="btn btn-outline-secondary fw-bold px-4 border-0 fs-5" onclick="app.adjustValue('modalCopies', -1)">-</button><input type="number" id="modalCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-4 border-0" style="width:80px;"><button type="button" class="btn btn-outline-secondary fw-bold px-4 border-0 fs-5" onclick="app.adjustValue('modalCopies', 1)">+</button></div><button class="btn btn-primary-custom px-5 py-3 fs-5" onclick="app.insertSelectedPhotos()"><i class="bi bi-magic me-2"></i> THÊM VÀO TRANG IN</button></div></div></div></div></div></div>
+  <div class="modal fade" id="imagePrepModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold text-primary">CHỈNH SỬA CƠ BẢN</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-center p-4"><div id="prepPreviewContainer" style="width:100%; height: 350px; overflow:hidden; border-radius: 12px; border: 2px solid #e2e8f0; margin-bottom:20px; background:#f8fafc; position:relative; cursor: grab;"><img id="prepPreview" src="" style="width:100%; height:100%; object-fit:contain; pointer-events: none;"><div style="position:absolute; bottom:10px; left:10px; font-size:0.75rem; color:#fff; background:rgba(0,0,0,0.6); padding:4px 10px; border-radius:20px; font-weight:bold;">Cuộn chuột: Zoom | Kéo: Di chuyển</div></div><div class="row g-3 text-start align-items-center"><div class="col-6"><label class="small fw-bold text-muted mb-1">Xén (Zoom)</label><input type="range" class="form-range" id="prepZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updatePrepPreview()"></div><div class="col-6"><label class="small fw-bold text-muted mb-1">Xoay (°)</label><input type="range" class="form-range" id="prepRot" min="0" max="270" step="90" value="0" oninput="app.updatePrepPreview()"></div><div class="col-6"><label class="small fw-bold text-muted mb-1">Độ sáng</label><input type="range" class="form-range" id="prepBr" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div><div class="col-6"><label class="small fw-bold text-muted mb-1">Tương phản</label><input type="range" class="form-range" id="prepCt" min="50" max="150" value="100" oninput="app.updatePrepPreview()"></div><input type="hidden" id="prepPanX" value="0"> <input type="hidden" id="prepPanY" value="0"><div class="col-12 mt-4"><div class="d-flex align-items-center justify-content-center bg-light p-2 rounded border"><button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4 border-0" onclick="app.adjustValue('prepCopies', -1)">-</button><input type="number" id="prepCopies" value="1" min="1" max="20" class="form-control text-center fw-bold fs-4 bg-transparent border-0" readonly style="width:100px;"><button type="button" class="btn btn-outline-secondary fw-bold px-4 fs-4 border-0" onclick="app.adjustValue('prepCopies', 1)">+</button></div></div></div></div><div class="modal-footer justify-content-center border-0 pb-4"><button type="button" class="btn btn-primary-custom w-100 py-3 fs-5" onclick="app.addToLayout()"><i class="bi bi-check2-circle me-2"></i> XÁC NHẬN ĐƯA VÀO TRANG IN</button></div></div></div></div>
+
+  <!-- ================= KHÔI PHỤC 100% OFFCANVAS CÀI ĐẶT CŨ CỦA BẠN (SÁNG) ================= -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 380px; box-shadow: -5px 0 25px rgba(0,0,0,0.1);">
+    <div class="offcanvas-header bg-light border-bottom">
+      <h5 class="offcanvas-title fw-bold text-primary"><i class="bi bi-gear-fill me-2"></i> CÀI ĐẶT CHUNG</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-4 bg-white">
+      
+      <!-- IN ẤN & BỐ CỤC -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Bố cục & In ấn</h6>
+        <div class="bg-light p-3 rounded border">
+            <label class="small text-muted w-100 mb-2 fw-bold"><i class="bi bi-info-circle text-info"></i> Máy in sẽ được chọn tại hộp thoại hệ thống khi bấm In.</label>
+            <select id="layoutSelect" class="form-select mb-3 fw-bold" onchange="app.changeLayout(); app.saveSettings()">
+              <option value="1">10x15 cm (1 ảnh)</option>
+              <option value="2">6x9 cm (2 ô)</option>
+              <option value="4">4x6 cm (4 ô)</option>
+              <option value="8" selected>3x4 cm (8 ô)</option>
+            </select>
+            <label class="small fw-bold text-dark w-100 mb-2">Viền trắng quanh ảnh: <span id="vBorder" class="float-end text-primary">0px</span></label>
+            <input type="range" class="form-range mb-4" id="slotBorder" min="0" max="40" value="0" oninput="document.getElementById('vBorder').innerText=this.value+'px'; app.renderCanvas(); app.saveSettings()">
+            
+            <label class="small fw-bold text-dark w-100 mb-2">Căn lề trang in (mm)</label>
+            <div class="row g-2 mb-2">
+               <div class="col-6"><div class="input-group"><span class="input-group-text bg-white fw-bold">Trên</span><input type="number" id="marginTop" class="form-control text-center" value="0" onchange="app.renderCanvas(); app.saveSettings()"></div></div>
+               <div class="col-6"><div class="input-group"><span class="input-group-text bg-white fw-bold">Dưới</span><input type="number" id="marginBottom" class="form-control text-center" value="0" onchange="app.renderCanvas(); app.saveSettings()"></div></div>
+            </div>
+            <div class="row g-2">
+               <div class="col-6"><div class="input-group"><span class="input-group-text bg-white fw-bold">Trái</span><input type="number" id="marginLeft" class="form-control text-center" value="0" onchange="app.renderCanvas(); app.saveSettings()"></div></div>
+               <div class="col-6"><div class="input-group"><span class="input-group-text bg-white fw-bold">Phải</span><input type="number" id="marginRight" class="form-control text-center" value="0" onchange="app.renderCanvas(); app.saveSettings()"></div></div>
+            </div>
+        </div>
       </div>
+
+      <!-- CAMERA & GIAO DIỆN -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Camera & Giao Diện</h6>
+        <div class="form-check form-switch mb-3 p-3 rounded border bg-light d-flex align-items-center">
+            <input class="form-check-input m-0 me-3" style="width:40px; height:20px;" type="checkbox" id="hideLiveCamToggle" onchange="app.toggleLiveCamUI(); app.saveSettings()">
+            <label class="form-check-label fw-bold text-dark" for="hideLiveCamToggle">Tắt Camera trực tiếp</label>
+        </div>
+        <label class="small fw-bold text-dark mb-2">Theme hệ thống (Dashboard/Booth)</label>
+        <select id="themeSelect" class="form-select fw-bold" onchange="app.changeTheme(this.value); app.saveSettings()">
+          <option value="light" selected>Sáng Hiện Đại (Light)</option>
+          <option value="tech">Công nghệ (Tech)</option>
+          <option value="bimgroup">Xanh BIMGroup</option>
+          <option value="professional">Chuyên nghiệp (Trắng)</option>
+          <option value="simple">Đơn giản (Xanh dương)</option>
+          <option value="minimalist">Tối giản (Đen Trắng)</option>
+          <option value="neon">Neon Gaming</option>
+          <option value="pastel">Hồng Pastel</option>
+          <option value="retro">Cổ điển (Retro)</option>
+          <option value="dark">Dark Mode Thuần</option>
+        </select>
+      </div>
+
+      <!-- TÙY CHỈNH APP -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Tùy chỉnh App (Header)</h6>
+        <label class="small fw-bold text-dark w-100 mb-2">Tên ứng dụng</label>
+        <input type="text" id="appHeaderTitle" class="form-control mb-3" placeholder="HaMa PhotoBooth..." onkeyup="app.updateHeader(); app.saveSettings()">
+        <label class="small fw-bold text-dark w-100 mb-2">Logo góc trái (Hình ảnh/Favicon)</label>
+        <input type="file" id="appHeaderLogoInput" class="form-control bg-white" accept="image/*" onchange="app.loadHeaderLogo(event)">
+      </div>
+
+      <!-- NGUỒN ẢNH CỤC BỘ -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Nguồn ảnh Cục bộ (Máy tính)</h6>
+        <div class="p-3 border rounded bg-light">
+            <label class="small fw-bold text-dark mb-2">Chế độ lọc ảnh tự động:</label>
+            <select id="folderFilterMode" class="form-select fw-bold mb-3" onchange="app.toggleFilterUI(); app.saveSettings()">
+                <option value="new" selected>Chỉ tải ảnh MỚI (Từ lúc kết nối)</option>
+                <option value="time">Lọc theo khoảng thời gian</option>
+                <option value="all">Tải tất cả</option>
+            </select>
+            <div id="timeFilterInputs" style="display: none;">
+                <div class="row g-3 mb-2">
+                    <div class="col-12"><label class="small fw-bold text-muted mb-1">Từ:</label><input type="datetime-local" id="filterFromDate" class="form-control" onchange="app.saveSettings()"></div>
+                    <div class="col-12"><label class="small fw-bold text-muted mb-1">Đến:</label><input type="datetime-local" id="filterToDate" class="form-control" onchange="app.saveSettings()"></div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- WATERMARK TRANG IN -->
+      <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Watermark Trang In (In đè từng ô)</h6>
+        <input type="text" id="wmText" class="form-control mb-3 fw-bold text-primary" placeholder="Chữ in lên ảnh..." onkeyup="app.renderCanvas(); app.saveSettings()">
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <select id="wmFont" class="form-select fw-bold" onchange="app.renderCanvas(); app.saveSettings()">
+              <option value="Arial">Arial</option>
+              <option value="'Times New Roman'">Times New Roman</option>
+              <option value="Impact">Impact</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Montserrat">Montserrat</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <select id="wmAlign" class="form-select fw-bold" onchange="app.renderCanvas(); app.saveSettings()">
+              <option value="center">Căn Giữa</option>
+              <option value="left">Căn Trái</option>
+              <option value="right">Căn Phải</option>
+            </select>
+          </div>
+        </div>
+        <div class="row g-2 mb-3 bg-light p-2 rounded border mx-0">
+          <div class="col-6 d-flex align-items-center gap-2">
+            <input type="color" id="wmColor" class="form-control form-control-color p-0 border-0 shadow-sm" value="#ffffff" onchange="app.renderCanvas(); app.saveSettings()" style="width:30px; height:30px; border-radius:50%;">
+            <span class="small fw-bold text-dark">Màu chữ</span>
+          </div>
+          <div class="col-6 d-flex align-items-center gap-2">
+            <input type="color" id="wmOutline" class="form-control form-control-color p-0 border-0 shadow-sm" value="#000000" onchange="app.renderCanvas(); app.saveSettings()" style="width:30px; height:30px; border-radius:50%;">
+            <span class="small fw-bold text-dark">Màu viền</span>
+          </div>
+        </div>
+        <div class="row g-2 mb-3 align-items-center bg-light p-2 rounded border mx-0">
+            <div class="col-6">
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" id="wmHasOutline" checked onchange="app.renderCanvas(); app.saveSettings()">
+                    <label class="form-check-label small fw-bold text-dark ms-1">Có viền chữ</label>
+                </div>
+            </div>
+            <div class="col-6"><label class="small fw-bold text-muted mb-1">Độ dày viền</label><input type="range" class="form-range" id="wmOutlineThick" min="1" max="15" value="5" oninput="app.renderCanvas(); app.saveSettings()"></div>
+        </div>
+        <div class="row g-3 mb-4 bg-light p-3 rounded border mx-0">
+            <div class="col-12"><label class="small fw-bold text-dark mb-1">Cỡ chữ (%)</label><input type="range" class="form-range" id="wmSize" min="1" max="50" value="8" oninput="app.renderCanvas(); app.saveSettings()"></div>
+            <div class="col-6"><label class="small fw-bold text-dark mb-1">Tọa độ X (%)</label><input type="range" class="form-range" id="wmX" min="0" max="100" value="50" oninput="app.renderCanvas(); app.saveSettings()"></div>
+            <div class="col-6"><label class="small fw-bold text-dark mb-1">Tọa độ Y (%)</label><input type="range" class="form-range" id="wmY" min="0" max="100" value="90" oninput="app.renderCanvas(); app.saveSettings()"></div>
+        </div>
+
+        <!-- LOGO DÁN GÓC TỪNG Ô -->
+        <h6 class="fw-bold text-uppercase small text-primary border-bottom pb-2 mb-3">Logo dán góc từng ô (PNG)</h6>
+        <div class="d-flex gap-2 mb-3 bg-light p-2 rounded border">
+            <input type="file" id="printLogoInput" class="form-control bg-white" accept="image/*" onchange="app.loadPrintLogo(event)">
+            <button class="btn btn-outline-danger fw-bold px-3 border-0" style="background:#fff;" onclick="app.removePrintLogo()" title="Xóa Logo"><i class="bi bi-trash fs-5"></i></button>
+        </div>
+        <div class="row g-3 bg-light p-3 rounded border mx-0">
+          <div class="col-12"><label class="small fw-bold text-dark mb-1">Kích thước Logo (%)</label><input type="range" class="form-range" id="logoSize" min="5" max="100" value="30" oninput="app.renderCanvas(); app.saveSettings()"></div>
+          <div class="col-6"><label class="small fw-bold text-dark mb-1">Tọa độ X (%)</label><input type="range" class="form-range" id="logoX" min="0" max="100" value="95" oninput="app.renderCanvas(); app.saveSettings()"></div>
+          <div class="col-6"><label class="small fw-bold text-dark mb-1">Tọa độ Y (%)</label><input type="range" class="form-range" id="logoY" min="0" max="100" value="95" oninput="app.renderCanvas(); app.saveSettings()"></div>
+        </div>
+      </div>
+      
+    </div>
   </div>
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycby6_-gotKSFnMsAsvC_TXmqCEeibp339208kcTpuKF8c9DsSMH1WQ05U00MwlztEqRfYg/exec'; 
@@ -458,6 +806,7 @@
       uploadQRModalInstance: null,
       printConfigModalInstance: null, 
       connectionModalInstance: null,  
+      dashQRModalInstance: null,
       
       selectedModalIndices: [],
       connectedRemotes: [], 
@@ -484,6 +833,7 @@
       wallScrollInterval: null,
       slideInterval: null,
       guestUploadImageB64: null,
+      currentDashQRUrl: "",
 
       init: async function() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -516,6 +866,7 @@
        * ========================================= */
       initDashboardMode: async function() {
           document.getElementById('dashboardWrapper').style.display = 'block';
+          this.dashQRModalInstance = new bootstrap.Modal(document.getElementById('dashQRModal'));
           try {
               const fd = new URLSearchParams(); 
               fd.append('action', 'getProjects');
@@ -534,7 +885,7 @@
                               if(p.thumbs && p.thumbs[i]) {
                                   thumbsHtml += `<div class="pc-thumb-item"><img src="${p.thumbs[i]}"></div>`;
                               } else {
-                                  thumbsHtml += `<div class="pc-thumb-item" style="background:#f8f9fa;"></div>`;
+                                  thumbsHtml += `<div class="pc-thumb-item" style="background:#f8fafc;"></div>`;
                               }
                           }
                           const coverImg = (p.thumbs && p.thumbs.length > 0) ? p.thumbs[0] : 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80';
@@ -556,14 +907,13 @@
                                       <div class="pc-thumbs">${thumbsHtml}</div>
                                       <div class="pc-stats-row">
                                           <div class="pc-stat-col">
-                                              <div class="pc-stat-num">${p.totalMedia || 0}<span>/100</span></div>
-                                              <div class="pc-stat-label">ĐÃ LƯU TRỮ</div>
+                                              <div class="pc-stat-num">${p.totalMedia || 0} Media</div>
                                           </div>
                                       </div>
                                   </div>
                                   <div class="pc-actions">
                                       <button class="btn-view-album" onclick="window.location.href='?booth=${p.id}'">Vào Sự Kiện</button>
-                                      <button class="btn-qr-dash" onclick="app.copyDashQR('${p.id}')" title="Copy Link Photo Wall"><i class="bi bi-qr-code"></i></button>
+                                      <button class="btn-qr-dash" onclick="app.showDashQRModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code"></i></button>
                                   </div>
                               </div>
                           `;
@@ -575,9 +925,19 @@
               document.getElementById('dashboardProjectList').innerHTML = '<div class="w-100 text-center text-danger p-5" style="grid-column: 1/-1;">Lỗi kết nối máy chủ API!</div>';
           }
       },
-      copyDashQR: function(id) {
-          let url = window.location.origin + window.location.pathname + "?wall=" + id;
-          navigator.clipboard.writeText(url).then(() => { Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Đã copy Link Photo Wall!', showConfirmButton: false, timer: 2000}); });
+      showDashQRModal: function(projectId) {
+          this.currentDashQRUrl = window.location.origin + window.location.pathname + "?wall=" + projectId;
+          const qrContainer = document.getElementById('dashQRCode');
+          qrContainer.innerHTML = "";
+          new QRCode(qrContainer, { text: this.currentDashQRUrl, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+          this.dashQRModalInstance.show();
+      },
+      copyDashQRFromModal: function() {
+          if(this.currentDashQRUrl) {
+              navigator.clipboard.writeText(this.currentDashQRUrl).then(() => {
+                  Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Đã copy Link Photo Wall!', showConfirmButton: false, timer: 2000});
+              });
+          }
       },
       openCreateModal: function() {
           const modal = new bootstrap.Modal(document.getElementById('createProjectModal'));
@@ -589,7 +949,7 @@
           if(modal) modal.hide();
       },
       updateTags: function(radio) {
-          document.querySelectorAll('.cp-tag').forEach(lbl => lb.classList.remove('active'));
+          document.querySelectorAll('.cp-tag').forEach(lbl => lbl.classList.remove('active'));
           radio.parentElement.classList.add('active');
       },
       checkCreateForm: function() {
@@ -697,11 +1057,15 @@
           }
       },
       
-      // Slideshow Mode (Khinh khí cầu)
+      // Slideshow Mode
       startSlideshow: function() {
           document.getElementById('wallMasonryGrid').style.display = 'none';
           document.getElementById('slideshowWrapper').style.display = 'block';
           if(this.wallScrollInterval) clearInterval(this.wallScrollInterval);
+          // Highlight nút menu
+          document.querySelectorAll('.ws-option-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.ws-option-btn')[1].classList.add('active');
+
           this.slideInterval = setInterval(() => this.spawnFloatingItem(), 2500);
       },
       stopSlideshow: function() {
@@ -709,6 +1073,9 @@
           document.getElementById('wallMasonryGrid').style.display = 'block';
           clearInterval(this.slideInterval);
           document.getElementById('slideItemsContainer').innerHTML = '';
+          
+          document.querySelectorAll('.ws-option-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.ws-option-btn')[0].classList.add('active');
           this.applyWallScroll();
       },
       spawnFloatingItem: function() {
@@ -731,7 +1098,7 @@
           setTimeout(() => { el.remove(); }, duration * 1000);
       },
 
-      // Lightbox Wall Nâng cao
+      // Lightbox Wall
       bindWallLightboxEvents: function() {
           const wlContainer = document.getElementById('wlImgContainer');
           wlContainer.addEventListener('wheel', (e) => { e.preventDefault(); this.zoomWallLightbox(e.deltaY > 0 ? -0.1 : 0.1); }, { passive: false });
@@ -748,7 +1115,7 @@
           if(this.wallScrollInterval) clearInterval(this.wallScrollInterval);
           this.wallLightboxIndex = index;
           const item = this.wallImagesList[index];
-          document.getElementById('wlImage').src = item.url;
+          document.getElementById('lbImage').src = item.url;
           document.getElementById('lbDownload').href = item.url;
           this.resetWallLightbox();
           this.renderLightboxStrip();
@@ -758,7 +1125,7 @@
           document.getElementById('wallLightbox').style.display = 'none';
           this.applyWallScroll(); 
       },
-      navLightbox: function(dir) {
+      navWallLightbox: function(dir) {
           this.wallLightboxIndex += dir;
           if(this.wallLightboxIndex < 0) this.wallLightboxIndex = this.wallImagesList.length - 1;
           if(this.wallLightboxIndex >= this.wallImagesList.length) this.wallLightboxIndex = 0;
@@ -766,16 +1133,14 @@
       },
       zoomWallLightbox: function(delta) {
           this.wlZoom = Math.max(0.5, Math.min(5, this.wlZoom + delta));
-          document.getElementById('wlZoomLevel').innerText = Math.round(this.wlZoom * 100) + '%';
           this.updateWallLightboxTransform();
       },
       resetWallLightbox: function() {
           this.wlZoom = 1; this.wlPanX = 0; this.wlPanY = 0;
-          document.getElementById('wlZoomLevel').innerText = '100%';
           this.updateWallLightboxTransform();
       },
       updateWallLightboxTransform: function() {
-          document.getElementById('wlImage').style.transform = `translate(${this.wlPanX}px, ${this.wlPanY}px) scale(${this.wlZoom})`;
+          document.getElementById('lbImage').style.transform = `translate(${this.wlPanX}px, ${this.wlPanY}px) scale(${this.wlZoom})`;
       },
       renderLightboxStrip: function() {
           const strip = document.getElementById('lbStrip');
@@ -891,7 +1256,7 @@
       },
 
       /* =========================================
-       * KHỞI TẠO MAIN BOOTH (GIAO DIỆN CHỤP)
+       * KHỞI TẠO MAIN BOOTH CHÍNH (GIAO DIỆN CHỤP)
        * ========================================= */
       initMainBooth: async function() {
         this.prepModalInstance = new bootstrap.Modal(document.getElementById('imagePrepModal'));
@@ -904,7 +1269,7 @@
         this.connectionModalInstance = new bootstrap.Modal(document.getElementById('connectionModal'));
         
         this.loadLocalSettings(); 
-        await this.loadProjects(); // Gọi loadProjects sẽ tự loadProjectImages
+        await this.loadProjects(); 
         
         await this.loadDeviceList();
         if(!document.getElementById('hideLiveCamToggle').checked) { this.startCamera(); }
@@ -915,8 +1280,7 @@
       },
 
       /* =========================================
-       * CÁC CHỨC NĂNG CỐT LÕI CŨ CỦA BOOTH
-       * (Giữ nguyên KHÔNG RÚT GỌN)
+       * KHÔI PHỤC TOÀN BỘ CÁC HÀM CŨ CỦA BOOTH
        * ========================================= */
       adjustValue: function(inputId, delta) {
           const input = document.getElementById(inputId); if(!input) return;
@@ -929,45 +1293,23 @@
               const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json());
               if(res.success) {
                   this.projects = res.data;
-                  const sel = document.getElementById('projectSelect'); sel.innerHTML = '';
-                  if(this.projects.length === 0) { sel.appendChild(new Option("Chưa có dự án", "")); } 
-                  else {
-                      this.projects.forEach(p => sel.appendChild(new Option(p.name, p.id)));
-                      if(this.currentProjectId) { sel.value = this.currentProjectId; } 
-                      else { this.currentProjectId = this.projects[0].id; sel.value = this.currentProjectId; }
-                      this.switchProject(); 
+                  if(this.currentProjectId) {
+                      const proj = this.projects.find(p => p.id === this.currentProjectId);
+                      if(proj) document.getElementById('currentProjectBadge').innerText = proj.name;
+                  }
+                  // Tự động load ảnh sau khi fetch xong danh sách
+                  if(this.currentProjectId) {
+                      this.capturedPhotos = [];
+                      this.renderCapturedGallery();
+                      await this.syncSettingsFromCloud();
+                      this.loadProjectImages(); 
                   }
               }
           } catch(e) { console.error("Lỗi tải dự án", e); }
       },
-      createNewProject: async function() {
-          const { value: name } = await Swal.fire({ title: 'Tên dự án mới', input: 'text', showCancelButton: true, confirmButtonText: 'Tạo', cancelButtonText: 'Hủy' });
-          if (name) {
-              Swal.fire({title: 'Đang tạo...', didOpen: () => Swal.showLoading()});
-              const fd = new URLSearchParams(); fd.append('action', 'createProject'); fd.append('projectName', name);
-              try {
-                  const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json());
-                  if(res.success) {
-                      this.projects.unshift({ id: res.id, name: res.name, date: Date.now() });
-                      const sel = document.getElementById('projectSelect'); sel.options.add(new Option(res.name, res.id), 0); sel.value = res.id;
-                      this.switchProject(); Swal.close();
-                  }
-              } catch(e) { Swal.fire('Lỗi', 'Không thể tạo dự án', 'error'); }
-          }
-      },
-      switchProject: async function() {
-          const sel = document.getElementById('projectSelect');
-          if(sel.value) {
-              this.currentProjectId = sel.value;
-              this.capturedPhotos = [];
-              this.renderCapturedGallery(); // Khởi tạo trống trước
-              await this.syncSettingsFromCloud();
-              this.loadProjectImages(); // Load ảnh từ API
-          }
-      },
       loadProjectImages: async function() {
           if(!this.currentProjectId) return;
-          document.getElementById('capturedGallery').innerHTML = '<span class="text-muted small w-100 text-center py-4"><div class="spinner-border spinner-border-sm text-secondary mb-2"></div><br>Đang tải dữ liệu ảnh...</span>';
+          document.getElementById('capturedGallery').innerHTML = '<div class="w-100 text-center text-muted py-5" style="grid-column: 1 / -1;"><div class="spinner-border text-primary mb-3"></div><br><span class="fw-bold fs-5">Đang tải ảnh...</span></div>';
           const fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', this.currentProjectId);
           try {
               const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json());
@@ -1014,7 +1356,7 @@
       },
 
       initAlbumMode: function(projectId) {
-          document.body.innerHTML += `<div class="client-album-wrapper"><div class="album-header"><img id="clientLogo" src="" style="height: 30px; display:none; border-radius:4px;"><div><h6 class="m-0 fw-bold text-uppercase" id="clientTitle" style="color: var(--accent);">THƯ VIỆN ẢNH</h6><p class="small text-muted m-0" style="font-size:0.7rem;">Cập nhật theo thời gian thực</p></div></div><div class="album-grid" id="clientAlbumGrid"><div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><div class="spinner-border text-info mb-2" role="status"></div><br>Đang tải dữ liệu...</div></div></div>`;
+          document.body.innerHTML += `<div class="client-album-wrapper" style="background:#f4f6f8; color:#333;"><div class="album-header" style="background:#fff;"><img id="clientLogo" src="" style="height: 30px; display:none; border-radius:4px;"><div><h6 class="m-0 fw-bold text-uppercase" id="clientTitle" style="color: var(--accent);">THƯ VIỆN ẢNH</h6><p class="small text-muted m-0" style="font-size:0.7rem;">Cập nhật theo thời gian thực</p></div></div><div class="album-grid" id="clientAlbumGrid"><div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><div class="spinner-border text-info mb-2" role="status"></div><br>Đang tải dữ liệu...</div></div></div>`;
           const s = JSON.parse(localStorage.getItem('boothSettings_Pro') || '{}');
           if(s.headerTitle) document.getElementById('clientTitle').innerText = s.headerTitle;
           if(s.headerLogo) { document.getElementById('clientLogo').src = s.headerLogo; document.getElementById('clientLogo').style.display = 'block'; }
@@ -1022,7 +1364,7 @@
               const fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', projectId);
               fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
                   const grid = document.getElementById('clientAlbumGrid');
-                  if (!r.success || r.data.length === 0) { grid.innerHTML = '<div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><i class="bi bi-images fs-1"></i><br>Dự án này chưa có ảnh.</div>'; return; }
+                  if (!r.success || r.data.length === 0) { grid.innerHTML = '<div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><i class="bi bi-images fs-1"></i><br>Sự kiện này chưa có ảnh.</div>'; return; }
                   grid.innerHTML = '';
                   r.data.forEach(item => {
                       const div = document.createElement('div'); div.className = 'album-item';
@@ -1077,24 +1419,24 @@
           const fd = new URLSearchParams(); fd.append('action', 'loadSettings'); if (this.currentProjectId) fd.append('projectId', this.currentProjectId);
           try { const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()); if(res.success && res.data) { localStorage.setItem('boothSettings_Pro', res.data); this.applySettingsData(res.data); } } catch(e) {}
       },
-      updateHeader: function() { const t = document.getElementById('appHeaderTitle').value; if(t) document.getElementById('headerTitleText').innerText = t; else document.getElementById('headerTitleText').innerText = 'HaMa PhotoBooth'; },
+      updateHeader: function() { const t = document.getElementById('appHeaderTitle').value; if(t) document.getElementById('headerTitleText').innerText = t; else document.getElementById('headerTitleText').innerText = 'HaMa Booth'; },
       loadHeaderLogo: function(e) {
           const file = e.target.files[0]; if(!file) return; const r = new FileReader(); r.onload = (evt) => { const b64 = evt.target.result; document.getElementById('headerLogo').src = b64; document.getElementById('headerLogo').style.display = 'block'; document.getElementById('dynamicFavicon').href = b64; this.saveSettings(); }; r.readAsDataURL(file);
       },
       changeTheme: function(themeName) { document.body.className = `theme-${themeName}`; const lightThemes = ['professional', 'simple', 'minimalist', 'pastel', 'retro', 'bimgroup', 'light']; if(lightThemes.includes(themeName)) { document.documentElement.setAttribute('data-bs-theme', 'light'); } else { document.documentElement.setAttribute('data-bs-theme', 'dark'); } },
       updateConnectionBadge: function() {
           const badge = document.getElementById('remoteConnectionBadge'); const hasOnline = this.connectedRemotes.some(r => r.status === 'online');
-          if(hasOnline) { badge.classList.add('active'); badge.style.backgroundColor = '#28a745'; } else if(this.connectedRemotes.length > 0) { badge.classList.add('active'); badge.style.backgroundColor = '#dc3545'; } else { badge.classList.remove('active'); }
+          if(hasOnline) { badge.classList.add('active'); badge.style.backgroundColor = '#10b981'; } else if(this.connectedRemotes.length > 0) { badge.classList.add('active'); badge.style.backgroundColor = '#ef4444'; } else { badge.classList.remove('active'); }
           this.refreshConnectionListUI();
       },
       refreshConnectionListUI: function() {
           const list = document.getElementById('connectedDevicesList'); if(!list) return; list.innerHTML = '';
-          if(this.connectedRemotes.length === 0) { list.innerHTML = '<li class="list-group-item bg-dark text-muted text-center py-4 small">Chưa có thiết bị nào kết nối.</li>'; } 
+          if(this.connectedRemotes.length === 0) { list.innerHTML = '<li class="list-group-item bg-light text-muted text-center py-4 fw-bold">Chưa có thiết bị nào kết nối.</li>'; } 
           else {
               let sorted = [...this.connectedRemotes].sort((a,b) => { if (a.status === 'online' && b.status !== 'online') return -1; if (a.status !== 'online' && b.status === 'online') return 1; return 0; });
               sorted.forEach((dev) => {
                   let isOnline = dev.status === 'online'; let statusStr = isOnline ? (dev.isRelay ? 'Cloud Relay (TURN)' : 'P2P (WebRTC LAN)') : 'Offline'; let badgeClass = isOnline ? (dev.isRelay ? 'bg-warning text-dark' : 'bg-success') : 'bg-danger'; let iconOpacity = isOnline ? '1' : '0.5';
-                  list.innerHTML += `<li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center" style="opacity: ${iconOpacity}"><span><i class="bi bi-phone"></i> ${dev.realName || 'Thiết bị mới'} <br><small class="text-muted" style="font-size:10px;">ID: ${dev.id}</small></span><span class="badge ${badgeClass} shadow-sm" style="font-size:10px;">${statusStr}</span></li>`;
+                  list.innerHTML += `<li class="list-group-item bg-white text-dark d-flex justify-content-between align-items-center" style="opacity: ${iconOpacity}"><span><i class="bi bi-phone"></i> ${dev.realName || 'Thiết bị mới'} <br><small class="text-muted" style="font-size:10px;">ID: ${dev.id}</small></span><span class="badge ${badgeClass} shadow-sm" style="font-size:10px;">${statusStr}</span></li>`;
               });
           }
       },
@@ -1164,7 +1506,7 @@
               </div>
               <div id="remoteGalleryOverlay" style="position:fixed; inset:0; background:var(--bg-color); z-index:9999; display:none; flex-direction:column; color:var(--text-main);">
                   <div style="padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.5);">
-                      <h5 style="margin:0;"><i class="bi bi-images text-warning"></i> Ảnh vừa chụp</h5><button id="btnCloseGallery" style="background:none; border:none; color:#fff; font-size:26px;"><i class="bi bi-x-lg"></i></button>
+                      <h5 style="margin:0; color:#fff;"><i class="bi bi-images text-warning"></i> Ảnh vừa chụp</h5><button id="btnCloseGallery" style="background:none; border:none; color:#fff; font-size:26px;"><i class="bi bi-x-lg"></i></button>
                   </div>
                   <div id="remoteGalleryGrid" style="flex:1; overflow-y:auto; padding:10px; display:grid; grid-template-columns:1fr 1fr; gap:10px; align-content:start;"><p class="w-100 text-center text-muted mt-5 small" style="grid-column: 1/-1;">Chưa có ảnh nào được gửi.</p></div>
               </div>
@@ -1357,7 +1699,7 @@
           }; r.readAsDataURL(file);
         }
       },
-      // HÀM HIỂN THỊ ẢNH GALLERY ĐƯỢC CHỈNH SỬA TRÁNH LỖI KHÔNG TẢI ẢNH
+      // ĐÃ KHẮC PHỤC LỖI KHÔNG HIỆN ẢNH VÀO GALLERY
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); 
         cap.innerHTML = ''; 
@@ -1365,30 +1707,20 @@
         if(strip) strip.innerHTML = ''; 
 
         if(this.capturedPhotos.length === 0) { 
-            cap.innerHTML = '<span class="text-muted small w-100 text-center py-4" style="grid-column: 1 / -1;"><i class="bi bi-folder-x fs-3"></i><br>Chưa có ảnh. Bấm thư mục để tải.</span>'; 
+            cap.innerHTML = '<div class="w-100 text-center text-muted py-5" style="grid-column: 1 / -1;"><i class="bi bi-folder-x fs-1"></i><br><span class="fw-bold mt-2 d-block">Chưa có ảnh nào.</span></div>'; 
             return;
         }
 
         this.capturedPhotos.forEach((record, index) => {
-          const wrapper = document.createElement('div'); 
-          wrapper.className = 'thumb-wrapper'; 
-          if(record.rot !== 0) wrapper.classList.add('rotated');
-          
-          const img = document.createElement('img'); 
-          img.src = record.imgObj.src; 
-          img.style.transform = `rotate(${record.rot || 0}deg)`; 
-          img.draggable = true; 
-          
+          const wrapper = document.createElement('div'); wrapper.className = 'thumb-wrapper'; if(record.rot !== 0) wrapper.classList.add('rotated');
+          const img = document.createElement('img'); img.src = record.imgObj.src; img.style.transform = `rotate(${record.rot || 0}deg)`; img.draggable = true; 
           img.ondragstart = () => { this.dragPayload = { img: record.imgObj, rot: record.rot }; };
           img.onclick = () => { this.openPrepModal(record); };
           img.ondblclick = (e) => { e.stopPropagation(); record.rot = ((record.rot || 0) + 90) % 360; img.style.transform = `rotate(${record.rot}deg)`; if(record.rot !== 0) wrapper.classList.add('rotated'); else wrapper.classList.remove('rotated'); };
-          
           const badgeRot = document.createElement('div'); badgeRot.className = 'rotate-badge'; badgeRot.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
-          const btnDel = document.createElement('button'); btnDel.className = 'btn-del-thumb'; btnDel.innerHTML = '<i class="bi bi-x"></i>';
+          const btnDel = document.createElement('button'); btnDel.className = 'btn-del-thumb'; btnDel.innerHTML = '<i class="bi bi-trash"></i>';
           btnDel.onclick = (e) => { e.stopPropagation(); this.deleteSessionPhoto(index); };
-          
-          wrapper.appendChild(img); wrapper.appendChild(badgeRot); wrapper.appendChild(btnDel); 
-          cap.appendChild(wrapper);
+          wrapper.appendChild(img); wrapper.appendChild(badgeRot); wrapper.appendChild(btnDel); cap.appendChild(wrapper);
           
           if(strip) {
               const stripImg = document.createElement('img'); stripImg.src = record.imgObj.src; stripImg.style.transform = `rotate(${record.rot || 0}deg)`;
@@ -1410,7 +1742,7 @@
       openPhotoSelector: function(index) {
           this.pendingSlotIndex = index; this.selectedModalIndices = []; document.getElementById('modalSelectedCount').innerText = '0 đã chọn'; document.getElementById('modalCopies').value = 1;
           const container = document.getElementById('modalGalleryContainer'); container.innerHTML = '';
-          if(this.capturedPhotos.length === 0) { container.innerHTML = '<span class="small text-muted w-100 text-center" style="grid-column: 1 / -1; padding: 10px;">Chưa có ảnh nào.</span>'; } 
+          if(this.capturedPhotos.length === 0) { container.innerHTML = '<span class="small text-muted w-100 text-center py-5 fw-bold" style="grid-column: 1 / -1;">Chưa có ảnh nào trong sự kiện.</span>'; } 
           else {
               this.capturedPhotos.forEach((record, idx) => {
                   const wrap = document.createElement('div'); wrap.className = 'thumb-wrapper'; wrap.style.cursor = 'pointer';
@@ -1606,7 +1938,7 @@
               this.ctx.fillText(text, textX, textY);
             }
             if(sBorder > 0) { this.ctx.lineWidth = sBorder * 2; this.ctx.strokeStyle = "#ffffff"; this.ctx.strokeRect(x, y, cellW, cellH); }
-            if (this.activeSlotIndex === index) { this.ctx.strokeStyle = "rgba(14, 165, 233, 0.8)"; this.ctx.lineWidth = 25; this.ctx.strokeRect(x, y, cellW, cellH); } 
+            if (this.activeSlotIndex === index) { this.ctx.strokeStyle = "rgba(255, 107, 43, 0.8)"; this.ctx.lineWidth = 25; this.ctx.strokeRect(x, y, cellW, cellH); } 
             else { this.ctx.strokeStyle = "#cbd5e1"; this.ctx.lineWidth = 4; this.ctx.setLineDash([20, 20]); this.ctx.strokeRect(x, y, cellW, cellH); this.ctx.setLineDash([]); }
             this.ctx.restore();
           }
