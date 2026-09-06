@@ -11,10 +11,13 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- Flatpickr -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+
+  <!-- Thư viện JSZip để Tải ảnh hàng loạt -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -40,10 +43,8 @@
     input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     
     /* NÚT BẤM DÙNG CHUNG */
-    .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 800; border-radius: 12px; transition: 0.2s; }
-    .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: var(--accent-glow); }
-    .btn-secondary-custom { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; font-weight: 800; border-radius: 12px; transition: 0.2s; }
-    .btn-secondary-custom:hover { background: #fca5a5; color: #b91c1c; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(220,38,38,0.2); }
+    .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 800; border-radius: 12px; transition: 0.2s; box-shadow: var(--accent-glow); }
+    .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,43,0.4); }
     .btn-outline-custom { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); font-weight: 800; border-radius: 10px; transition: 0.2s; }
     .btn-outline-custom:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,107,43,0.05);}
     .btn-circle-custom { width: 38px; height: 38px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: 1px solid var(--border-color); background: var(--panel-bg); color: var(--text-main);}
@@ -92,68 +93,93 @@
     .btn-view-album { width: 100%; background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 800; transition: 0.2s; box-shadow: var(--accent-glow);}
     .btn-view-album:hover { background: var(--accent-hover); transform: translateY(-2px);}
 
-    /* ================= PHOTO WALL & SLIDESHOW ================= */
+    /* ================= PHOTO WALL ================= */
     #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main);}
     .wall-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; background: rgba(244, 246, 248, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
     .wall-title-area h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main);}
     .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.85rem; margin: 0;}
-    .wall-top-actions { display: flex; gap: 10px;}
+    .wall-top-actions { display: flex; gap: 10px; align-items: center;}
     .btn-orange-glow { background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 30px; font-weight: 800; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: var(--accent-glow); border: none; cursor: pointer; transition: 0.3s;}
     .btn-orange-glow:hover { background: var(--accent-hover); transform: translateY(-2px); color: #fff;}
     
+    /* Box Tải hàng loạt */
+    #wallSelectionBar { display: none; align-items: center; gap: 15px; background: #111; color: #fff; padding: 10px 25px; border-radius: 30px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 100; font-weight: 600;}
+    
     .wall-grid { padding: 40px; }
-    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.3s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); will-change: transform;}
-    .wall-item:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255,107,43,0.15);}
+    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;}
     .wall-item img { width: 100%; display: block; object-fit: cover;}
+    .wall-item.selected::after { content: '\F26A'; font-family: bootstrap-icons; position: absolute; top: 10px; right: 10px; background: #0d6efd; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
+    .wall-item.selected { border: 3px solid #0d6efd; transform: scale(0.98);}
+
     @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
     @media (max-width: 768px) { .wall-item { width: calc(50% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px;} }
 
-    /* SLIDESHOW BAY TỪ DƯỚI LÊN & CÀI ĐẶT TRÁI */
-    #slideshowWrapper { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: none; overflow: hidden;}
+    /* SLIDESHOW (SÁNG SỦA & ẢNH TRÔI TỪ DƯỚI LÊN) */
+    #slideshowWrapper { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: none; overflow: hidden;}
     .slide-controls { position: absolute; bottom: 30px; left: 40px; display: flex; gap: 15px; z-index: 10001; }
-    .slide-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px);}
-    .slide-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+    .slide-btn { width: 50px; height: 50px; border-radius: 50%; background: #f8fafc; border: 1px solid var(--border-color); color: #111; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+    .slide-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: scale(1.1); }
     
-    .floating-item { position: absolute; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; transform: scale(0.5); border: 3px solid rgba(255,255,255,0.1); background: #111; will-change: transform, opacity;}
+    .floating-item { position: absolute; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); opacity: 0; border: 4px solid #fff; background: #fff; will-change: transform, opacity;}
     .floating-item img { width: 100%; height: 100%; object-fit: cover;}
-    .slide-center-focus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); opacity: 0; z-index: 100; max-width: 600px; width: 90vw; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.5); transition: all 0.5s ease-out; display: flex; justify-content: center;}
+    .slide-center-focus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); opacity: 0; z-index: 100; max-width: 600px; width: 90vw; padding: 15px; background: #fff; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.1); transition: all 0.5s ease-out; display: flex; justify-content: center;}
     .slide-center-focus.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     .slide-center-focus img { width: 100%; border-radius: 10px; object-fit: contain; max-height: 70vh;}
 
-    .slide-settings-panel { position: absolute; top: 0; left: -380px; width: 380px; height: 100vh; background: #111; border-right: 1px solid rgba(255,255,255,0.1); z-index: 10002; transition: left 0.3s ease; padding: 20px; color: #fff; overflow-y: auto; display: flex; flex-direction: column;}
+    .slide-settings-panel { position: absolute; top: 0; left: -380px; width: 380px; height: 100vh; background: #fff; border-right: 1px solid var(--border-color); box-shadow: 10px 0 30px rgba(0,0,0,0.05); z-index: 10002; transition: left 0.3s ease; padding: 25px; overflow-y: auto; display: flex; flex-direction: column;}
     .slide-settings-panel.open { left: 0; }
-    .slide-settings-panel .form-control { background: #222 !important; border-color: #333 !important; color: #fff !important; }
 
-    /* LIGHTBOX WALL THUMB TO RÕ DƯỚI CÙNG */
-    .lb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10500; display: none; flex-direction: column;}
-    .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 10510;}
-    .lb-title { font-weight: 800; font-size: 1.2rem; margin: 0; color: #fff;}
+    /* LIGHTBOX WALL (SÁNG MÀU, NÚT TIẾN LÙI RÕ RÀNG) */
+    .lb-overlay { position: fixed; inset: 0; background: #ffffff; z-index: 10500; display: none; flex-direction: column;}
+    .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #111; z-index: 10510; border-bottom: 1px solid var(--border-color);}
+    .lb-title { font-weight: 800; font-size: 1.2rem; margin: 0; color: #111;}
     .lb-actions { display: flex; gap: 15px;}
-    .lb-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: 0.2s; text-decoration: none;}
-    .lb-btn:hover { background: #fff; color: #000;}
-    .lb-main { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden;}
+    .lb-btn { width: 40px; height: 40px; border-radius: 50%; background: #f8fafc; border: 1px solid var(--border-color); color: #111; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: 0.2s;}
+    .lb-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent);}
+    .lb-main { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #f4f6f8;}
     .lb-img-wrap { max-width: 85%; max-height: 85vh; display: flex; justify-content: center; align-items: center; cursor: grab;}
     .lb-img-wrap:active { cursor: grabbing;}
-    .lb-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: transform 0.1s; will-change: transform;}
-    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(255,255,255,0.05); color: #fff; border: none; font-size: 1.5rem; border-radius: 50%; cursor: pointer; transition: 0.2s; z-index: 10510;}
-    .lb-nav:hover { background: rgba(255,255,255,0.2); scale: 1.1;}
+    .lb-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); will-change: transform;}
+    
+    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: #fff; color: #111; border: 1px solid var(--border-color); font-size: 1.5rem; border-radius: 50%; cursor: pointer; transition: 0.2s; z-index: 10510; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+    .lb-nav:hover { background: var(--accent); color: #fff; border-color: var(--accent); scale: 1.1;}
     .lb-nav.prev { left: 30px; } .lb-nav.next { right: 30px; }
     
-    .lb-strip { height: 160px; display: flex; justify-content: center; gap: 15px; padding: 20px; background: #000; overflow-x: auto; align-items: center;}
-    .lb-thumb { flex-shrink: 0; width: auto; height: 120px; max-width: 160px; border-radius: 6px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; overflow: hidden;}
-    .lb-thumb img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px;}
-    .lb-thumb.active { opacity: 1; border-color: var(--accent);}
+    /* Strip: Có 2 nút tiến lùi 2 bìa */
+    .lb-strip-container { position: relative; display: flex; align-items: center; padding: 0 60px; background: #fff; border-top: 1px solid var(--border-color);}
+    .lb-strip { height: 140px; display: flex; gap: 15px; padding: 15px 0; overflow-x: auto; scroll-behavior: smooth; flex: 1; -ms-overflow-style: none; scrollbar-width: none;}
+    .lb-strip::-webkit-scrollbar { display: none; }
+    .lb-thumb { flex-shrink: 0; width: 110px; height: 110px; border-radius: 8px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #f8fafc;}
+    .lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px;}
+    .lb-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.05);}
+    
+    .strip-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 1px solid var(--border-color); color: #111; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
+    .strip-nav:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .strip-nav.prev { left: 10px; } .strip-nav.next { right: 10px; }
 
-    /* ================= GUEST UPLOAD ================= */
-    #uploadWrapper { width: 100vw; height: 100vh; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000;}
-    .upload-modal { background: #fff; border-radius: 24px; width: 90%; max-width: 420px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); text-align: center; border: 1px solid var(--border-color);}
+    /* ================= GUEST UPLOAD (GIAO DIỆN BO TRÒN NHƯ ẢNH MẪU) ================= */
+    #uploadWrapper { width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000;}
+    .upload-modal-new { background: #fff; border-radius: 32px; width: 95%; max-width: 400px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); position: relative; margin: auto; }
+    .um-drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 3px; margin: 0 auto 20px; }
+    .um-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .um-header h5 { font-weight: 800; font-size: 1.3rem; margin: 0; color: #111; }
+    .um-close { background: none; border: none; font-size: 1.5rem; color: #64748b; cursor: pointer; transition: 0.2s; }
+    .um-close:hover { color: var(--accent); }
+    .um-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; padding: 25px 20px; border: 1.5px solid #e2e8f0; border-radius: 20px; background: #fff; cursor: pointer; transition: 0.2s; margin-bottom: 15px; text-decoration: none; color: #111; }
+    .um-btn:hover { border-color: var(--accent); background: #fff5f0; }
+    .um-btn i { font-size: 2.2rem; color: #64748b; margin-bottom: 10px; transition: 0.2s; }
+    .um-btn:hover i { color: var(--accent); }
+    .um-btn-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 4px; }
+    .um-btn-sub { font-size: 0.85rem; color: #94a3b8; font-weight: 600; }
+    #uploadLoadingOverlay { position: absolute; inset: 0; background: rgba(255,255,255,0.95); border-radius: 32px; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
+    #uploadPreview { width: 100%; border-radius: 16px; margin-bottom: 15px; display: none; object-fit: cover; max-height: 200px; }
+    .form-control-upload { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 16px; padding: 15px; width: 100%; font-family: inherit; margin-bottom: 20px; resize: none; font-weight: 500;}
 
     /* ================= MAIN BOOTH CHỤP ẢNH CHÍNH ================= */
     .app-header { background: var(--panel-bg); display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: 60px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.02); z-index: 50;}
-    
     .app-container { display: flex; height: calc(100vh - 60px); position: relative; overflow: hidden;}
     
-    /* CẤU TRÚC FLEX CÓ RESIZER KÉO THẢ */
+    /* Splitter Layout */
     .left-wrapper { display: flex; flex-direction: column; width: 50%; min-width: 300px; background: var(--bg-color); z-index: 10;}
     .right-wrapper { display: flex; flex-direction: column; flex: 1; min-width: 300px; background: var(--bg-color); position: relative; align-items: center; justify-content: center; padding: 20px; z-index: 10;}
     
@@ -170,40 +196,33 @@
     body.hide-livecam .livecam-section { display: none !important; }
     body.hide-livecam .resizer-h { display: none !important; }
 
-    /* Nội dung Livecam */
+    /* Livecam UI */
     .camera-setup-row { display: flex; gap: 15px; height: 100%;}
     .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; overflow-y: auto; padding-right: 5px;}
     .viewport-wrapper { flex: 1; position: relative; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
     #videoElement { width: 100%; height: 100%; object-fit: contain; }
-    .camera-modes { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
-    .btn-cam-mode { background: rgba(255,255,255,0.8); color: #333; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-    .btn-cam-mode.active { background: var(--accent); color: #fff;}
-    .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 3px solid #fff; color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; backdrop-filter: blur(5px);}
-    #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9); }
-    #fullscreenRecentThumb { position: absolute; bottom: 20px; right: 20px; width: 100px; height: 100px; border: 3px solid #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: cover; display: none; z-index: 9999;}
+    #countdownOverlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 10; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+    #fullscreenRecentThumb { position: absolute; bottom: 20px; right: 20px; width: 120px; height: 120px; border: 4px solid #fff; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); object-fit: cover; display: none; z-index: 15;}
 
-    /* Box chỉnh Livecam không có nút + - như yêu cầu */
-    .cam-param-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; margin-bottom: 5px;}
-    .cam-param-title { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-align: center; text-transform: uppercase;}
-    .cam-param-row { display: flex; align-items: center; gap: 5px;}
+    .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 3px solid #fff; color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; backdrop-filter: blur(5px);}
     
-    /* ẢNH SỰ KIỆN - CSS GRID TĨNH CHỐNG XẾP CHỒNG TUYỆT ĐỐI */
+    /* ẢNH SỰ KIỆN - LƯỚI TĨNH CỐ ĐỊNH CHỐNG XẾP CHỒNG HOÀN TOÀN */
     .gallery-title { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0;}
-    .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); gap: 10px; align-items: start; align-content: start; justify-items: center; flex: 1; overflow-y: auto; padding: 10px; }
+    .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); grid-auto-rows: var(--grid-size); gap: 10px; align-content: start; flex: 1; overflow-y: auto; padding: 10px; }
     .gallery-container::-webkit-scrollbar { width: 6px; }
     .gallery-container::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 4px; }
     
-    .thumb-wrapper { width: 100%; position: relative; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; overflow: hidden; aspect-ratio: 1/1; cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .thumb-wrapper { width: 100%; height: 100%; position: relative; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; overflow: hidden; cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .thumb-wrapper:hover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent);}
-    .thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; pointer-events: none;}
+    .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;}
     
-    .source-badge { position: absolute; top: 6px; left: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; z-index: 10; pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+    .source-badge { position: absolute; top: 6px; left: 6px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; z-index: 10; pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
     .badge-remote { background: #10b981; } 
     .badge-guest { background: #ef4444; }  
     
     /* KHUNG IN CANVAS (HIỆN RÕ CHỮ, KHÔNG BỊ KHUẤT) */
     .canvas-container { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;}
-    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; border-radius: 2px; border: 1px solid #cbd5e1; will-change: transform;}
+    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; border-radius: 2px; border: 1px solid #cbd5e1;}
     
     .slot-toolbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); padding: 6px 12px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 8px; align-items: center; opacity: 0; visibility: hidden; transition: 0.2s;}
     .slot-toolbar.active { opacity: 1; visibility: visible;}
@@ -213,13 +232,13 @@
     .qr-wrapper-box { padding: 15px; background: #fff; border-radius: 16px; border: 2px solid var(--accent); display: inline-block; box-shadow: 0 10px 30px rgba(255,107,43,0.15);}
     .qr-container { display: flex; align-items: center; justify-content: center;}
 
-    /* ================= CSS IN ẤN ĐỘC QUYỀN 100x148mm ================= */
+    /* ================= CSS IN ẤN ĐỘC QUYỀN 100x148mm (SỬA LỖI TRANG TRẮNG) ================= */
     @media print {
         @page { size: 100mm 148mm; margin: 0; }
-        body * { visibility: hidden; }
-        #printContainer, #printContainer * { visibility: visible; }
-        #printContainer { position: absolute; left: 0; top: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; width: 100vw; height: 100vh; background: #fff; }
-        .print-page { width: 100mm; height: 148mm; object-fit: contain; page-break-after: always; display: block; margin: 0;}
+        body, html { margin: 0; padding: 0; background: #fff; height: 100%; width: 100%;}
+        body > *:not(#printContainer) { display: none !important; }
+        #printContainer { display: flex !important; flex-direction: column; align-items: center; width: 100vw; background: #fff; position: absolute; top: 0; left: 0; margin: 0; padding: 0;}
+        .print-page { width: 100mm; height: 148mm; object-fit: contain; page-break-after: always; display: block; margin: 0; padding: 0;}
     }
   </style>
 </head>
@@ -230,9 +249,12 @@
       <h5 class="mt-3 fw-bold">Đang khởi tạo hệ thống...</h5>
   </div>
 
+  <style id="printStyle"></style>
   <input type="file" id="slotFileInput" accept="image/*" onchange="app.handleSlotFile(event)" hidden>
   <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
   <input type="file" id="coverUploadInput" accept="image/*" onchange="app.handleCoverUpload(event)" hidden>
+  
+  <!-- Vùng chứa Ảnh để in -->
   <div id="printContainer" class="d-none"></div>
 
   <!-- ================= MODAL TẠO/SỬA SỰ KIỆN MỚI ================= -->
@@ -307,19 +329,28 @@
               <p><i class="bi bi-calendar-event"></i> <span id="wallDate">--.--.----</span> &nbsp;|&nbsp; <i class="bi bi-geo-alt-fill"></i> <span id="wallLocation">Địa điểm</span></p>
           </div>
           <div class="wall-top-actions">
+              <button class="btn-outline-custom bg-white px-3 py-2 rounded-pill fw-bold" onclick="app.toggleWallSelectionMode()" id="btnWallSelect"><i class="bi bi-check2-square"></i> Chọn nhiều</button>
               <button class="btn-orange-glow" onclick="app.startSlideshow()"><i class="bi bi-play-circle-fill fs-5"></i> Slide Show</button>
               <a href="#" id="btnShareMoment" class="btn-orange-glow"><i class="bi bi-camera-fill fs-5"></i> Gửi Khoảnh khắc</a>
           </div>
       </div>
       
       <div class="wall-grid" id="wallMasonryGrid"></div>
+      
+      <!-- Thanh công cụ chọn ảnh để tải về -->
+      <div id="wallSelectionBar" style="display: none; align-items: center; gap: 15px; background: #111; color: #fff; padding: 12px 25px; border-radius: 30px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 100; font-weight: 600;">
+          <span id="wallSelectedCount">Đã chọn 0 ảnh</span>
+          <div>
+              <button class="btn btn-outline-secondary btn-sm rounded-pill fw-bold bg-white text-dark me-2" onclick="app.cancelWallSelection()">Hủy</button>
+              <button class="btn btn-primary-custom btn-sm rounded-pill fw-bold px-3 py-1" onclick="app.downloadSelectedWallPhotos()"><i class="bi bi-download"></i> Tải về</button>
+          </div>
+      </div>
 
-      <!-- Wall Lightbox (Thumb lớn dưới cùng) -->
+      <!-- Wall Lightbox -->
       <div class="lb-overlay" id="wallLightbox">
           <div class="lb-header">
               <h4 class="lb-title" id="lbTitleText">Chi tiết</h4>
               <div class="lb-actions">
-                  <!-- Tải thẳng trực tiếp gốc -->
                   <button class="lb-btn" onclick="app.downloadCurrentLightboxImage()" title="Tải ảnh về"><i class="bi bi-download"></i></button>
                   <button class="lb-btn" onclick="app.closeWallLightbox()" title="Đóng"><i class="bi bi-x-lg"></i></button>
               </div>
@@ -329,25 +360,26 @@
               <div class="lb-img-wrap" id="wlImgContainer"><img id="lbImage" src=""></div>
               <button class="lb-nav next" onclick="app.navWallLightbox(1)"><i class="bi bi-chevron-right"></i></button>
           </div>
-          <div class="lb-strip" id="lbStrip"></div>
+          <div class="lb-strip-container">
+              <button class="strip-nav prev" onclick="app.scrollStrip(-1)"><i class="bi bi-chevron-left"></i></button>
+              <div class="lb-strip" id="lbStrip"></div>
+              <button class="strip-nav next" onclick="app.scrollStrip(1)"><i class="bi bi-chevron-right"></i></button>
+          </div>
       </div>
   </div>
 
-  <!-- SLIDESHOW MODE (TRÁI VÀ BAY DƯỚI LÊN) -->
+  <!-- SLIDESHOW MODE (NỀN SÁNG TRẮNG TINH KHÔI, BAY TỪ DƯỚI LÊN) -->
   <div id="slideshowWrapper">
-      <div class="bg-blob b1"></div>
-      <div class="bg-blob b2"></div>
+      <div class="slide-title-overlay" style="top:40px; right:40px; text-align:right;">
+          <h2 id="slideEventName" style="color: #111;">SỰ KIỆN</h2>
+          <p class="fs-5 fw-bold" style="color:var(--accent);">Quét QR Gửi Lời Nhắn</p>
+      </div>
       
-      <!-- Nút điều khiển -->
+      <!-- Nút điều khiển trái -->
       <div class="slide-controls" id="slideOpenBtnArea">
           <button class="slide-btn" onclick="app.toggleSlideshowSettings()" title="Cài đặt"><i class="bi bi-gear-fill"></i></button>
           <button class="slide-btn" onclick="app.toggleFullScreenApp()" title="Toàn màn hình"><i class="bi bi-arrows-fullscreen"></i></button>
-          <button class="slide-btn text-danger" onclick="app.stopSlideshow()" title="Thoát"><i class="bi bi-x-lg"></i></button>
-      </div>
-      
-      <div class="slide-title-overlay" style="top:40px; right:40px; text-align:right;">
-          <h2 id="slideEventName">SỰ KIỆN</h2>
-          <p class="fs-5 fw-bold" style="color:var(--accent);">Quét QR Gửi Lời Nhắn</p>
+          <button class="slide-btn text-danger border-danger" onclick="app.stopSlideshow()" title="Thoát"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <div id="slideItemsContainer"></div>
@@ -356,7 +388,6 @@
           <img id="slideCenterImg" src="">
       </div>
 
-      <!-- Cài đặt Slideshow Bảng bên Trái -->
       <div id="slideSettingsPanel" class="slide-settings-panel">
           <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
               <h6 class="fw-bold m-0 text-white text-uppercase"><i class="bi bi-gear-fill me-2"></i> LIVESHOW SETTINGS</h6>
@@ -377,28 +408,33 @@
                   </div>
               </div>
           </div>
-          <p class="small text-secondary mt-3">Các ảnh phụ sẽ tự động trôi nổi từ dưới lên.</p>
+          <p class="small text-secondary mt-3">Các ảnh phụ sẽ tự động bay lên từ dưới đáy màn hình.</p>
       </div>
   </div>
 
-  <!-- ================= 3. GUEST UPLOAD WRAPPER ================= -->
+  <!-- ================= 3. GUEST UPLOAD (MODAL GIỐNG HÌNH YÊU CẦU) ================= -->
   <div id="uploadWrapper" style="display: none;">
-      <div class="upload-modal" id="uploadModalBox">
+      <div class="upload-modal-new" id="uploadModalBox">
+          <div class="um-drag-handle"></div>
           <div id="uploadLoadingOverlay">
               <div class="spinner-border" style="color:var(--accent); width: 3rem; height: 3rem;"></div>
               <h5 class="mt-4 fw-bold text-dark fs-5">Đang xử lý tải lên...</h5>
           </div>
-          <div class="upload-header">
+          <div class="um-header">
               <h5 id="uploadModalTitle">Chia sẻ khoảnh khắc</h5>
-              <button class="upload-close" onclick="app.closeUploadModal()"><i class="bi bi-x-lg"></i></button>
+              <button class="um-close" onclick="app.closeUploadModal()"><i class="bi bi-x-lg"></i></button>
           </div>
           <div id="uploadOptions">
-              <label class="upload-btn-big">
-                  <i class="bi bi-images text-primary"></i><span>Gửi Ảnh / Video</span><small>Chọn từ thư viện điện thoại</small>
+              <label class="um-btn">
+                  <i class="bi bi-camera"></i>
+                  <div class="um-btn-title">Gửi ảnh / video</div>
+                  <div class="um-btn-sub">Từ thư viện</div>
                   <input type="file" accept="image/*" hidden onchange="app.handleGuestFileSelect(event)">
               </label>
-              <button class="upload-btn-big" onclick="app.showGuestMessageForm()">
-                  <i class="bi bi-chat-heart text-danger"></i><span>Gửi Lời Nhắn</span><small>Viết lời chúc mừng</small>
+              <button class="um-btn" onclick="app.showGuestMessageForm()">
+                  <i class="bi bi-heart"></i>
+                  <div class="um-btn-title">Gửi lời nhắn</div>
+                  <div class="um-btn-sub">Chia sẻ cảm nghĩ</div>
               </button>
           </div>
           <div id="uploadFormArea" style="display: none;">
@@ -416,7 +452,6 @@
         <div class="d-flex align-items-center gap-2">
           <button class="btn btn-sm btn-outline-secondary me-2" onclick="window.location.href='?'" title="Về Danh sách sự kiện"><i class="bi bi-house-door-fill"></i></button>
           <img id="headerLogo" src="https://github.com/trunghieuappsheet-cell/hbooth/blob/main/hama.png?raw=true" style="height: 30px; object-fit:contain;">
-          <!-- Tên Dự án tiệp màu nền -->
           <span class="fs-5 fw-bold ms-3" id="currentProjectBadge" style="color: var(--text-main);">Tên Dự án</span>
         </div>
         
@@ -426,7 +461,6 @@
           <button class="btn-circle-custom position-relative" onclick="app.showConnectionModal()" title="Thiết bị kết nối">
              <i class="bi bi-phone"></i><div id="remoteConnectionBadge" class="status-badge" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; display: none;"></div>
           </button>
-          
           <div class="vr bg-secondary mx-3"></div>
           <button class="btn-circle-custom" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" title="Cài đặt chung"><i class="bi bi-gear-fill"></i></button>
         </div>
@@ -442,8 +476,8 @@
                   <select id="cameraSelect" class="form-select mb-2" onchange="app.switchCamera()"></select>
                   <div class="input-group mb-2"><span class="input-group-text bg-white fw-bold"><i class="bi bi-camera text-muted"></i></span><input type="number" id="photoCount" class="form-control text-center fw-bold" value="1"></div>
                   
-                  <!-- Bỏ nút + -, giữ lại thanh trượt gọn gàng -->
-                  <div class="cam-param-box mt-auto">
+                  <!-- Bỏ nút + - chỉ giữ thanh trượt -->
+                  <div class="p-2 rounded mb-1 border bg-white mt-auto">
                       <div class="d-flex gap-1 align-items-center mb-2"><i class="bi bi-zoom-in text-muted"></i><input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()"></div>
                       <div class="d-flex gap-2"><input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()"><input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()"></div>
                   </div>
@@ -469,14 +503,12 @@
               </div>
           </div>
           
-          <!-- Thanh kéo dọc H -->
           <div class="resizer-h" id="resizerH"></div>
 
           <div class="gallery-section">
             <div class="gallery-title">
               <div class="d-flex align-items-center">
                   <i class="bi bi-images text-accent me-2"></i> ẢNH SỰ KIỆN 
-                  <!-- Thanh kéo Zoom thư viện ảnh -->
                   <div class="d-flex align-items-center gap-1 ms-3 bg-light rounded px-2 border">
                       <i class="bi bi-zoom-out text-muted" style="font-size:0.7rem;"></i>
                       <input type="range" id="galleryZoom" min="80" max="250" value="130" style="width: 70px; height: 12px;" oninput="document.documentElement.style.setProperty('--grid-size', this.value + 'px')">
@@ -488,18 +520,15 @@
                   <label class="btn-circle-custom m-0" title="Chèn thủ công"><i class="bi bi-plus-lg text-success"></i><input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden></label>
               </div>
             </div>
-            <div class="gallery-container" id="capturedGallery">
-              <!-- Grid tự động -->
-            </div>
+            <!-- Lưới Gallery tĩnh chống xếp chồng -->
+            <div class="gallery-container" id="capturedGallery"></div>
           </div>
         </div>
         
-        <!-- Thanh kéo ngang V -->
         <div class="resizer-v" id="resizerV"></div>
 
         <!-- Khối Phải (Canvas In) -->
         <div class="right-wrapper" id="rightWrapper">
-          <!-- Toolbar chỉnh ảnh trong khung -->
           <div class="slot-toolbar active" id="slotToolbar">
             <span class="badge bg-primary rounded-pill px-2 py-1 fs-6 shadow-sm">#<span id="stIndex">1</span></span>
             <div class="toolbar-divider" style="width:1px; height:20px; background:#ddd; margin:0 5px;"></div>
@@ -512,18 +541,18 @@
             <button class="btn-circle-custom text-danger border-danger" style="width:32px;height:32px;" onclick="app.removeActiveSlot()"><i class="bi bi-trash"></i></button>
           </div>
           
-          <!-- Canvas Container -->
           <div class="canvas-container"><canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)"></canvas></div>
           
-          <!-- Hai nút điều khiển In và Xóa -->
+          <!-- Hai nút IN NGAY và XÓA TRẮNG màu sắc đồng bộ -->
           <div class="d-flex gap-3 w-100 mt-3" style="max-width: 600px;">
               <button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.showPrintConfigModal()"><i class="bi bi-printer"></i> IN NGAY</button>
-              <button class="btn btn-secondary-custom flex-fill py-3 fs-5" onclick="app.clearLayout()"><i class="bi bi-trash"></i> XÓA TRẮNG</button>
+              <button class="btn btn-primary-custom flex-fill py-3 fs-5" style="background-color: var(--accent); filter: hue-rotate(345deg);" onclick="app.clearLayout()"><i class="bi bi-trash"></i> XÓA TRẮNG</button>
           </div>
         </div>
       </div>
   </div>
 
+  <!-- ================= MODALS HỆ THỐNG ================= -->
   <div class="modal fade" id="printConfigModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content p-3 text-center">
@@ -592,7 +621,7 @@
     </div>
   </div>
 
-  <!-- OFFCANVAS CÀI ĐẶT CHUNG (XÓA TÊN APP, MÀU SÁNG TOÀN BỘ) -->
+  <!-- OFFCANVAS CÀI ĐẶT CHUNG ĐÃ BỎ TÊN APP -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 360px;">
       <div class="offcanvas-header border-bottom"><h6 class="fw-bold m-0"><i class="bi bi-gear-fill"></i> CÀI ĐẶT DỰ ÁN</h6><button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button></div>
       <div class="offcanvas-body bg-white">
@@ -639,7 +668,7 @@
           </div>
       </div>
   </div>
-  <script>
+<script>
     const API_URL = 'https://script.google.com/macros/s/AKfycby6_-gotKSFnMsAsvC_TXmqCEeibp339208kcTpuKF8c9DsSMH1WQ05U00MwlztEqRfYg/exec'; 
 
     const app = {
@@ -657,7 +686,6 @@
       processedFileNames: new Set(),
       folderConnectTime: 0, 
 
-      // 1 Trang duy nhất chuẩn 300dpi
       pages: [], 
       currentPage: 0,
       slotsPerPage: 1,
@@ -708,6 +736,10 @@
       guestUploadImageB64: null,
       currentDashQRUrl: "",
       datePicker: null,
+
+      // Chọn ảnh Wall
+      isWallSelectionMode: false,
+      wallSelectedIndices: new Set(),
 
       init: async function() {
         if (document.getElementById('cpDateRange')) {
@@ -826,7 +858,7 @@
                               <div class="pc-body">
                                   <h4 class="pc-title" title="${p.name}">${p.name}</h4>
                                   <div class="pc-meta"><span><i class="bi bi-calendar3"></i> ${displayDateStr}</span><span><i class="bi bi-geo-alt-fill"></i> ${p.location || 'Chưa cập nhật'}</span></div>
-                                  <div class="pc-stats-box"><div class="pc-media-count">${p.totalMedia || 0} <span>Media</span></div><button class="btn-qr-dash" onclick="app.showDashQRModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code fs-5"></i></button></div>
+                                  <div class="pc-stats-box"><div class="pc-media-count">${p.totalMedia || 0} <span>Media</span></div><button class="btn-circle-custom bg-white" onclick="app.showDashQRModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code"></i></button></div>
                                   <div class="pc-actions"><button class="btn-view-album" onclick="window.location.href='?booth=${p.id}'">Vào Sự Kiện</button></div>
                               </div>`;
                           grid.appendChild(card);
@@ -838,7 +870,7 @@
       showDashQRModal: function(projectId) {
           this.currentDashQRUrl = window.location.origin + window.location.pathname + "?wall=" + projectId;
           const qrContainer = document.getElementById('dashQRCode'); qrContainer.innerHTML = "";
-          new QRCode(qrContainer, { text: this.currentDashQRUrl, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+          new QRCode(qrContainer, { text: this.currentDashQRUrl, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
           this.dashQRModalInstance.show();
       },
       copyDashQRFromModal: function() {
@@ -891,7 +923,7 @@
       },
 
       /* =========================================
-       * GUEST UPLOAD
+       * GUEST UPLOAD (LÀM TÍNH NĂNG CON CỦA WALL)
        * ========================================= */
       initUploadMode: async function(projectId) { document.getElementById('uploadWrapper').style.display = 'flex'; this.currentProjectId = projectId; this.hideGlobalLoading(); },
       closeUploadModal: function() { window.location.href = '?wall=' + this.currentProjectId; },
@@ -942,7 +974,6 @@
           this.wallMasonry = new Masonry(document.getElementById('wallMasonryGrid'), { itemSelector: '.wall-item', columnWidth: '.wall-item', percentPosition: true, transitionDuration: '0.4s' });
           this.bindWallLightboxEvents();
 
-          // Gen QR cho Settings Slideshow
           const qrContainer = document.getElementById('slideQRCode'); qrContainer.innerHTML = "";
           new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?upload=" + projectId, width: 140, height: 140, colorDark: "#000000", colorLight: "#ffffff" });
 
@@ -956,7 +987,12 @@
                               this.wallRenderedIds.add(item.id); this.wallImagesList.splice(index, 0, item);
                               let div = document.createElement('div'); div.className = 'wall-item';
                               let img = document.createElement('img'); img.src = item.url; div.appendChild(img);
-                              div.onclick = () => { this.openWallLightbox(index); };
+                              
+                              div.onclick = () => { 
+                                  if(this.isWallSelectionMode) { this.toggleWallItemSelection(index, div); } 
+                                  else { this.openWallLightbox(index); }
+                              };
+                              
                               document.getElementById('wallMasonryGrid').prepend(div); newElements.push(div); isNewPhotoAdded = true;
                           }
                       });
@@ -969,11 +1005,49 @@
           fetchWallImages(); this.wallFetchInterval = setInterval(fetchWallImages, 5000); this.hideGlobalLoading();
       },
       
+      // TẢI HÀNG LOẠT (WALL)
+      toggleWallSelectionMode: function() {
+          this.isWallSelectionMode = !this.isWallSelectionMode;
+          document.getElementById('wallSelectionBar').style.display = this.isWallSelectionMode ? 'flex' : 'none';
+          document.getElementById('btnWallSelect').classList.toggle('active', this.isWallSelectionMode);
+          if(!this.isWallSelectionMode) { this.cancelWallSelection(); }
+      },
+      cancelWallSelection: function() {
+          this.isWallSelectionMode = false;
+          this.wallSelectedIndices = new Set();
+          document.getElementById('wallSelectionBar').style.display = 'none';
+          document.getElementById('btnWallSelect').classList.remove('active');
+          document.querySelectorAll('.wall-item').forEach(item => item.classList.remove('selected'));
+          this.updateWallSelectionCount();
+      },
+      toggleWallItemSelection: function(index, element) {
+          if(this.wallSelectedIndices.has(index)) { this.wallSelectedIndices.delete(index); element.classList.remove('selected'); } 
+          else { this.wallSelectedIndices.add(index); element.classList.add('selected'); }
+          this.updateWallSelectionCount();
+      },
+      updateWallSelectionCount: function() {
+          document.getElementById('wallSelectedCount').innerText = `Đã chọn ${this.wallSelectedIndices.size} ảnh`;
+      },
+      downloadSelectedWallPhotos: async function() {
+          if(this.wallSelectedIndices.size === 0) return Swal.fire('Lỗi', 'Vui lòng chọn ít nhất 1 ảnh', 'error');
+          Swal.fire({title: 'Đang nén ảnh để tải về...', didOpen: () => Swal.showLoading()});
+          const zip = new JSZip(); const promises = [];
+          this.wallSelectedIndices.forEach(idx => {
+              const item = this.wallImagesList[idx];
+              const p = fetch(item.url).then(r => r.blob()).then(blob => { zip.file(`HaMa_Booth_${idx}.jpg`, blob); });
+              promises.push(p);
+          });
+          await Promise.all(promises);
+          zip.generateAsync({type:"blob"}).then(function(content) {
+              saveAs(content, "HaMa_PhotoBooth_Photos.zip"); Swal.close(); app.cancelWallSelection();
+          });
+      },
+      
       startSlideshow: function() {
           document.getElementById('wallHeroSection').style.display = 'none'; document.getElementById('wallMasonryGrid').style.display = 'none'; document.getElementById('slideshowWrapper').style.display = 'block';
           if(this.wallImagesList.length > 0) { this.updateSlideCenter(this.wallImagesList[0]); }
           if(this.slideInterval) clearInterval(this.slideInterval);
-          this.slideInterval = setInterval(() => this.spawnFloatingItem(), 2000);
+          this.slideInterval = setInterval(() => this.spawnFloatingItem(), 2500);
           this.applySlideSettings();
       },
       stopSlideshow: function() {
@@ -1004,8 +1078,11 @@
           const size = Math.random() * 120 + 150; const left = Math.random() * 85; const duration = Math.random() * 8 + 10; 
           el.style.width = size + 'px'; el.style.height = size + 'px'; el.style.left = left + 'vw'; el.style.bottom = '-50vh'; 
           el.style.transition = `transform ${duration}s linear, opacity 1s`; el.innerHTML = `<img src="${item.url}" loading="lazy">`;
+          
           document.getElementById('slideItemsContainer').appendChild(el);
-          setTimeout(() => { el.style.transform = `translateY(-150vh) scale(${Math.random()*0.4 + 0.8}) rotate(${Math.random()*30-15}deg)`; }, 50);
+          void el.offsetWidth; // Ép Reflow để CSS transition hoạt động
+          
+          el.style.transform = `translateY(-150vh) scale(${Math.random()*0.4 + 0.8}) rotate(${Math.random()*30-15}deg)`; 
           setTimeout(() => { el.remove(); }, duration * 1000);
       },
 
@@ -1021,8 +1098,14 @@
       openWallLightbox: function(index) {
           this.wallLightboxIndex = index; const item = this.wallImagesList[index];
           document.getElementById('lbImage').src = item.url; this.resetWallLightbox(); this.renderLightboxStrip(); document.getElementById('wallLightbox').style.display = 'flex';
+          setTimeout(() => {
+              const activeThumb = document.querySelector('.lb-thumb.active');
+              if (activeThumb) { activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
+          }, 100);
       },
-      closeWallLightbox: function() { document.getElementById('wallLightbox').style.display = 'none'; },
+      closeWallLightbox: function() {
+          document.getElementById('wallLightbox').style.display = 'none';
+      },
       navWallLightbox: function(dir) {
           this.wallLightboxIndex += dir; if(this.wallLightboxIndex < 0) this.wallLightboxIndex = this.wallImagesList.length - 1; if(this.wallLightboxIndex >= this.wallImagesList.length) this.wallLightboxIndex = 0; this.openWallLightbox(this.wallLightboxIndex);
       },
@@ -1035,8 +1118,12 @@
               let d = document.createElement('div'); d.className = 'lb-thumb' + (idx === this.wallLightboxIndex ? ' active' : ''); d.innerHTML = `<img src="${img.url}" loading="lazy">`; d.onclick = () => this.openWallLightbox(idx); strip.appendChild(d);
           });
       },
+      scrollStrip: function(dir) {
+          const strip = document.getElementById('lbStrip');
+          strip.scrollBy({ left: dir * 300, behavior: 'smooth' });
+      },
       
-      // TẢI TRỰC TIẾP QUA DOWNLOAD URL
+      // TẢI TRỰC TIẾP QUA DOWNLOAD URL API 
       downloadCurrentLightboxImage: function() {
           const item = this.wallImagesList[this.wallLightboxIndex];
           if(item && item.downloadUrl) { window.location.href = item.downloadUrl; } 
@@ -1097,7 +1184,13 @@
                   this.capturedPhotos = [];
                   if(!res.data || res.data.length === 0) { this.renderCapturedGallery(); return; }
                   let loadedCount = 0; const totalExpected = res.data.length;
-                  const checkDone = () => { loadedCount++; if(loadedCount >= totalExpected) { this.capturedPhotos.sort((a,b) => b.date - a.date); this.renderCapturedGallery(); } };
+                  const checkDone = () => { 
+                      loadedCount++; 
+                      if(loadedCount >= totalExpected) { 
+                          this.capturedPhotos.sort((a,b) => b.date - a.date); 
+                          this.renderCapturedGallery(); 
+                      } 
+                  };
                   res.data.forEach(item => {
                       const img = new Image(); img.crossOrigin = "anonymous";
                       img.onload = () => { this.capturedPhotos.push({ imgObj: img, driveId: item.id, date: item.date, rot: 0, name: item.name }); checkDone(); };
@@ -1208,74 +1301,6 @@
               }
           }; img.src = b64; 
       },
-      initRemoteMode: async function(targetId) {
-          document.body.innerHTML = `
-          <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
-              <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
-              <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:15;"></canvas>
-              <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
-              <div id="captureControls" style="position:absolute; bottom:40px; left:0; width:100%; display:flex; justify-content:space-evenly; align-items:center; z-index:20; padding:0 20px;">
-                  <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-arrow-repeat"></i></button>
-                  <button id="remoteCaptureBtn" style="width:75px; height:75px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5); backdrop-filter:blur(5px);"></button>
-                  <div style="width:50px;"></div>
-              </div>
-              <div id="reviewControls" style="position:absolute; bottom:40px; left:0; width:100%; display:none; justify-content:center; gap:40px; align-items:center; z-index:20; padding:0 20px;">
-                  <button id="btnRetake" style="width:70px; height:70px; border-radius:50%; background:rgba(0,0,0,0.6); border:2px solid #fff; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><i class="bi bi-x-lg"></i></button>
-                  <button id="btnSend" style="width:70px; height:70px; border-radius:50%; background:var(--accent); border:none; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(255,107,43,0.5);"><i class="bi bi-send-fill"></i></button>
-              </div>
-          </div>`;
-          const status = document.getElementById('remoteStatus'); const video = document.getElementById('remoteVideo'); const previewCanvas = document.getElementById('remotePreview');
-          let remoteStream = null; let useFrontCam = false; let deviceRotation = 0;
-          function getDeviceType() { let ua = navigator.userAgent; if(/iPhone/i.test(ua)) return "iPhone"; if(/iPad/i.test(ua)) return "iPad"; if(/Android/i.test(ua)) return "Android"; return "Điện thoại"; }
-          let localRemoteId = localStorage.getItem('hama_remote_uid'); let localDeviceName = localStorage.getItem('hama_remote_name');
-          if(!localRemoteId) { localRemoteId = 'R_' + Math.random().toString(36).substr(2, 9); localDeviceName = getDeviceType() + ' ' + Math.floor(Math.random() * 9000 + 1000); localStorage.setItem('hama_remote_uid', localRemoteId); localStorage.setItem('hama_remote_name', localDeviceName); }
-
-          function setupSensors() {
-              window.addEventListener('deviceorientation', (e) => {
-                  let beta = e.beta; let gamma = e.gamma; let angle = 0;
-                  if (Math.abs(beta) < 45) { if (gamma > 45) angle = -90; else if (gamma < -45) angle = 90; } else if (beta > 135 || beta < -135) { angle = 180; }
-                  if (angle !== deviceRotation) { deviceRotation = angle;}
-              });
-          }
-          setupSensors();
-
-          const peer = new Peer(localRemoteId, { config: { 'iceServers': [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun.cloudflare.com:3478' } ] } });
-          let conn = null;
-          peer.on('open', (id) => {
-              conn = peer.connect(targetId, { reliable: true }); 
-              conn.on('open', () => { status.innerText = "Đã kết nối PC!"; status.style.background = "rgba(40, 167, 69, 0.8)"; conn.send('INIT_DEVICE:' + localDeviceName); setTimeout(() => { status.style.opacity = '0'; }, 2000); });
-              conn.on('error', (err) => { status.innerText = "Lỗi: " + err.message; status.style.background = "rgba(220, 53, 69, 0.8)"; status.style.opacity = '1'; });
-          });
-          peer.on('error', (err) => { if (err.type === 'unavailable-id') { localStorage.removeItem('hama_remote_uid'); window.location.reload(); } else { status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; if (err.type === 'peer-unavailable') status.innerText = "Lỗi: PC tắt (Quét lại mã!)"; else status.innerText = "Lỗi mạng"; } });
-
-          const startRemoteCamera = async () => {
-              if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
-              try { remoteStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFrontCam ? "user" : "environment", width: { ideal: 4096 }, height: { ideal: 4096 } }, audio: false }); video.srcObject = remoteStream; video.style.transform = useFrontCam ? 'scaleX(-1)' : 'scaleX(1)'; } catch (err) { status.innerText = "Lỗi Camera!"; status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; }
-          };
-          await startRemoteCamera(); document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
-
-          document.getElementById('remoteCaptureBtn').onclick = async () => {
-              if (!conn || !conn.open) return alert("Chưa kết nối PC! Vui lòng chờ tín hiệu xanh.");
-              previewCanvas.width = video.videoWidth; previewCanvas.height = video.videoHeight; const ctx = previewCanvas.getContext('2d');
-              try {
-                  const track = remoteStream.getVideoTracks()[0]; const ic = new ImageCapture(track); const blob = await ic.takePhoto(); const bmp = await createImageBitmap(blob);
-                  previewCanvas.width = bmp.width; previewCanvas.height = bmp.height; if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(bmp, 0, 0);
-              } catch(e) { if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(video, 0, 0); }
-              video.style.display = 'none'; previewCanvas.style.display = 'block'; document.getElementById('captureControls').style.display = 'none'; document.getElementById('reviewControls').style.display = 'flex';
-          };
-          document.getElementById('btnRetake').onclick = () => { previewCanvas.style.display = 'none'; video.style.display = 'block'; document.getElementById('captureControls').style.display = 'flex'; document.getElementById('reviewControls').style.display = 'none'; };
-          document.getElementById('btnSend').onclick = () => {
-              document.getElementById('reviewControls').style.display = 'none'; 
-              setTimeout(() => {
-                  const finalCvs = document.createElement('canvas'); const fCtx = finalCvs.getContext('2d'); let sw = previewCanvas.width; let sh = previewCanvas.height;
-                  if (deviceRotation === 90 || deviceRotation === -90) { finalCvs.width = sh; finalCvs.height = sw; } else { finalCvs.width = sw; finalCvs.height = sh; }
-                  fCtx.translate(finalCvs.width/2, finalCvs.height/2); fCtx.rotate(-deviceRotation * Math.PI / 180); fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
-                  const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0); conn.send(finalB64);
-                  status.innerText = "Gửi xong!"; status.style.opacity = '1'; status.style.background = "rgba(16, 185, 129, 0.8)"; setTimeout(() => status.style.opacity = '0', 2000); document.getElementById('btnRetake').click();
-              }, 100);
-          };
-          this.hideGlobalLoading();
-      },
       selectAndWatchFolder: async function() {
           try {
               this.localDirHandle = await window.showDirectoryPicker(); this.folderConnectTime = Date.now();
@@ -1337,22 +1362,27 @@
         if(mode === 'horizontal') { wp.classList.remove('vertical'); document.getElementById('btnModeH').classList.add('active'); } else { wp.classList.add('vertical'); document.getElementById('btnModeV').classList.add('active'); }
         this.updateMirrorUI();
       },
+      
+      // CHỤP ẢNH CÓ ĐẾM NGƯỢC, XEM TRƯỚC GÓC MÀN HÌNH NẾU ĐANG FULLSCREEN
       startCaptureSession: async function(targetSlot = -1) {
         const count = targetSlot !== -1 ? 1 : (parseInt(document.getElementById('photoCount').value) || 1); 
-        const timer = parseInt(document.getElementById('timerCount').value) || 3;
+        const timerStr = document.getElementById('timerCount').value;
+        const timer = timerStr === "" ? 0 : parseInt(timerStr); 
         const vp = document.getElementById('viewport'); 
         const overlay = document.getElementById('countdownOverlay');
         const thumbPreview = document.getElementById('fullscreenRecentThumb');
         
-        if (vp.requestFullscreen) { await vp.requestFullscreen().catch(err => console.log(err)); }
+        if (vp.requestFullscreen && !document.fullscreenElement) { await vp.requestFullscreen().catch(err => console.log(err)); }
         
         for (let i = 0; i < count; i++) {
-          overlay.style.display = 'flex'; 
-          for (let t = timer; t > 0; t--) { 
-              overlay.innerText = t; 
-              await new Promise(r => setTimeout(r, 1000)); 
-          } 
-          overlay.style.display = 'none';
+          if(timer > 0) {
+              overlay.style.display = 'flex'; 
+              for (let t = timer; t > 0; t--) { 
+                  overlay.innerText = t; 
+                  await new Promise(r => setTimeout(r, 1000)); 
+              } 
+              overlay.style.display = 'none';
+          }
           
           vp.style.backgroundColor = '#fff'; this.video.style.opacity = 0; 
           setTimeout(() => { vp.style.backgroundColor = '#000'; this.video.style.opacity = 1; }, 100);
@@ -1363,7 +1393,7 @@
               thumbPreview.src = b64;
               thumbPreview.style.display = 'block';
           }
-          if(i < count - 1) await new Promise(r => setTimeout(r, 1000));
+          if(i < count - 1) await new Promise(r => setTimeout(r, 1500)); 
         }
         setTimeout(() => { thumbPreview.style.display = 'none'; }, 2000);
         if (document.fullscreenElement) { document.exitFullscreen().catch(err => {}); }
@@ -1402,7 +1432,7 @@
         }
       },
       
-      // TỐI ƯU RENDER THƯ VIỆN CHỐNG LAG
+      // TỐI ƯU RENDER THƯ VIỆN CHỐNG LAG (DOCUMENT FRAGMENT)
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); 
         cap.innerHTML = ''; 
@@ -1521,7 +1551,7 @@
           this.renderCanvas(); this.prepModalInstance.hide();
       },
       
-      // CHỐNG LAG KHI KÉO THẢ BẰNG REQUESTANIMATIONFRAME
+      // CHỐNG LAG CANVAS
       bindCanvasEvents: function() {
         const cvs = this.canvas; window.addEventListener('resize', () => { this.renderCanvas(); });
         cvs.addEventListener('mousedown', (e) => {
@@ -1607,7 +1637,9 @@
               this.ctx.translate(x + cellW / 2, y + cellH / 2); this.ctx.translate(slot.panX * 2, slot.panY * 2); 
               this.ctx.scale(slot.zoom, slot.zoom); this.ctx.rotate(slot.rotate * Math.PI / 180); this.ctx.drawImage(slot.img, -dw / 2, -dh / 2, dw, dh); this.ctx.restore(); 
             } else {
-              this.ctx.fillStyle = "#f1f5f9"; this.ctx.fillRect(x, y, cellW, cellH); this.ctx.fillStyle = "#94a3b8"; this.ctx.font = "80px Montserrat"; this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle"; this.ctx.fillText("Bấm để chụp / chèn ảnh", x + cellW/2, y + cellH/2);
+              this.ctx.fillStyle = "#f1f5f9"; this.ctx.fillRect(x, y, cellW, cellH); this.ctx.fillStyle = "#94a3b8"; 
+              this.ctx.font = "600 " + Math.min(30, cellW/12) + "px Montserrat"; 
+              this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle"; this.ctx.fillText("Bấm để chụp/chèn ảnh", x + cellW/2, y + cellH/2);
             }
             if (this.printLogo) { 
               const logoScale = parseInt(document.getElementById('logoSize').value) / 100; const posX = parseInt(document.getElementById('logoX').value) / 100; const posY = parseInt(document.getElementById('logoY').value) / 100;
@@ -1640,16 +1672,8 @@
               this.renderCanvas(); const dataUrl = this.canvas.toDataURL('image/jpeg', 1.0); const img = document.createElement('img'); img.src = dataUrl; img.className = 'print-page'; printDiv.appendChild(img);
           }
           this.renderCanvas(); Swal.close(); setTimeout(() => { window.print(); }, 500);
-          
-          this.saveLayoutToDrive(true);
-      },
-      saveLayoutToDrive: function(silent = false) {
-        if(this.pages[0].every(s => s === null)) return;
-        this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas(); const b64 = this.canvas.toDataURL('image/jpeg', 0.9);
-        const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Print_Layout_' + new Date().getTime() + '.jpg');
-        if(this.currentProjectId) { fd.append('projectId', this.currentProjectId); fetch(API_URL, { method: 'POST', body: fd }).catch(e=>{}); }
       }
     };
     
     window.addEventListener('DOMContentLoaded', () => app.init());
-</script>
+</script>  
