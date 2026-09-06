@@ -15,7 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
 
-  <!-- JSZip Tải hàng loạt -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
@@ -27,7 +26,7 @@
   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
   <style>
-    /* ================= HỆ THỐNG GIAO DIỆN MÀU CAM ĐỒNG BỘ ================= */
+    /* ================= HỆ THỐNG GIAO DIỆN SÁNG (MÀU CAM CHỦ ĐẠO) ================= */
     :root {
       --bg-color: #f4f6f8; --panel-bg: #ffffff; --card-bg: #ffffff;
       --accent: #ff6b2b; --accent-hover: #e85d1f; --text-main: #111111; 
@@ -45,12 +44,12 @@
     /* NÚT BẤM DÙNG CHUNG */
     .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 800; border-radius: 12px; transition: 0.2s; box-shadow: var(--accent-glow); }
     .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,43,0.4); }
-    .btn-outline-custom { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); font-weight: 800; border-radius: 10px; transition: 0.2s; }
-    .btn-outline-custom:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,107,43,0.05);}
+    .btn-outline-custom { background: transparent; border: 2px solid var(--accent); color: var(--accent); font-weight: 800; border-radius: 10px; transition: 0.2s; }
+    .btn-outline-custom:hover { background: var(--accent); color: #fff; }
     .btn-circle-custom { width: 38px; height: 38px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: 1px solid var(--border-color); background: var(--panel-bg); color: var(--text-main);}
     .btn-circle-custom:hover { transform: scale(1.1); background: var(--accent); color: #fff; border-color: var(--accent);}
 
-    /* NÚT THOÁT FULLSCREEN GÓC TRÊN PHẢI */
+    /* NÚT THOÁT FULLSCREEN */
     .btn-exit-fs { position: fixed; top: 15px; right: 15px; z-index: 10050; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3); color: #fff; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px);}
     .btn-exit-fs:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
     body.is-fullscreen .btn-exit-fs { display: flex; }
@@ -60,11 +59,11 @@
     .cp-layout { display: flex; flex-direction: row; height: auto; min-height: 400px;}
     .cp-left { width: 40%; background: #f8fafc; padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #e2e8f0; align-items: center; justify-content: center;}
     .cp-right { width: 60%; padding: 30px 40px; overflow-y: auto;}
-    .cp-cover-wrap { width: 100%; aspect-ratio: 16/9; background: #e2e8f0; border-radius: 12px; position: relative; overflow: hidden; margin-bottom: 20px; border: 2px dashed #cbd5e1; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-    .cp-cover-wrap:hover { border-color: var(--accent); background: #f1f5f9; }
+    .cp-cover-wrap { width: 100%; aspect-ratio: 16/9; background: #e2e8f0; border-radius: 12px; position: relative; overflow: hidden; margin-bottom: 20px; border: 2px dashed var(--accent); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+    .cp-cover-wrap:hover { background: #fff5f0; }
     .cp-cover-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: none; z-index: 2; border-radius: inherit;}
-    .cp-cover-placeholder { color: #64748b; font-weight: 600; font-size: 0.9rem; text-align: center; z-index: 1;}
-    .cp-cover-placeholder i { font-size: 2.5rem; margin-bottom: 10px; color: #94a3b8; display: block;}
+    .cp-cover-placeholder { color: var(--accent); font-weight: 600; font-size: 0.9rem; text-align: center; z-index: 1;}
+    .cp-cover-placeholder i { font-size: 2.5rem; margin-bottom: 10px; display: block;}
     
     .cp-input-huge { font-size: 2rem; font-weight: 900; color: #111; border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 15px; outline: none; box-shadow: none !important;}
     .cp-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; align-items: center;}
@@ -72,7 +71,6 @@
     .cp-tag.active { background: #fff5f0; border-color: var(--accent); color: var(--accent);}
     .cp-tag input { display: none; }
     
-    /* Vùng lưới hiển thị ảnh mẫu */
     .cp-preview-wrapper { width: 100%; display: none; margin-top: 15px; }
     .cp-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; aspect-ratio: 3/1; }
     .cp-preview-item { background: #e2e8f0; border-radius: 8px; overflow: hidden; position: relative;}
@@ -81,9 +79,8 @@
     .cp-submit-btn { width: 100%; background: #e2e8f0; color: #94a3b8; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; margin-top: 15px; transition: 0.3s; pointer-events: none;}
     .cp-submit-btn.ready { background: var(--accent); color: #fff; box-shadow: var(--accent-glow); pointer-events: auto;}
     .cp-submit-btn.ready:hover { background: var(--accent-hover); transform: translateY(-2px);}
-    @media (max-width: 768px) { .cp-layout { flex-direction: column;} .cp-left, .cp-right { width: 100%; border-right: none;} }
 
-    /* ================= DASHBOARD UI & LƯỚI 4 Ô ================= */
+    /* ================= DASHBOARD UI & LƯỚI MINI 4 Ô ================= */
     #dashboardWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); }
     .dash-header { padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; height: 60px;}
     .dash-header img { height: 35px; width: auto; object-fit: contain; } 
@@ -94,7 +91,7 @@
     .pc-cover img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: 0.5s; }
     .status-tag { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.95); padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #333;}
     .status-tag.waiting i { color: #f59e0b; } .status-tag.active i { color: #10b981; } .status-tag.ended i { color: #64748b; }   
-    .pc-edit-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #333; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;}
+    .pc-edit-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--accent); border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;}
     .pc-edit-btn:hover { background: var(--accent); color: #fff; }
     .pc-body { padding: 25px; flex: 1; display: flex; flex-direction: column;}
     .pc-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 10px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
@@ -103,7 +100,7 @@
     .pc-media-count { font-weight: 900; color: var(--accent); font-size: 1.3rem; display: flex; flex-direction: column;}
     .pc-media-count span { font-size: 0.8rem; color: #64748b; font-weight: 600;}
     
-    /* Lưới mini 4 ảnh */
+    /* Lưới mini 4 ảnh trên Card Sự Kiện */
     .pc-mini-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; width: 48px; height: 48px; border-radius: 6px; overflow: hidden; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; background: #e2e8f0;}
     .pc-mini-grid img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s; }
     
@@ -111,14 +108,12 @@
     .btn-view-album { width: 100%; background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 800; transition: 0.2s; box-shadow: var(--accent-glow);}
     .btn-view-album:hover { background: var(--accent-hover); transform: translateY(-2px);}
 
-    /* ================= PHOTO WALL ================= */
+    /* ================= PHOTO WALL & TƯƠNG TÁC TIKTOK ================= */
     #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main);}
     .wall-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; background: rgba(244, 246, 248, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
     .wall-title-area h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main);}
     .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.85rem; margin: 0;}
     .wall-top-actions { display: flex; gap: 10px; align-items: center;}
-    .btn-orange-glow { background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 30px; font-weight: 800; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: var(--accent-glow); border: none; cursor: pointer; transition: 0.3s;}
-    .btn-orange-glow:hover { background: var(--accent-hover); transform: translateY(-2px); color: #fff;}
     
     #wallSelectionBar { display: none; align-items: center; gap: 15px; background: #111; color: #fff; padding: 10px 25px; border-radius: 30px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 100; font-weight: 600;}
     
@@ -129,30 +124,23 @@
     .wall-item.selected { border: 3px solid var(--accent); transform: scale(0.98);}
 
     @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
-    /* RESPONSIVE DIỆN THOẠI CHO PHOTO WALL */
-    @media (max-width: 768px) { 
-        .wall-item { width: calc(50% - 10px); } 
-        .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 15px 20px;} 
-        .wall-grid { padding: 15px; } 
-        .wall-item { margin-bottom: 15px; } 
-        .wall-top-actions { width: 100%; justify-content: space-between;}
-    }
-    @media (max-width: 480px) { .wall-item { width: calc(100%); } }
+    @media (max-width: 768px) { .wall-item { width: calc(50% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} .wall-grid { padding: 20px; } }
+    @media (max-width: 480px) { .wall-item { width: 100%; margin-bottom: 15px;} .wall-top-actions { flex-direction: column; width: 100%;} .wall-top-actions button, .wall-top-actions a { width: 100%; justify-content: center;} }
 
     /* BONG BÓNG LỜI NHẮN TIKTOK DỄ THƯƠNG */
     .tiktok-stream { position: fixed; bottom: 120px; left: 20px; width: 350px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; pointer-events: none; z-index: 10005; }
-    .tiktok-msg { background: rgba(255,255,255,0.95); color: #333; padding: 10px 18px; border-radius: 25px 25px 25px 0; font-size: 0.95rem; font-weight: 700; width: fit-content; max-width: 100%; animation: slideInLeft 0.4s ease-out, fadeOut 0.5s ease-in 6s forwards; backdrop-filter: blur(5px); display: flex; align-items: center; gap: 10px; border: 2px solid var(--accent); box-shadow: 0 5px 15px rgba(255,107,43,0.15);}
+    .tiktok-msg { background: rgba(255,255,255,0.95); color: #333; padding: 10px 18px; border-radius: 20px 20px 20px 0; font-size: 0.95rem; font-weight: 700; width: fit-content; max-width: 100%; animation: slideInLeft 0.4s ease-out, fadeOut 0.5s ease-in 6s forwards; backdrop-filter: blur(5px); display: flex; align-items: center; gap: 10px; border: 2px solid var(--accent); box-shadow: 0 5px 15px rgba(255,107,43,0.15);}
     .tiktok-msg i { color: var(--accent); font-size: 1.2rem;}
     .tiktok-gift { position: absolute; bottom: 0; left: 100px; font-size: 4rem; animation: floatUpGift 4s ease-in forwards; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); pointer-events: none;}
     @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeOut { to { opacity: 0; display: none; } }
     @keyframes floatUpGift { 0% { transform: translateY(50px) scale(0.5); opacity: 0;} 20% { transform: translateY(0) scale(1.2); opacity: 1;} 80% { transform: translateY(-40vh) scale(1); opacity: 1;} 100% { transform: translateY(-50vh) scale(0.8); opacity: 0;} }
 
-    /* LIVESHOW FULLSCREEN */
+    /* LIVESHOW NỀN TRẮNG TINH KHÔI, BAY TỪ DƯỚI LÊN */
     #slideshowWrapper { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: none; overflow: hidden;}
     body.is-fullscreen #slideshowWrapper .slide-controls, body.is-fullscreen #slideshowWrapper .slide-settings-panel { display: none !important; }
     
-    .slide-controls { position: absolute; bottom: 30px; left: 40px; display: flex; gap: 15px; z-index: 10001; }
+    .slide-controls { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 15px; z-index: 10001; }
     .slide-btn { width: 50px; height: 50px; border-radius: 50%; background: #fff; border: 1px solid var(--border-color); color: #111; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.08);}
     .slide-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: scale(1.1); }
     
@@ -162,8 +150,12 @@
     .slide-center-focus.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     .slide-center-focus img { width: 100%; border-radius: 10px; object-fit: contain; max-height: 75vh;}
 
-    .slide-settings-panel { position: absolute; top: 0; left: -380px; width: 380px; height: 100vh; background: #fff; border-right: 1px solid var(--border-color); box-shadow: 10px 0 30px rgba(0,0,0,0.05); z-index: 10002; transition: left 0.3s ease; padding: 25px; overflow-y: auto; display: flex; flex-direction: column;}
-    .slide-settings-panel.open { left: 0; }
+    .slide-settings-panel { position: absolute; top: 0; right: -380px; width: 380px; height: 100vh; background: #fff; border-left: 1px solid var(--border-color); box-shadow: -10px 0 30px rgba(0,0,0,0.05); z-index: 10002; transition: right 0.3s ease; padding: 25px; overflow-y: auto; display: flex; flex-direction: column;}
+    .slide-settings-panel.open { right: 0; }
+    
+    /* QR nổi góc trái ở Slideshow */
+    #slideQRFloating { position: absolute; bottom: 30px; left: 40px; background: #fff; padding: 15px; border-radius: 16px; border: 2px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 10001;}
+    .qr-title-float { font-size: 0.85rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; text-align: center; text-transform: uppercase;}
 
     /* LIGHTBOX WALL */
     .lb-overlay { position: fixed; inset: 0; background: #ffffff; z-index: 10500; display: none; flex-direction: column;}
@@ -188,7 +180,7 @@
     .strip-nav:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
     .strip-nav.prev { left: 10px; } .strip-nav.next { right: 10px; }
 
-    /* ================= GUEST UPLOAD ================= */
+    /* ================= GUEST UPLOAD (TIKTOK STYLE, TẶNG QUÀ) ================= */
     #uploadWrapper { width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000;}
     .upload-modal-new { background: #fff; border-radius: 32px; width: 95%; max-width: 400px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); position: relative; margin: auto; }
     .um-drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 3px; margin: 0 auto 20px; }
@@ -232,22 +224,23 @@
     body.hide-livecam .resizer-h { display: none !important; }
 
     .camera-setup-row { display: flex; gap: 15px; height: 100%;}
-    .camera-control-col { width: 180px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; overflow-y: auto; padding-right: 5px;}
+    .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; overflow-y: auto; padding-right: 5px;}
     .viewport-wrapper { flex: 1; position: relative; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
     #videoElement { width: 100%; height: 100%; object-fit: contain; }
     
     #countdownOverlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 10; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
     
     /* Hàng ngang chứa ảnh vừa chụp khi Fullscreen */
-    #fullscreenThumbRow { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 15;}
+    #fullscreenThumbRow { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 15; flex-wrap: wrap; max-width: 60vw; justify-content: flex-end;}
     .fs-recent-thumb { width: 100px; height: 100px; border: 3px solid #fff; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); object-fit: cover; animation: slideInRight 0.3s ease;}
+    @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
     .camera-modes { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
     .btn-cam-mode { background: rgba(255,255,255,0.8); color: #333; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
     .btn-cam-mode.active { background: var(--accent); color: #fff;}
     .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 3px solid #fff; color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; backdrop-filter: blur(5px);}
     
-    /* ẢNH SỰ KIỆN - KÉO THẢ */
+    /* ẢNH SỰ KIỆN - CSS GRID TĨNH CHỐNG XẾP CHỒNG TUYỆT ĐỐI */
     .gallery-title { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0;}
     .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); grid-auto-rows: var(--grid-size); gap: 10px; align-content: start; flex: 1; overflow-y: auto; padding: 10px; }
     .gallery-container::-webkit-scrollbar { width: 6px; }
@@ -255,32 +248,25 @@
     
     .thumb-wrapper { width: 100%; height: 100%; position: relative; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; overflow: hidden; cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .thumb-wrapper:hover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent);}
-    .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;}
+    .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;}
     
     .source-badge { position: absolute; top: 6px; left: 6px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; z-index: 10; pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
     .badge-remote { background: #10b981; } 
     .badge-guest { background: #ef4444; }  
     
-    /* KHUNG IN CANVAS */
+    /* KHUNG IN CANVAS (Vẽ sẵn viền đứt khúc qua JS) */
     .canvas-container { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;}
-    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; border-radius: 2px; border: 1px solid #cbd5e1; will-change: transform;}
+    #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; border-radius: 2px; border: 1px solid #cbd5e1;}
     
     .slot-toolbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); padding: 6px 12px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 8px; align-items: center; opacity: 0; visibility: hidden; transition: 0.2s;}
     .slot-toolbar.active { opacity: 1; visibility: visible;}
     
     /* MODALS & QR */
     .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff; color: #333;}
-    .qr-wrapper-box { padding: 15px; background: #fff; border-radius: 16px; border: 2px solid var(--border-color); display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s;}
-    .qr-wrapper-box:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(255,107,43,0.15); }
+    .qr-wrapper-box { padding: 15px; background: #fff; border-radius: 16px; border: 2px solid var(--accent); display: inline-block; box-shadow: 0 10px 30px rgba(255,107,43,0.15); cursor: pointer; transition: 0.3s;}
+    .qr-wrapper-box:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(255,107,43,0.3); transform: scale(1.02); }
     .qr-container { display: flex; align-items: center; justify-content: center;}
 
-    /* ================= CSS IN ẤN ĐỘC QUYỀN (JS Sẽ Inject CSS) ================= */
-    @media print {
-        body, html { margin: 0; padding: 0; background: #fff; height: 100%; width: 100%; overflow: hidden;}
-        body > *:not(#printContainer) { display: none !important; }
-        #printContainer { display: flex !important; flex-direction: column; align-items: center; width: 100vw; background: #fff; position: absolute; top: 0; left: 0; margin: 0; padding: 0;}
-        .print-page { width: 100%; height: auto; object-fit: contain; page-break-after: always; display: block; margin: 0; padding: 0;}
-    }
   </style>
 </head>
 <body class="theme-light">
@@ -292,7 +278,9 @@
 
   <button id="exitFullscreenBtn" class="btn-exit-fs" onclick="app.toggleFullScreenApp()"><i class="bi bi-arrows-collapse"></i></button>
 
+  <!-- Nơi JS sẽ bơm lệnh xoay giấy -->
   <style id="printStyle"></style>
+
   <input type="file" id="slotFileInput" accept="image/*" onchange="app.handleSlotFile(event)" hidden>
   <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
   <input type="file" id="coverUploadInput" accept="image/*" onchange="app.handleCoverUpload(event)" hidden>
@@ -377,7 +365,7 @@
       <div class="modal-content p-4 text-center">
         <h6 class="fw-bold mb-3 text-dark">MÃ QR SỰ KIỆN</h6>
         <div class="qr-wrapper-box mb-3 mx-auto" onclick="app.copyDashQRFromModal()"><div id="dashQRCode" class="qr-container" style="width: 180px; height: 180px;"></div></div>
-        <button class="btn btn-outline-custom w-100 py-2" onclick="app.copyDashQRFromModal()"><i class="bi bi-link-45deg fs-5"></i> Copy Link</button>
+        <button class="btn btn-outline-custom w-100 py-2" onclick="app.copyDashQRFromModal()"><i class="bi bi-box-arrow-up-right fs-5"></i> Mở Web</button>
       </div>
     </div>
   </div>
@@ -426,13 +414,15 @@
       </div>
   </div>
 
-  <!-- LIVESHOW MODE -->
+  <!-- LIVESHOW MODE (CÓ NÚT FULLSCREEN Ở CÀI ĐẶT & QR ĐỘC LẬP GÓC TRÁI) -->
   <div id="slideshowWrapper">
+      <!-- Luồng Tương tác Bong bóng TikTok -->
       <div id="liveInteractionStream" class="tiktok-stream"></div>
 
-      <div class="slide-title-overlay" id="slideTitleUI" style="top:40px; right:40px; text-align:right;">
-          <h2 id="slideEventName" style="color: #111;">SỰ KIỆN</h2>
-          <p class="fs-5 fw-bold" style="color:var(--accent);">Quét QR Gửi Lời Nhắn</p>
+      <!-- QR Độc lập hiển thị trực tiếp ở ngoài góc trái dưới -->
+      <div id="slideQRFloating" style="display: block;">
+          <div class="qr-title-float">Chia sẻ khoảnh khắc</div>
+          <div id="slideQRCodeFloating" class="qr-container" style="width: 120px; height: 120px;"></div>
       </div>
       
       <div class="slide-controls" id="slideOpenBtnArea">
@@ -454,14 +444,9 @@
               <label class="form-check-label small fw-bold">Hiển thị QR trên màn hình</label>
           </div>
 
-          <div class="form-check form-switch mb-3 p-2 bg-light rounded border border-secondary text-dark">
+          <div class="form-check form-switch mb-4 p-2 bg-light rounded border border-secondary text-dark">
               <input class="form-check-input ms-1 me-2" type="checkbox" id="toggleSlideMusic" onchange="app.toggleSlideMusic()">
               <label class="form-check-label small fw-bold">Bật Nhạc Nền (Loop)</label>
-          </div>
-
-          <div class="p-3 bg-light rounded border border-secondary mb-4 text-center" id="slideQRBox">
-              <p class="small text-muted mb-2 fw-bold text-uppercase">Quét mã để gửi Lời nhắn & Quà</p>
-              <div class="qr-wrapper-box bg-white p-2 d-inline-block"><div id="slideQRCode" class="qr-container" style="width: 130px; height: 130px;"></div></div>
           </div>
 
           <label class="small fw-bold text-muted mb-2 text-uppercase">Tốc độ & Thời gian</label>
@@ -476,11 +461,13 @@
                       <input type="number" id="slideFloatTime" class="form-control text-center bg-light border-secondary" value="12" min="5" title="Nhỏ là nhanh">
                   </div>
                   <div class="input-group input-group-sm">
-                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">SL Ảnh phụ</span>
+                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">SL Ảnh bay</span>
                       <input type="number" id="slideFloatCount" class="form-control text-center bg-light border-secondary" value="3" min="1" max="10" title="Số lượng bay cùng lúc">
                   </div>
               </div>
           </div>
+          
+          <button class="btn-primary-custom w-100 py-3 mt-auto fs-6" onclick="app.toggleFullScreenApp()"><i class="bi bi-arrows-fullscreen"></i> Mở Toàn Màn Hình</button>
       </div>
   </div>
 
@@ -548,7 +535,7 @@
         
         <div class="d-flex align-items-center gap-2">
           <button class="btn-circle-custom me-1" onclick="app.showWallQRModal()" title="QR Photo Wall"><i class="bi bi-easel2"></i></button>
-          <button class="btn-circle-custom me-1" onclick="app.openLiveshow()" title="Mở Liveshow (Toàn màn hình)"><i class="bi bi-display"></i></button>
+          <button class="btn-circle-custom me-1 text-primary border-primary" onclick="app.openLiveshow()" title="Mở Liveshow (Toàn màn hình)"><i class="bi bi-display"></i></button>
           <button class="btn-circle-custom me-1" onclick="app.showQRModal()" title="QR Remote Cam"><i class="bi bi-qr-code-scan"></i></button>
           <button class="btn-circle-custom position-relative" onclick="app.showConnectionModal()" title="Thiết bị kết nối">
              <i class="bi bi-phone"></i><div id="remoteConnectionBadge" class="status-badge" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; display: none;"></div>
@@ -585,6 +572,7 @@
                     <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')" title="Xoay Dọc"><i class="bi bi-phone"></i></button>
                   </div>
                   <video id="videoElement" autoplay playsinline></video>
+                  
                   <!-- Đếm ngược Livecam -->
                   <div id="countdownOverlay">3</div>
                   
@@ -613,7 +601,8 @@
                   <label class="btn-circle-custom m-0" title="Chèn thủ công"><i class="bi bi-plus-lg text-success"></i><input type="file" accept="image/*" multiple onchange="app.uploadToSession(event)" hidden></label>
               </div>
             </div>
-            <!-- Lưới Gallery có kéo thả được -->
+            
+            <!-- Lưới Gallery tĩnh chống xếp chồng -->
             <div class="gallery-container" id="capturedGallery"></div>
           </div>
         </div>
@@ -639,9 +628,10 @@
               <canvas id="finalCanvas"></canvas>
           </div>
           
+          <!-- Hai nút IN NGAY và XÓA TRẮNG màu sắc đồng bộ -->
           <div class="d-flex gap-3 w-100 mt-3" style="max-width: 600px;">
               <button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.showPrintConfigModal()"><i class="bi bi-printer"></i> IN NGAY</button>
-              <button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.clearLayout()"><i class="bi bi-trash"></i> XÓA TRẮNG</button>
+              <button class="btn btn-primary-custom flex-fill py-3 fs-5" style="background-color: var(--accent);" onclick="app.clearLayout()"><i class="bi bi-trash"></i> XÓA TRẮNG</button>
           </div>
         </div>
       </div>
@@ -662,8 +652,8 @@
     </div>
   </div>
 
-  <div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3 text-dark">MÃ QR REMOTE CAM</h6><div class="qr-wrapper-box mb-3 mx-auto" onclick="app.copyQRLink('remote')"><div id="qrcode" class="qr-container" style="width: 180px; height: 180px;"></div></div><button class="btn btn-outline-custom w-100 py-2" onclick="app.copyQRLink('remote')"><i class="bi bi-link-45deg fs-5"></i> Mở Web</button></div></div></div>
-  <div class="modal fade" id="wallQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3 text-dark">MÃ QR PHOTO WALL</h6><div class="qr-wrapper-box mb-3 mx-auto" onclick="app.copyQRLink('wall')"><div id="wallQRCode" class="qr-container" style="width: 180px; height: 180px;"></div></div><button class="btn btn-outline-custom w-100 py-2" onclick="app.copyQRLink('wall')"><i class="bi bi-link-45deg fs-5"></i> Mở Web</button></div></div></div>
+  <div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3 text-dark">MÃ QR REMOTE CAM</h6><div class="qr-wrapper-box mb-3 mx-auto" onclick="app.copyQRLink('remote')"><div id="qrcode" class="qr-container" style="width: 180px; height: 180px;"></div></div><button class="btn btn-outline-custom w-100 py-2" onclick="app.copyQRLink('remote')"><i class="bi bi-box-arrow-up-right fs-5"></i> Mở Web</button></div></div></div>
+  <div class="modal fade" id="wallQRModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-4 text-center"><h6 class="fw-bold mb-3 text-dark">MÃ QR PHOTO WALL</h6><div class="qr-wrapper-box mb-3 mx-auto" onclick="app.copyQRLink('wall')"><div id="wallQRCode" class="qr-container" style="width: 180px; height: 180px;"></div></div><button class="btn btn-outline-custom w-100 py-2" onclick="app.copyQRLink('wall')"><i class="bi bi-box-arrow-up-right fs-5"></i> Mở Web</button></div></div></div>
 
   <div class="modal fade" id="connectionModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -679,7 +669,7 @@
       <div class="modal-content">
         <div class="modal-header border-bottom-0 pb-2"><h6 class="modal-title fw-bold">Chọn ảnh vào khung</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body pt-0 d-flex flex-column" style="height: 80vh;">
-          <div class="gallery-container flex-grow-1" id="modalGalleryContainer"></div>
+          <div class="gallery-container flex-grow-1" id="modalGalleryContainer" style="grid-template-columns: repeat(6, 1fr);"></div>
         </div>
       </div>
     </div>
@@ -765,7 +755,7 @@
           <button class="btn-primary-custom w-100 py-3 mt-3 fs-6" onclick="app.saveSettings()"><i class="bi bi-floppy"></i> LƯU CÀI ĐẶT NÀY</button>
       </div>
   </div>
-<script>
+  <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycby6_-gotKSFnMsAsvC_TXmqCEeibp339208kcTpuKF8c9DsSMH1WQ05U00MwlztEqRfYg/exec'; 
 
     const app = {
@@ -866,28 +856,12 @@
         this.createModalInstance = new bootstrap.Modal(document.getElementById('createProjectModal'));
         
         await this.initDashboardMode();
-        this.fixQRButtonLinks();
         this.hideGlobalLoading();
       },
 
       hideGlobalLoading: function() {
           const loader = document.getElementById('globalLoading');
           if(loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 300); }
-      },
-
-      fixQRButtonLinks: function() {
-          document.querySelectorAll('.modal .btn-outline-custom').forEach(btn => {
-              if(btn.innerText.includes('Mở Web')) {
-                  btn.onclick = (e) => {
-                      e.stopPropagation();
-                      let url = ""; let baseUrl = window.location.origin + window.location.pathname;
-                      if(btn.closest('#dashQRModal')) url = this.currentDashQRUrl;
-                      else if(btn.closest('#wallQRModal')) url = baseUrl + "?wall=" + this.currentProjectId;
-                      else if(btn.closest('#qrModal')) url = baseUrl + "?remote=" + this.peerId;
-                      if(url) window.open(url, '_blank');
-                  };
-              }
-          });
       },
 
       /* =========================================
@@ -921,11 +895,12 @@
                   if(topPct > 20 && topPct < 80) { camSec.style.height = topPct + '%'; camSec.style.flex = 'none'; }
               }
           });
+
           window.addEventListener('mouseup', () => { this.isResizingV = false; this.isResizingH = false; document.body.style.cursor = 'default'; });
       },
 
       /* =========================================
-       * DASHBOARD QUẢN LÝ SỰ KIỆN KÈM MINI GRID 4 Ô
+       * DASHBOARD & QUẢN LÝ SỰ KIỆN KÈM MINI GRID
        * ========================================= */
       initDashboardMode: async function() {
           document.getElementById('dashboardWrapper').style.display = 'block';
@@ -972,7 +947,7 @@
                                           ${thumbHtml}
                                           <div class="pc-media-count">${p.totalMedia || 0} <span style="color:#64748b; font-size:0.8rem; font-weight:600;">Khoảnh khắc</span></div>
                                       </div>
-                                      <button class="btn-circle-custom bg-white border-0 shadow-sm text-primary" onclick="app.showDashQRModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code"></i></button>
+                                      <button class="btn-circle-custom bg-white border-0 shadow-sm text-primary" onclick="app.copyDashQRFromModal('${p.id}')" title="Mã QR Photo Wall"><i class="bi bi-qr-code"></i></button>
                                   </div>
                                   <div class="pc-actions"><button class="btn-view-album" onclick="window.location.href='?booth=${p.id}'">Vào Sự Kiện</button></div>
                               </div>`;
@@ -1005,14 +980,10 @@
           }, 3000);
       },
 
-      showDashQRModal: function(projectId) {
-          this.currentDashQRUrl = window.location.origin + window.location.pathname + "?wall=" + projectId;
-          const qrContainer = document.getElementById('dashQRCode'); qrContainer.innerHTML = "";
-          new QRCode(qrContainer, { text: this.currentDashQRUrl, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
-          this.dashQRModalInstance.show();
-      },
-      copyDashQRFromModal: function() {
-          if(this.currentDashQRUrl) { navigator.clipboard.writeText(this.currentDashQRUrl).then(() => { Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Đã copy Link!', showConfirmButton: false, timer: 2000}); }); }
+      copyDashQRFromModal: function(id) {
+          let url = window.location.origin + window.location.pathname + "?wall=" + id;
+          navigator.clipboard.writeText(url).then(() => { Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Đã copy Link Photo Wall!', showConfirmButton: false, timer: 2000}); });
+          setTimeout(() => { window.open(url, '_blank'); }, 500); // Tự động mở web
       },
 
       openCreateModal: function() {
@@ -1020,6 +991,7 @@
           if(this.datePicker) this.datePicker.clear(); this.removeCover(); 
           document.getElementById('musicStatus').style.display = 'none'; this.bgMusicB64 = "";
           this.checkCreateForm(); 
+          
           document.getElementById('cpPreviewWrapper').style.display = 'block';
           this.startPreviewTimer(); this.createModalInstance.show();
       },
@@ -1066,6 +1038,7 @@
               "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400", "https://images.unsplash.com/photo-1519671482749-fd0987c33992?w=400", "https://images.unsplash.com/photo-1530103862676-de8892b07e59?w=400",
               "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=400", "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400", "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=400"
           ];
+          
           gridItems.forEach((img, i) => { img.src = sampleImages[i]; img.style.opacity = 1; });
           
           if(this.previewTimer) clearInterval(this.previewTimer);
@@ -1082,6 +1055,7 @@
           r.onload = (evt) => { this.currentCoverB64 = evt.target.result; document.getElementById('cpCoverPreviewImg').src = this.currentCoverB64; document.getElementById('cpCoverPreviewImg').style.display = 'block'; document.getElementById('cpCoverPlaceholder').style.display = 'none'; }; r.readAsDataURL(file);
       },
       removeCover: function() { this.currentCoverB64 = ""; document.getElementById('coverUploadInput').value = ""; document.getElementById('cpCoverPreviewImg').src = ""; document.getElementById('cpCoverPreviewImg').style.display = 'none'; document.getElementById('cpCoverPlaceholder').style.display = 'flex'; },
+      
       handleMusicUpload: function(e) {
           const file = e.target.files[0]; if(!file) return; const r = new FileReader();
           r.onload = (evt) => { 
@@ -1091,6 +1065,7 @@
           }; 
           r.readAsDataURL(file);
       },
+
       submitCreateProject: async function() {
           const name = document.getElementById('cpName').value.trim(); if(!name) return Swal.fire('Lỗi', 'Vui lòng nhập tên sự kiện!', 'error');
           const dateVal = document.getElementById('cpDateRange').value; const locVal = document.getElementById('cpLocation').value.trim(); const descVal = document.getElementById('cpDesc').value.trim(); const catVal = document.querySelector('input[name="cpCategory"]:checked').value; const editId = document.getElementById('cpEditId').value;
@@ -1104,7 +1079,7 @@
       },
 
       /* =========================================
-       * GUEST UPLOAD (TIKTOK STYLE)
+       * GUEST UPLOAD (TIKTOK STYLE, CÓ TẶNG QUÀ)
        * ========================================= */
       initUploadMode: async function(projectId) { document.getElementById('uploadWrapper').style.display = 'flex'; this.currentProjectId = projectId; this.hideGlobalLoading(); },
       closeUploadModal: function() { window.location.href = '?wall=' + this.currentProjectId; },
@@ -1119,6 +1094,8 @@
           document.querySelectorAll('.gift-item').forEach(i => i.classList.remove('active'));
           el.classList.add('active'); document.getElementById('selectedGift').value = gift;
       },
+
+      // Gửi tương tác Lời nhắn & Quà (TikTok style)
       submitInteraction: async function() {
           const msg = document.getElementById('guestMessage').value.trim();
           const gift = document.getElementById('selectedGift').value;
@@ -1162,9 +1139,8 @@
           fetch(API_URL, { method: 'POST', body: fdInfo }).then(r=>r.json()).then(r => {
               if(r.success && r.meta) {
                   document.getElementById('wallEventName').innerText = r.meta.name || "Sự kiện";
-                  document.getElementById('slideEventName').innerText = r.meta.name || "Sự kiện";
+                  document.getElementById('wallDate').innerText = r.meta.date || new Date().toLocaleDateString('vi-VN');
                   document.getElementById('wallLocation').innerText = r.meta.location || "Chưa cập nhật";
-                  let dateStr = r.meta.date; if(dateStr && dateStr.includes(' to ')) { let p = dateStr.split(' to '); document.getElementById('wallDate').innerText = p[0] + ' - ' + p[1]; } else if (dateStr) { document.getElementById('wallDate').innerText = dateStr; } else { document.getElementById('wallDate').innerText = new Date().toLocaleDateString('vi-VN'); }
                   if(r.meta.musicUrl) { this.currentMusicUrl = r.meta.musicUrl; document.getElementById('slideAudioPlayer').src = this.currentMusicUrl; }
               }
           }).catch(()=>{});
@@ -1172,8 +1148,8 @@
           this.wallMasonry = new Masonry(document.getElementById('wallMasonryGrid'), { itemSelector: '.wall-item', columnWidth: '.wall-item', percentPosition: true, transitionDuration: '0.4s' });
           this.bindWallLightboxEvents();
 
-          const qrContainer = document.getElementById('slideQRCode'); qrContainer.innerHTML = "";
-          new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?upload=" + projectId, width: 130, height: 130, colorDark: "#000000", colorLight: "#ffffff" });
+          const qrContainer = document.getElementById('slideQRCodeFloating'); qrContainer.innerHTML = "";
+          new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?upload=" + projectId, width: 120, height: 120, colorDark: "#000000", colorLight: "#ffffff" });
 
           const fetchWallImages = () => {
               let fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', projectId);
@@ -1223,7 +1199,7 @@
           if(!stream) return;
           if(data.msg) {
               const msgDiv = document.createElement('div'); msgDiv.className = 'tiktok-msg';
-              msgDiv.innerHTML = `<i class="bi bi-person-circle"></i> <span>${data.msg}</span>`;
+              msgDiv.innerHTML = `<i class="bi bi-chat-heart-fill"></i> <span>${data.msg}</span>`;
               stream.appendChild(msgDiv);
               setTimeout(() => msgDiv.remove(), 6500);
           }
@@ -1298,9 +1274,6 @@
           document.getElementById('wallWrapper').style.display = 'none';
           document.getElementById('slideshowWrapper').style.display = 'block';
           
-          const qrContainer = document.getElementById('slideQRCode'); qrContainer.innerHTML = "";
-          new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?upload=" + this.currentProjectId, width: 130, height: 130, colorDark: "#000000", colorLight: "#ffffff" });
-
           if(this.wallImagesList.length === 0 && this.capturedPhotos && this.capturedPhotos.length > 0) {
              this.wallImagesList = this.capturedPhotos.map(p => ({url: p.imgObj.src}));
           }
@@ -1311,6 +1284,13 @@
           this.slideInterval = setInterval(() => this.spawnFloatingItem(), 1500);
           this.applySlideSettings();
           this.startInteractionPolling(); // Bật Polling Lời nhắn/Quà
+          
+          // Mặc định bật nhạc nếu có checkbox
+          if(document.getElementById('toggleSlideMusic').checked && this.currentMusicUrl) {
+              const player = document.getElementById('slideAudioPlayer');
+              player.src = this.currentMusicUrl;
+              player.play().catch(e=>console.log(e));
+          }
       },
       stopSlideshow: function() {
           document.getElementById('slideshowWrapper').style.display = 'none'; 
@@ -1322,16 +1302,22 @@
           clearInterval(this.slideInterval); clearInterval(this.slideCenterInterval); clearInterval(this.interactionInterval);
           document.getElementById('slideItemsContainer').innerHTML = ''; document.getElementById('slideCenterFocus').classList.remove('active'); document.getElementById('slideSettingsPanel').classList.remove('open');
           
-          if(!document.getElementById('toggleSlideMusic').checked) { document.getElementById('slideAudioPlayer').pause(); } 
+          document.getElementById('slideAudioPlayer').pause(); 
       },
       toggleSlideshowSettings: function() {
           const panel = document.getElementById('slideSettingsPanel');
           if(!panel.classList.contains('open')) { panel.classList.add('open'); } else { panel.classList.remove('open'); }
       },
-      toggleSlideQR: function() { const box = document.getElementById('slideQRBox'); box.style.display = document.getElementById('toggleSlideQR').checked ? 'block' : 'none'; },
+      toggleSlideQR: function() { 
+          const box = document.getElementById('slideQRFloating'); 
+          box.style.display = document.getElementById('toggleSlideQR').checked ? 'block' : 'none'; 
+      },
       toggleSlideMusic: function() { 
           const player = document.getElementById('slideAudioPlayer');
-          if(document.getElementById('toggleSlideMusic').checked && this.currentMusicUrl) { player.play().catch(e=>console.log(e)); } else { player.pause(); }
+          if(document.getElementById('toggleSlideMusic').checked && this.currentMusicUrl) { 
+              if(player.src !== this.currentMusicUrl) player.src = this.currentMusicUrl;
+              player.play().catch(e=>console.log(e)); 
+          } else { player.pause(); }
       },
       applySlideSettings: function() {
           if(this.slideCenterInterval) clearInterval(this.slideCenterInterval);
@@ -1444,14 +1430,13 @@
                 const proj = this.projects.find(p => p.id === this.currentProjectId);
                 if(proj) {
                     document.getElementById('currentProjectBadge').innerText = proj.name;
-                    if(proj.musicUrl) { this.currentMusicUrl = proj.musicUrl; document.getElementById('slideAudioPlayer').src = this.currentMusicUrl; }
+                    if(proj.musicUrl) { this.currentMusicUrl = proj.musicUrl; }
                 }
             }
         } catch(e) {}
         
         this.capturedPhotos = [];
         this.renderCapturedGallery();
-        
         this.loadProjectImagesForBooth(); 
 
         await this.loadDeviceList();
@@ -1497,7 +1482,7 @@
           if(!this.currentProjectId) return Swal.fire('Lỗi', 'Chưa có dự án nào!', 'error');
           if (type === 'wall') url = baseUrl + "?wall=" + this.currentProjectId;
           else if (type === 'remote') { if(!this.peerId) return Swal.fire('Lỗi', 'Mạng đang khởi tạo...', 'info'); url = baseUrl + "?remote=" + this.peerId; }
-          if(url) { navigator.clipboard.writeText(url).then(() => { Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Đã copy Link thành công!', showConfirmButton: false, timer: 2000}); }); }
+          if(url) { window.open(url, '_blank'); }
       },
       showWallQRModal: function() { this.wallQRModalInstance.show(); const qrContainer = document.getElementById('wallQRCode'); qrContainer.innerHTML = ""; new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?wall=" + this.currentProjectId, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" }); },
       showQRModal: function() { this.qrModalInstance.show(); if (!this.peer) { this.setupPeerJS(); } else { this.generateQRCode(); } },
@@ -1553,6 +1538,8 @@
           }
       },
       showConnectionModal: function() { this.refreshConnectionListUI(); this.connectionModalInstance.show(); },
+      
+      // REMOTE CAM SETUP (KHÔI PHỤC THEO CODE GỐC)
       setupPeerJS: function() {
           if (this.peer) return;
           this.peer = new Peer({ config: { 'iceServers': [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun.cloudflare.com:3478' } ] } }); 
@@ -1593,6 +1580,83 @@
               }
           }; img.src = b64; 
       },
+      
+      initRemoteMode: async function(targetId) {
+          document.body.innerHTML = `
+          <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
+              <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
+              <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:15;"></canvas>
+              
+              <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
+              
+              <div id="captureControls" style="position:absolute; bottom:40px; left:0; width:100%; display:flex; justify-content:space-evenly; align-items:center; z-index:20; padding:0 20px;">
+                  <button id="btnGallery" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-images rotatable-icon"></i></button>
+                  <button id="remoteCaptureBtn" style="width:75px; height:75px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5); backdrop-filter:blur(5px);"></button>
+                  <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-arrow-repeat rotatable-icon"></i></button>
+              </div>
+              <div id="reviewControls" style="position:absolute; bottom:40px; left:0; width:100%; display:none; justify-content:center; gap:40px; align-items:center; z-index:20; padding:0 20px;">
+                  <button id="btnRetake" style="width:70px; height:70px; border-radius:50%; background:rgba(0,0,0,0.6); border:2px solid #fff; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><i class="bi bi-x-lg rotatable-icon"></i></button>
+                  <button id="btnSend" style="width:70px; height:70px; border-radius:50%; background:var(--accent); border:none; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(255,107,43,0.5);"><i class="bi bi-send-fill rotatable-icon"></i></button>
+              </div>
+              
+              <div id="remoteProgress" style="position:absolute; top:0; left:0; height:4px; background:var(--accent); width:0%; transition: width 0.3s; z-index:100;"></div>
+          </div>`;
+          const status = document.getElementById('remoteStatus'); const video = document.getElementById('remoteVideo'); const previewCanvas = document.getElementById('remotePreview');
+          let remoteStream = null; let useFrontCam = false; let deviceRotation = 0;
+          
+          function getDeviceType() { let ua = navigator.userAgent; if(/iPhone/i.test(ua)) return "iPhone"; if(/iPad/i.test(ua)) return "iPad"; if(/Android/i.test(ua)) return "Android"; return "Điện thoại"; }
+          let localRemoteId = localStorage.getItem('hama_remote_uid'); let localDeviceName = localStorage.getItem('hama_remote_name');
+          if(!localRemoteId) { localRemoteId = 'R_' + Math.random().toString(36).substr(2, 9); localDeviceName = getDeviceType() + ' ' + Math.floor(Math.random() * 9000 + 1000); localStorage.setItem('hama_remote_uid', localRemoteId); localStorage.setItem('hama_remote_name', localDeviceName); }
+
+          function setupSensors() {
+              window.addEventListener('deviceorientation', (e) => {
+                  let beta = e.beta; let gamma = e.gamma; let angle = 0;
+                  if (Math.abs(beta) < 45) { if (gamma > 45) angle = -90; else if (gamma < -45) angle = 90; } else if (beta > 135 || beta < -135) { angle = 180; }
+                  if (angle !== deviceRotation) { deviceRotation = angle;}
+              });
+          }
+          setupSensors();
+
+          const peer = new Peer(localRemoteId, { config: { 'iceServers': [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun.cloudflare.com:3478' } ] } });
+          let conn = null;
+          peer.on('open', (id) => {
+              conn = peer.connect(targetId, { reliable: true }); 
+              conn.on('open', () => { status.innerText = "Đã kết nối PC!"; status.style.background = "rgba(40, 167, 69, 0.8)"; conn.send('INIT_DEVICE:' + localDeviceName); setTimeout(() => { status.style.opacity = '0'; }, 2000); });
+              conn.on('error', (err) => { status.innerText = "Lỗi: " + err.message; status.style.background = "rgba(220, 53, 69, 0.8)"; status.style.opacity = '1'; });
+          });
+          peer.on('error', (err) => { if (err.type === 'unavailable-id') { localStorage.removeItem('hama_remote_uid'); window.location.reload(); } else { status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; if (err.type === 'peer-unavailable') status.innerText = "Lỗi: PC tắt (Quét lại mã!)"; else status.innerText = "Lỗi mạng"; } });
+
+          const startRemoteCamera = async () => {
+              if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
+              try { remoteStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFrontCam ? "user" : "environment", width: { ideal: 4096 }, height: { ideal: 4096 } }, audio: false }); video.srcObject = remoteStream; video.style.transform = useFrontCam ? 'scaleX(-1)' : 'scaleX(1)'; } catch (err) { status.innerText = "Lỗi Camera!"; status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; }
+          };
+          await startRemoteCamera(); document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
+
+          document.getElementById('remoteCaptureBtn').onclick = async () => {
+              if (!conn || !conn.open) return alert("Chưa kết nối PC! Vui lòng chờ tín hiệu xanh.");
+              previewCanvas.width = video.videoWidth; previewCanvas.height = video.videoHeight; const ctx = previewCanvas.getContext('2d');
+              try {
+                  const track = remoteStream.getVideoTracks()[0]; const ic = new ImageCapture(track); const blob = await ic.takePhoto(); const bmp = await createImageBitmap(blob);
+                  previewCanvas.width = bmp.width; previewCanvas.height = bmp.height; if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(bmp, 0, 0);
+              } catch(e) { if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(video, 0, 0); }
+              video.style.display = 'none'; previewCanvas.style.display = 'block'; document.getElementById('captureControls').style.display = 'none'; document.getElementById('reviewControls').style.display = 'flex';
+          };
+          document.getElementById('btnRetake').onclick = () => { previewCanvas.style.display = 'none'; video.style.display = 'block'; document.getElementById('captureControls').style.display = 'flex'; document.getElementById('reviewControls').style.display = 'none'; };
+          
+          document.getElementById('btnSend').onclick = () => {
+              document.getElementById('reviewControls').style.display = 'none'; 
+              const prog = document.getElementById('remoteProgress'); prog.style.width = '30%'; 
+              
+              setTimeout(() => {
+                  const finalCvs = document.createElement('canvas'); const fCtx = finalCvs.getContext('2d'); let sw = previewCanvas.width; let sh = previewCanvas.height;
+                  if (deviceRotation === 90 || deviceRotation === -90) { finalCvs.width = sh; finalCvs.height = sw; } else { finalCvs.width = sw; finalCvs.height = sh; }
+                  fCtx.translate(finalCvs.width/2, finalCvs.height/2); fCtx.rotate(-deviceRotation * Math.PI / 180); fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
+                  const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0); conn.send(finalB64);
+                  prog.style.width = '100%'; setTimeout(() => { prog.style.width = '0%'; status.innerText = "Gửi xong!"; status.style.opacity = '1'; status.style.background = "rgba(40, 167, 69, 0.8)"; setTimeout(() => status.style.opacity = '0', 2000); document.getElementById('btnRetake').click(); }, 400);
+              }, 100);
+          };
+      },
+
       selectAndWatchFolder: async function() {
           try {
               this.localDirHandle = await window.showDirectoryPicker(); this.folderConnectTime = Date.now();
@@ -1655,7 +1719,7 @@
         this.updateMirrorUI();
       },
       
-      // CHỤP ẢNH LIÊN TỤC FULLSCREEN VÀ ĐẾM NGƯỢC
+      // CHỤP ẢNH CÓ ĐẾM NGƯỢC, HIỂN THỊ DƯỚI ĐÁY FULLSCREEN
       startCaptureSession: async function(targetSlot = -1) {
         const count = targetSlot !== -1 ? 1 : (parseInt(document.getElementById('photoCount').value) || 1); 
         const timerStr = document.getElementById('timerCount').value;
@@ -1733,7 +1797,7 @@
         }
       },
       
-      // XOAY ẢNH TỪ THƯ VIỆN & CẬP NHẬT API GHI ĐÈ
+      // XOAY ẢNH VÀ GHI ĐÈ BẰNG API updateImageContent ĐỂ KHÔNG NHÂN BẢN
       rotateSessionPhoto: async function(index) {
           const record = this.capturedPhotos[index];
           record.rot = (record.rot + 90) % 360;
@@ -1752,7 +1816,7 @@
               fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(res=>{
                  if(res.success) {
                      record.driveId = res.id;
-                     record.rot = 0;
+                     record.rot = 0; // Trả góc về 0 vì ảnh gốc đã bị xoay
                      record.imgObj.src = b64;
                      this.renderCapturedGallery();
                  }
@@ -1760,7 +1824,7 @@
           }
       },
 
-      // TỐI ƯU RENDER THƯ VIỆN CHỐNG LAG (DOCUMENT FRAGMENT) & THÊM NÚT XOAY
+      // TỐI ƯU RENDER THƯ VIỆN CHỐNG LAG
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); 
         cap.innerHTML = ''; 
@@ -1881,7 +1945,6 @@
           this.renderCanvas(); this.prepModalInstance.hide();
       },
       
-      // CHỐNG LAG CANVAS
       bindCanvasEvents: function() {
         const cvs = this.canvas; window.addEventListener('resize', () => { this.renderCanvas(); });
         cvs.addEventListener('mousedown', (e) => {
@@ -1991,7 +2054,7 @@
             if(sBorder > 0) { this.ctx.lineWidth = sBorder * 2; this.ctx.strokeStyle = "#ffffff"; this.ctx.strokeRect(x, y, cellW, cellH); }
             if (this.activeSlotIndex === index) { this.ctx.strokeStyle = "rgba(255, 107, 43, 0.8)"; this.ctx.lineWidth = 40; this.ctx.strokeRect(x, y, cellW, cellH); } 
             
-            // Vẽ đường cắt (Dashed cut lines)
+            // Vẽ đường cắt (Dashed cut lines) khôi phục từ code gốc
             this.ctx.strokeStyle = "rgba(100, 116, 139, 0.5)"; this.ctx.lineWidth = 4; this.ctx.setLineDash([20, 20]);
             this.ctx.strokeRect(x, y, cellW, cellH); this.ctx.setLineDash([]);
             
@@ -2001,7 +2064,7 @@
       },
       showPrintConfigModal: function() { if(this.pages[0].every(s => s === null)) { return Swal.fire('Lỗi', 'Trang hiện tại đang trống, không thể in.', 'error'); } this.printConfigModalInstance.show(); },
       
-      // XOAY GIẤY IN THEO BỐ CỤC ẢNH
+      // IN ẤN CHUẨN XÁC XOAY GIẤY DỰA THEO CANVAS WIDTH/HEIGHT
       executePrint: function() { 
           this.printConfigModalInstance.hide(); 
           const printCopies = parseInt(document.getElementById('printCopiesModal').value) || 1;
@@ -2011,7 +2074,7 @@
           const printDiv = document.getElementById('printContainer'); printDiv.innerHTML = '';
           const isLandscape = this.canvas.width > this.canvas.height; 
           
-          // INJECT CSS xoay trang vào thẻ Style đã tạo ở Header
+          // Tự động gán CSS @page xoay ngang hoặc dọc
           const printStyle = document.getElementById('printStyle');
           if(isLandscape) {
               printStyle.innerHTML = "@media print { @page { size: 148mm 100mm !important; margin: 0; } }";
@@ -2029,4 +2092,4 @@
     };
     
     window.addEventListener('DOMContentLoaded', () => app.init());
-</script>  
+</script>
