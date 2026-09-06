@@ -44,7 +44,7 @@
     .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: var(--accent-glow); }
     .btn-secondary-custom { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; font-weight: 800; border-radius: 12px; transition: 0.2s; }
     .btn-secondary-custom:hover { background: #fca5a5; color: #b91c1c; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(220,38,38,0.2); }
-    .btn-outline-custom { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); font-weight: 800; border-radius: 12px; transition: 0.2s; }
+    .btn-outline-custom { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); font-weight: 800; border-radius: 10px; transition: 0.2s; }
     .btn-outline-custom:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,107,43,0.05);}
     .btn-circle-custom { width: 38px; height: 38px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: 1px solid var(--border-color); background: var(--panel-bg); color: var(--text-main);}
     .btn-circle-custom:hover { transform: scale(1.1); background: var(--accent); color: #fff; border-color: var(--accent);}
@@ -67,6 +67,7 @@
     .cp-submit-btn { width: 100%; background: #e2e8f0; color: #94a3b8; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; margin-top: 15px; transition: 0.3s; pointer-events: none;}
     .cp-submit-btn.ready { background: var(--accent); color: #fff; box-shadow: var(--accent-glow); pointer-events: auto;}
     .cp-submit-btn.ready:hover { background: var(--accent-hover); transform: translateY(-2px);}
+    @media (max-width: 768px) { .cp-layout { flex-direction: column;} .cp-left, .cp-right { width: 100%; border-right: none;} }
 
     /* ================= DASHBOARD UI ================= */
     #dashboardWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); }
@@ -104,10 +105,12 @@
     .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.3s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); will-change: transform;}
     .wall-item:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255,107,43,0.15);}
     .wall-item img { width: 100%; display: block; object-fit: cover;}
-    
-    /* SLIDESHOW (GIAO DIỆN TỐI ƯU CÀI ĐẶT TRÁI & ẢNH BAY TỪ DƯỚI LÊN) */
+    @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
+    @media (max-width: 768px) { .wall-item { width: calc(50% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px;} }
+
+    /* SLIDESHOW BAY TỪ DƯỚI LÊN & CÀI ĐẶT TRÁI */
     #slideshowWrapper { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: none; overflow: hidden;}
-    .slide-controls { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 15px; z-index: 10001; }
+    .slide-controls { position: absolute; bottom: 30px; left: 40px; display: flex; gap: 15px; z-index: 10001; }
     .slide-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px);}
     .slide-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
     
@@ -117,12 +120,11 @@
     .slide-center-focus.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     .slide-center-focus img { width: 100%; border-radius: 10px; object-fit: contain; max-height: 70vh;}
 
-    /* Cài đặt Slideshow Panel BÊN TRÁI NHƯ ẢNH MẪU */
     .slide-settings-panel { position: absolute; top: 0; left: -380px; width: 380px; height: 100vh; background: #111; border-right: 1px solid rgba(255,255,255,0.1); z-index: 10002; transition: left 0.3s ease; padding: 20px; color: #fff; overflow-y: auto; display: flex; flex-direction: column;}
     .slide-settings-panel.open { left: 0; }
     .slide-settings-panel .form-control { background: #222 !important; border-color: #333 !important; color: #fff !important; }
 
-    /* LIGHTBOX WALL */
+    /* LIGHTBOX WALL THUMB TO RÕ DƯỚI CÙNG */
     .lb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10500; display: none; flex-direction: column;}
     .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 10510;}
     .lb-title { font-weight: 800; font-size: 1.2rem; margin: 0; color: #fff;}
@@ -137,9 +139,8 @@
     .lb-nav:hover { background: rgba(255,255,255,0.2); scale: 1.1;}
     .lb-nav.prev { left: 30px; } .lb-nav.next { right: 30px; }
     
-    /* Ảnh thu nhỏ Lightbox LỚN HƠN */
     .lb-strip { height: 160px; display: flex; justify-content: center; gap: 15px; padding: 20px; background: #000; overflow-x: auto; align-items: center;}
-    .lb-thumb { width: auto; height: 120px; max-width: 160px; border-radius: 6px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; padding: 2px; overflow: hidden;}
+    .lb-thumb { flex-shrink: 0; width: auto; height: 120px; max-width: 160px; border-radius: 6px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; overflow: hidden;}
     .lb-thumb img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px;}
     .lb-thumb.active { opacity: 1; border-color: var(--accent);}
 
@@ -147,12 +148,12 @@
     #uploadWrapper { width: 100vw; height: 100vh; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000;}
     .upload-modal { background: #fff; border-radius: 24px; width: 90%; max-width: 420px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); text-align: center; border: 1px solid var(--border-color);}
 
-    /* ================= MAIN BOOTH ================= */
+    /* ================= MAIN BOOTH CHỤP ẢNH CHÍNH ================= */
     .app-header { background: var(--panel-bg); display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: 60px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.02); z-index: 50;}
     
     .app-container { display: flex; height: calc(100vh - 60px); position: relative; overflow: hidden;}
     
-    /* CẤU TRÚC FLEX CÓ RESIZER */
+    /* CẤU TRÚC FLEX CÓ RESIZER KÉO THẢ */
     .left-wrapper { display: flex; flex-direction: column; width: 50%; min-width: 300px; background: var(--bg-color); z-index: 10;}
     .right-wrapper { display: flex; flex-direction: column; flex: 1; min-width: 300px; background: var(--bg-color); position: relative; align-items: center; justify-content: center; padding: 20px; z-index: 10;}
     
@@ -171,23 +172,26 @@
 
     /* Nội dung Livecam */
     .camera-setup-row { display: flex; gap: 15px; height: 100%;}
-    .camera-control-col { width: 200px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; overflow-y: auto; padding-right: 5px;}
+    .camera-control-col { width: 170px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; overflow-y: auto; padding-right: 5px;}
     .viewport-wrapper { flex: 1; position: relative; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
     #videoElement { width: 100%; height: 100%; object-fit: contain; }
     .camera-modes { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
     .btn-cam-mode { background: rgba(255,255,255,0.8); color: #333; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
     .btn-cam-mode.active { background: var(--accent); color: #fff;}
     .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 3px solid #fff; color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; backdrop-filter: blur(5px);}
-    
-    /* Box chỉnh Livecam có nút + - */
+    #countdownOverlay { position: absolute; inset: 0; background: transparent; display: none; align-items: center; justify-content: center; font-size: 140px; font-weight: 900; color: #fff; z-index: 9999; text-shadow: 0 0 20px rgba(0,0,0,0.9); }
+    #fullscreenRecentThumb { position: absolute; bottom: 20px; right: 20px; width: 100px; height: 100px; border: 3px solid #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: cover; display: none; z-index: 9999;}
+
+    /* Box chỉnh Livecam không có nút + - như yêu cầu */
     .cam-param-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; margin-bottom: 5px;}
     .cam-param-title { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-align: center; text-transform: uppercase;}
     .cam-param-row { display: flex; align-items: center; gap: 5px;}
-    .cam-btn { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;}
     
-    /* ẢNH SỰ KIỆN - CSS GRID CHỐNG XẾP CHỒNG TUYỆT ĐỐI */
+    /* ẢNH SỰ KIỆN - CSS GRID TĨNH CHỐNG XẾP CHỒNG TUYỆT ĐỐI */
     .gallery-title { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0;}
-    .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); gap: 10px; align-items: start; align-content: start; justify-items: center; flex: 1; overflow-y: auto; padding: 5px 5px 20px 5px; }
+    .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); gap: 10px; align-items: start; align-content: start; justify-items: center; flex: 1; overflow-y: auto; padding: 10px; }
+    .gallery-container::-webkit-scrollbar { width: 6px; }
+    .gallery-container::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 4px; }
     
     .thumb-wrapper { width: 100%; position: relative; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; overflow: hidden; aspect-ratio: 1/1; cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .thumb-wrapper:hover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent);}
@@ -197,7 +201,7 @@
     .badge-remote { background: #10b981; } 
     .badge-guest { background: #ef4444; }  
     
-    /* KHUNG IN */
+    /* KHUNG IN CANVAS (HIỆN RÕ CHỮ, KHÔNG BỊ KHUẤT) */
     .canvas-container { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;}
     #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; border-radius: 2px; border: 1px solid #cbd5e1; will-change: transform;}
     
@@ -208,6 +212,15 @@
     .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff; color: #333;}
     .qr-wrapper-box { padding: 15px; background: #fff; border-radius: 16px; border: 2px solid var(--accent); display: inline-block; box-shadow: 0 10px 30px rgba(255,107,43,0.15);}
     .qr-container { display: flex; align-items: center; justify-content: center;}
+
+    /* ================= CSS IN ẤN ĐỘC QUYỀN 100x148mm ================= */
+    @media print {
+        @page { size: 100mm 148mm; margin: 0; }
+        body * { visibility: hidden; }
+        #printContainer, #printContainer * { visibility: visible; }
+        #printContainer { position: absolute; left: 0; top: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; width: 100vw; height: 100vh; background: #fff; }
+        .print-page { width: 100mm; height: 148mm; object-fit: contain; page-break-after: always; display: block; margin: 0;}
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -217,7 +230,6 @@
       <h5 class="mt-3 fw-bold">Đang khởi tạo hệ thống...</h5>
   </div>
 
-  <style id="printStyle"></style>
   <input type="file" id="slotFileInput" accept="image/*" onchange="app.handleSlotFile(event)" hidden>
   <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
   <input type="file" id="coverUploadInput" accept="image/*" onchange="app.handleCoverUpload(event)" hidden>
@@ -302,11 +314,12 @@
       
       <div class="wall-grid" id="wallMasonryGrid"></div>
 
-      <!-- Wall Lightbox (Thumb lớn) -->
+      <!-- Wall Lightbox (Thumb lớn dưới cùng) -->
       <div class="lb-overlay" id="wallLightbox">
           <div class="lb-header">
               <h4 class="lb-title" id="lbTitleText">Chi tiết</h4>
               <div class="lb-actions">
+                  <!-- Tải thẳng trực tiếp gốc -->
                   <button class="lb-btn" onclick="app.downloadCurrentLightboxImage()" title="Tải ảnh về"><i class="bi bi-download"></i></button>
                   <button class="lb-btn" onclick="app.closeWallLightbox()" title="Đóng"><i class="bi bi-x-lg"></i></button>
               </div>
@@ -320,12 +333,30 @@
       </div>
   </div>
 
-  <!-- SLIDESHOW MODE (CÀI ĐẶT TRÁI) -->
+  <!-- SLIDESHOW MODE (TRÁI VÀ BAY DƯỚI LÊN) -->
   <div id="slideshowWrapper">
       <div class="bg-blob b1"></div>
       <div class="bg-blob b2"></div>
       
-      <!-- Cài đặt Slideshow (Cố định bên Trái) -->
+      <!-- Nút điều khiển -->
+      <div class="slide-controls" id="slideOpenBtnArea">
+          <button class="slide-btn" onclick="app.toggleSlideshowSettings()" title="Cài đặt"><i class="bi bi-gear-fill"></i></button>
+          <button class="slide-btn" onclick="app.toggleFullScreenApp()" title="Toàn màn hình"><i class="bi bi-arrows-fullscreen"></i></button>
+          <button class="slide-btn text-danger" onclick="app.stopSlideshow()" title="Thoát"><i class="bi bi-x-lg"></i></button>
+      </div>
+      
+      <div class="slide-title-overlay" style="top:40px; right:40px; text-align:right;">
+          <h2 id="slideEventName">SỰ KIỆN</h2>
+          <p class="fs-5 fw-bold" style="color:var(--accent);">Quét QR Gửi Lời Nhắn</p>
+      </div>
+
+      <div id="slideItemsContainer"></div>
+      
+      <div id="slideCenterFocus" class="slide-center-focus">
+          <img id="slideCenterImg" src="">
+      </div>
+
+      <!-- Cài đặt Slideshow Bảng bên Trái -->
       <div id="slideSettingsPanel" class="slide-settings-panel">
           <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
               <h6 class="fw-bold m-0 text-white text-uppercase"><i class="bi bi-gear-fill me-2"></i> LIVESHOW SETTINGS</h6>
@@ -346,24 +377,7 @@
                   </div>
               </div>
           </div>
-          <p class="small text-secondary mt-3">Các ảnh phụ sẽ tự động trôi nổi từ dưới lên ngẫu nhiên.</p>
-          
-          <div class="mt-auto d-flex gap-2">
-              <button class="btn btn-outline-secondary flex-grow-1" onclick="app.toggleFullScreenApp()"><i class="bi bi-arrows-fullscreen"></i> Toàn màn hình</button>
-              <button class="btn btn-danger flex-grow-1" onclick="app.stopSlideshow()"><i class="bi bi-box-arrow-left"></i> Thoát</button>
-          </div>
-      </div>
-
-      <!-- Nút mở cài đặt góc trái (nếu panel đóng) -->
-      <div class="slide-controls" id="slideOpenBtnArea">
-          <button class="slide-btn" onclick="app.toggleSlideshowSettings()" title="Cài đặt"><i class="bi bi-list"></i></button>
-      </div>
-
-      <div id="slideItemsContainer"></div>
-      
-      <!-- Khung hiển thị Ảnh Trung Tâm -->
-      <div id="slideCenterFocus" class="slide-center-focus">
-          <img id="slideCenterImg" src="">
+          <p class="small text-secondary mt-3">Các ảnh phụ sẽ tự động trôi nổi từ dưới lên.</p>
       </div>
   </div>
 
@@ -402,7 +416,7 @@
         <div class="d-flex align-items-center gap-2">
           <button class="btn btn-sm btn-outline-secondary me-2" onclick="window.location.href='?'" title="Về Danh sách sự kiện"><i class="bi bi-house-door-fill"></i></button>
           <img id="headerLogo" src="https://github.com/trunghieuappsheet-cell/hbooth/blob/main/hama.png?raw=true" style="height: 30px; object-fit:contain;">
-          <!-- Tên Dự án không bo viền -->
+          <!-- Tên Dự án tiệp màu nền -->
           <span class="fs-5 fw-bold ms-3" id="currentProjectBadge" style="color: var(--text-main);">Tên Dự án</span>
         </div>
         
@@ -428,26 +442,10 @@
                   <select id="cameraSelect" class="form-select mb-2" onchange="app.switchCamera()"></select>
                   <div class="input-group mb-2"><span class="input-group-text bg-white fw-bold"><i class="bi bi-camera text-muted"></i></span><input type="number" id="photoCount" class="form-control text-center fw-bold" value="1"></div>
                   
+                  <!-- Bỏ nút + -, giữ lại thanh trượt gọn gàng -->
                   <div class="cam-param-box mt-auto">
-                      <div class="cam-param-title">Góc Camera</div>
-                      <div class="cam-param-row mb-1">
-                          <i class="bi bi-zoom-in text-muted" style="width:20px; text-align:center;"></i>
-                          <button class="cam-btn" onclick="app.adjustCam('camZoom', -0.1)">-</button>
-                          <input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()">
-                          <button class="cam-btn" onclick="app.adjustCam('camZoom', 0.1)">+</button>
-                      </div>
-                      <div class="cam-param-row mb-1">
-                          <span class="text-muted" style="width:20px; text-align:center; font-weight:bold; font-size:12px;">X</span>
-                          <button class="cam-btn" onclick="app.adjustCam('camPanX', -5)">-</button>
-                          <input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()">
-                          <button class="cam-btn" onclick="app.adjustCam('camPanX', 5)">+</button>
-                      </div>
-                      <div class="cam-param-row">
-                          <span class="text-muted" style="width:20px; text-align:center; font-weight:bold; font-size:12px;">Y</span>
-                          <button class="cam-btn" onclick="app.adjustCam('camPanY', -5)">-</button>
-                          <input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()">
-                          <button class="cam-btn" onclick="app.adjustCam('camPanY', 5)">+</button>
-                      </div>
+                      <div class="d-flex gap-1 align-items-center mb-2"><i class="bi bi-zoom-in text-muted"></i><input type="range" class="form-range" id="camZoom" min="0.5" max="4" step="0.1" value="1" oninput="app.updateMirrorUI()"></div>
+                      <div class="d-flex gap-2"><input type="range" class="form-range" id="camPanX" min="-50" max="50" value="0" oninput="app.updateMirrorUI()"><input type="range" class="form-range" id="camPanY" min="-50" max="50" value="0" oninput="app.updateMirrorUI()"></div>
                   </div>
                   
                   <div class="d-flex gap-1 mb-1 mt-1">
@@ -462,22 +460,26 @@
                     <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')" title="Xoay Dọc"><i class="bi bi-phone"></i></button>
                   </div>
                   <video id="videoElement" autoplay playsinline></video>
-                  <!-- Nút chụp không có đếm ngược -->
+                  <!-- Đếm ngược Livecam -->
+                  <div id="countdownOverlay">3</div>
+                  <!-- Ảnh preview khi chụp Fullscreen -->
+                  <img id="fullscreenRecentThumb" src="">
                   <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()"><i class="bi bi-camera-fill"></i></button>
                 </div>
               </div>
           </div>
           
-          <!-- Thanh kéo dọc -->
+          <!-- Thanh kéo dọc H -->
           <div class="resizer-h" id="resizerH"></div>
 
           <div class="gallery-section">
             <div class="gallery-title">
               <div class="d-flex align-items-center">
                   <i class="bi bi-images text-accent me-2"></i> ẢNH SỰ KIỆN 
+                  <!-- Thanh kéo Zoom thư viện ảnh -->
                   <div class="d-flex align-items-center gap-1 ms-3 bg-light rounded px-2 border">
                       <i class="bi bi-zoom-out text-muted" style="font-size:0.7rem;"></i>
-                      <input type="range" id="galleryZoom" min="70" max="250" value="130" style="width: 70px; height: 12px;" oninput="document.documentElement.style.setProperty('--grid-size', this.value + 'px')">
+                      <input type="range" id="galleryZoom" min="80" max="250" value="130" style="width: 70px; height: 12px;" oninput="document.documentElement.style.setProperty('--grid-size', this.value + 'px')">
                       <i class="bi bi-zoom-in text-muted" style="font-size:0.7rem;"></i>
                   </div>
               </div>
@@ -487,16 +489,17 @@
               </div>
             </div>
             <div class="gallery-container" id="capturedGallery">
-              <!-- KHẮC PHỤC XẾP CHỒNG BẰNG CSS GRID -->
+              <!-- Grid tự động -->
             </div>
           </div>
         </div>
         
-        <!-- Thanh kéo ngang -->
+        <!-- Thanh kéo ngang V -->
         <div class="resizer-v" id="resizerV"></div>
 
         <!-- Khối Phải (Canvas In) -->
         <div class="right-wrapper" id="rightWrapper">
+          <!-- Toolbar chỉnh ảnh trong khung -->
           <div class="slot-toolbar active" id="slotToolbar">
             <span class="badge bg-primary rounded-pill px-2 py-1 fs-6 shadow-sm">#<span id="stIndex">1</span></span>
             <div class="toolbar-divider" style="width:1px; height:20px; background:#ddd; margin:0 5px;"></div>
@@ -509,9 +512,10 @@
             <button class="btn-circle-custom text-danger border-danger" style="width:32px;height:32px;" onclick="app.removeActiveSlot()"><i class="bi bi-trash"></i></button>
           </div>
           
+          <!-- Canvas Container -->
           <div class="canvas-container"><canvas id="finalCanvas" ondragover="app.allowDrop(event)" ondrop="app.handleCanvasDrop(event)"></canvas></div>
           
-          <!-- Hai nút IN NGAY và XÓA TRẮNG -->
+          <!-- Hai nút điều khiển In và Xóa -->
           <div class="d-flex gap-3 w-100 mt-3" style="max-width: 600px;">
               <button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.showPrintConfigModal()"><i class="bi bi-printer"></i> IN NGAY</button>
               <button class="btn btn-secondary-custom flex-fill py-3 fs-5" onclick="app.clearLayout()"><i class="bi bi-trash"></i> XÓA TRẮNG</button>
@@ -520,7 +524,6 @@
       </div>
   </div>
 
-  <!-- ================= MODALS HỆ THỐNG CỦA BOOTH ================= -->
   <div class="modal fade" id="printConfigModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content p-3 text-center">
@@ -552,7 +555,7 @@
       <div class="modal-content">
         <div class="modal-header border-bottom-0 pb-2"><h6 class="modal-title fw-bold">Chọn ảnh vào khung</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body pt-0 d-flex flex-column" style="height: 80vh;">
-          <div class="gallery-container flex-grow-1" id="modalGalleryContainer" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));"></div>
+          <div class="gallery-container flex-grow-1" id="modalGalleryContainer"></div>
         </div>
       </div>
     </div>
@@ -589,7 +592,7 @@
     </div>
   </div>
 
-  <!-- OFFCANVAS CÀI ĐẶT CHUNG LƯU THEO DỰ ÁN (Bỏ Tên App) -->
+  <!-- OFFCANVAS CÀI ĐẶT CHUNG (XÓA TÊN APP, MÀU SÁNG TOÀN BỘ) -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="settingsOffcanvas" style="width: 360px;">
       <div class="offcanvas-header border-bottom"><h6 class="fw-bold m-0"><i class="bi bi-gear-fill"></i> CÀI ĐẶT DỰ ÁN</h6><button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button></div>
       <div class="offcanvas-body bg-white">
@@ -607,7 +610,6 @@
           
           <div class="form-check form-switch mb-3 p-2 bg-light rounded border"><input class="form-check-input ms-1 me-2" type="checkbox" id="hideLiveCamToggle" onchange="app.toggleLiveCamUI(); app.saveSettings()"><label class="form-check-label small fw-bold">Tắt Camera trực tiếp</label></div>
           
-          <!-- Lọc Folder -->
           <label class="small fw-bold">Chế độ lọc Folder Máy tính</label>
           <select id="folderFilterMode" class="form-select form-select-sm mb-3" onchange="app.saveSettings()"><option value="new" selected>Chỉ tải ảnh MỚI</option><option value="all">Tải tất cả</option></select>
 
@@ -655,7 +657,7 @@
       processedFileNames: new Set(),
       folderConnectTime: 0, 
 
-      // 1 Trang duy nhất
+      // 1 Trang duy nhất chuẩn 300dpi
       pages: [], 
       currentPage: 0,
       slotsPerPage: 1,
@@ -685,12 +687,9 @@
       startX: 0, startY: 0,
       rafId: null, 
       
-      // Kéo thả Resizer
+      // Splitters
       isResizingV: false,
       isResizingH: false,
-
-      totalToUpload: 0,
-      totalUploaded: 0,
 
       peer: null,
       peerId: null,
@@ -846,7 +845,6 @@
           if(this.currentDashQRUrl) { navigator.clipboard.writeText(this.currentDashQRUrl).then(() => { Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Đã copy Link!', showConfirmButton: false, timer: 2000}); }); }
       },
 
-      /* TẠO / SỬA SỰ KIỆN */
       openCreateModal: function() {
           document.getElementById('cpEditId').value = ""; document.getElementById('cpName').value = ""; document.getElementById('cpLocation').value = ""; document.getElementById('cpDesc').value = "";
           if(this.datePicker) this.datePicker.clear(); this.removeCover(); this.checkCreateForm(); this.createModalInstance.show();
@@ -925,7 +923,7 @@
       wrapText: function(context, text, x, y, maxWidth, lineHeight) { const words = text.split(' '); let line = ''; let lines = []; for(let n = 0; n < words.length; n++) { let testLine = line + words[n] + ' '; let metrics = context.measureText(testLine); if (metrics.width > maxWidth && n > 0) { lines.push(line); line = words[n] + ' '; } else { line = testLine; } } lines.push(line); let startY = y - ((lines.length - 1) * lineHeight) / 2; for(let i = 0; i < lines.length; i++) { context.fillText(lines[i], x, startY + (i * lineHeight)); } },
 
       /* =========================================
-       * PHOTO WALL & SLIDESHOW MỚI (TRÁI / DƯỚI LÊN)
+       * PHOTO WALL & SLIDESHOW MỚI TỪ DƯỚI LÊN
        * ========================================= */
       initWallMode: async function(projectId) {
           document.getElementById('wallWrapper').style.display = 'block';
@@ -1037,7 +1035,8 @@
               let d = document.createElement('div'); d.className = 'lb-thumb' + (idx === this.wallLightboxIndex ? ' active' : ''); d.innerHTML = `<img src="${img.url}" loading="lazy">`; d.onclick = () => this.openWallLightbox(idx); strip.appendChild(d);
           });
       },
-      // TẢI ẢNH TRỰC TIẾP KHÔNG QUA TAB MỚI
+      
+      // TẢI TRỰC TIẾP QUA DOWNLOAD URL
       downloadCurrentLightboxImage: function() {
           const item = this.wallImagesList[this.wallLightboxIndex];
           if(item && item.downloadUrl) { window.location.href = item.downloadUrl; } 
@@ -1056,7 +1055,7 @@
         this.connectionModalInstance = new bootstrap.Modal(document.getElementById('connectionModal'));
         
         this.pages = [new Array(8).fill(null)];
-        this.initSplitters(); // Khởi tạo kéo thả
+        this.initSplitters();
 
         this.loadLocalSettings(); 
         
@@ -1087,13 +1086,6 @@
           const input = document.getElementById(inputId); if(!input) return;
           let val = parseInt(input.value) || 0; let min = parseInt(input.min) || 1; let max = parseInt(input.max) || 100;
           val += delta; if(val < min) val = min; if(val > max) val = max; input.value = val;
-      },
-      adjustCam: function(id, delta) {
-          const input = document.getElementById(id);
-          let val = parseFloat(input.value) + delta;
-          val = Math.max(parseFloat(input.min), Math.min(parseFloat(input.max), val));
-          input.value = val.toFixed(1);
-          this.updateMirrorUI();
       },
       loadProjectImagesForBooth: async function() {
           if(!this.currentProjectId) return;
@@ -1216,6 +1208,74 @@
               }
           }; img.src = b64; 
       },
+      initRemoteMode: async function(targetId) {
+          document.body.innerHTML = `
+          <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
+              <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
+              <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:15;"></canvas>
+              <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
+              <div id="captureControls" style="position:absolute; bottom:40px; left:0; width:100%; display:flex; justify-content:space-evenly; align-items:center; z-index:20; padding:0 20px;">
+                  <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-arrow-repeat"></i></button>
+                  <button id="remoteCaptureBtn" style="width:75px; height:75px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5); backdrop-filter:blur(5px);"></button>
+                  <div style="width:50px;"></div>
+              </div>
+              <div id="reviewControls" style="position:absolute; bottom:40px; left:0; width:100%; display:none; justify-content:center; gap:40px; align-items:center; z-index:20; padding:0 20px;">
+                  <button id="btnRetake" style="width:70px; height:70px; border-radius:50%; background:rgba(0,0,0,0.6); border:2px solid #fff; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><i class="bi bi-x-lg"></i></button>
+                  <button id="btnSend" style="width:70px; height:70px; border-radius:50%; background:var(--accent); border:none; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(255,107,43,0.5);"><i class="bi bi-send-fill"></i></button>
+              </div>
+          </div>`;
+          const status = document.getElementById('remoteStatus'); const video = document.getElementById('remoteVideo'); const previewCanvas = document.getElementById('remotePreview');
+          let remoteStream = null; let useFrontCam = false; let deviceRotation = 0;
+          function getDeviceType() { let ua = navigator.userAgent; if(/iPhone/i.test(ua)) return "iPhone"; if(/iPad/i.test(ua)) return "iPad"; if(/Android/i.test(ua)) return "Android"; return "Điện thoại"; }
+          let localRemoteId = localStorage.getItem('hama_remote_uid'); let localDeviceName = localStorage.getItem('hama_remote_name');
+          if(!localRemoteId) { localRemoteId = 'R_' + Math.random().toString(36).substr(2, 9); localDeviceName = getDeviceType() + ' ' + Math.floor(Math.random() * 9000 + 1000); localStorage.setItem('hama_remote_uid', localRemoteId); localStorage.setItem('hama_remote_name', localDeviceName); }
+
+          function setupSensors() {
+              window.addEventListener('deviceorientation', (e) => {
+                  let beta = e.beta; let gamma = e.gamma; let angle = 0;
+                  if (Math.abs(beta) < 45) { if (gamma > 45) angle = -90; else if (gamma < -45) angle = 90; } else if (beta > 135 || beta < -135) { angle = 180; }
+                  if (angle !== deviceRotation) { deviceRotation = angle;}
+              });
+          }
+          setupSensors();
+
+          const peer = new Peer(localRemoteId, { config: { 'iceServers': [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun.cloudflare.com:3478' } ] } });
+          let conn = null;
+          peer.on('open', (id) => {
+              conn = peer.connect(targetId, { reliable: true }); 
+              conn.on('open', () => { status.innerText = "Đã kết nối PC!"; status.style.background = "rgba(40, 167, 69, 0.8)"; conn.send('INIT_DEVICE:' + localDeviceName); setTimeout(() => { status.style.opacity = '0'; }, 2000); });
+              conn.on('error', (err) => { status.innerText = "Lỗi: " + err.message; status.style.background = "rgba(220, 53, 69, 0.8)"; status.style.opacity = '1'; });
+          });
+          peer.on('error', (err) => { if (err.type === 'unavailable-id') { localStorage.removeItem('hama_remote_uid'); window.location.reload(); } else { status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; if (err.type === 'peer-unavailable') status.innerText = "Lỗi: PC tắt (Quét lại mã!)"; else status.innerText = "Lỗi mạng"; } });
+
+          const startRemoteCamera = async () => {
+              if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); }
+              try { remoteStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFrontCam ? "user" : "environment", width: { ideal: 4096 }, height: { ideal: 4096 } }, audio: false }); video.srcObject = remoteStream; video.style.transform = useFrontCam ? 'scaleX(-1)' : 'scaleX(1)'; } catch (err) { status.innerText = "Lỗi Camera!"; status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; }
+          };
+          await startRemoteCamera(); document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
+
+          document.getElementById('remoteCaptureBtn').onclick = async () => {
+              if (!conn || !conn.open) return alert("Chưa kết nối PC! Vui lòng chờ tín hiệu xanh.");
+              previewCanvas.width = video.videoWidth; previewCanvas.height = video.videoHeight; const ctx = previewCanvas.getContext('2d');
+              try {
+                  const track = remoteStream.getVideoTracks()[0]; const ic = new ImageCapture(track); const blob = await ic.takePhoto(); const bmp = await createImageBitmap(blob);
+                  previewCanvas.width = bmp.width; previewCanvas.height = bmp.height; if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(bmp, 0, 0);
+              } catch(e) { if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(video, 0, 0); }
+              video.style.display = 'none'; previewCanvas.style.display = 'block'; document.getElementById('captureControls').style.display = 'none'; document.getElementById('reviewControls').style.display = 'flex';
+          };
+          document.getElementById('btnRetake').onclick = () => { previewCanvas.style.display = 'none'; video.style.display = 'block'; document.getElementById('captureControls').style.display = 'flex'; document.getElementById('reviewControls').style.display = 'none'; };
+          document.getElementById('btnSend').onclick = () => {
+              document.getElementById('reviewControls').style.display = 'none'; 
+              setTimeout(() => {
+                  const finalCvs = document.createElement('canvas'); const fCtx = finalCvs.getContext('2d'); let sw = previewCanvas.width; let sh = previewCanvas.height;
+                  if (deviceRotation === 90 || deviceRotation === -90) { finalCvs.width = sh; finalCvs.height = sw; } else { finalCvs.width = sw; finalCvs.height = sh; }
+                  fCtx.translate(finalCvs.width/2, finalCvs.height/2); fCtx.rotate(-deviceRotation * Math.PI / 180); fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
+                  const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0); conn.send(finalB64);
+                  status.innerText = "Gửi xong!"; status.style.opacity = '1'; status.style.background = "rgba(16, 185, 129, 0.8)"; setTimeout(() => status.style.opacity = '0', 2000); document.getElementById('btnRetake').click();
+              }, 100);
+          };
+          this.hideGlobalLoading();
+      },
       selectAndWatchFolder: async function() {
           try {
               this.localDirHandle = await window.showDirectoryPicker(); this.folderConnectTime = Date.now();
@@ -1278,12 +1338,34 @@
         this.updateMirrorUI();
       },
       startCaptureSession: async function(targetSlot = -1) {
-        const count = targetSlot !== -1 ? 1 : parseInt(document.getElementById('photoCount').value); const vp = document.getElementById('viewport');
+        const count = targetSlot !== -1 ? 1 : (parseInt(document.getElementById('photoCount').value) || 1); 
+        const timer = parseInt(document.getElementById('timerCount').value) || 3;
+        const vp = document.getElementById('viewport'); 
+        const overlay = document.getElementById('countdownOverlay');
+        const thumbPreview = document.getElementById('fullscreenRecentThumb');
+        
         if (vp.requestFullscreen) { await vp.requestFullscreen().catch(err => console.log(err)); }
+        
         for (let i = 0; i < count; i++) {
-          vp.style.backgroundColor = '#fff'; this.video.style.opacity = 0; setTimeout(() => { vp.style.backgroundColor = '#000'; this.video.style.opacity = 1; }, 100);
-          this.captureSingleFrame(targetSlot); if(i < count - 1) await new Promise(r => setTimeout(r, 1000));
+          overlay.style.display = 'flex'; 
+          for (let t = timer; t > 0; t--) { 
+              overlay.innerText = t; 
+              await new Promise(r => setTimeout(r, 1000)); 
+          } 
+          overlay.style.display = 'none';
+          
+          vp.style.backgroundColor = '#fff'; this.video.style.opacity = 0; 
+          setTimeout(() => { vp.style.backgroundColor = '#000'; this.video.style.opacity = 1; }, 100);
+          
+          const b64 = this.captureSingleFrame(targetSlot); 
+          
+          if (document.fullscreenElement) {
+              thumbPreview.src = b64;
+              thumbPreview.style.display = 'block';
+          }
+          if(i < count - 1) await new Promise(r => setTimeout(r, 1000));
         }
+        setTimeout(() => { thumbPreview.style.display = 'none'; }, 2000);
         if (document.fullscreenElement) { document.exitFullscreen().catch(err => {}); }
       },
       captureSingleFrame: function(targetSlot) {
@@ -1300,6 +1382,7 @@
             fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ if(r.success) { photoRecord.driveId = r.id; } }).catch(()=>{});
           }
         }; imgObj.src = b64;
+        return b64;
       },
       uploadToSession: function(e) { 
         const files = e.target.files;
@@ -1319,7 +1402,7 @@
         }
       },
       
-      // TỐI ƯU HÓA RENDER BẰNG DOCUMENT FRAGMENT ĐỂ CHỐNG LAG
+      // TỐI ƯU RENDER THƯ VIỆN CHỐNG LAG
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); 
         cap.innerHTML = ''; 
@@ -1336,8 +1419,8 @@
           if(record.rot !== 0) wrapper.classList.add('rotated');
           
           let badgeHtml = '';
-          if (record.name && record.name.includes('RemoteCam')) { badgeHtml = '<div class="source-badge badge-remote" title="Từ Điện Thoại (Remote)"></div>'; } 
-          else if (record.name && record.name.includes('Guest_Moment')) { badgeHtml = '<div class="source-badge badge-guest" title="Khách tải lên (Khoảnh khắc)"></div>'; }
+          if (record.name && record.name.includes('RemoteCam')) { badgeHtml = '<div class="source-badge badge-remote" title="Remote"></div>'; } 
+          else if (record.name && record.name.includes('Guest_Moment')) { badgeHtml = '<div class="source-badge badge-guest" title="Khoảnh khắc"></div>'; }
 
           const img = document.createElement('img'); img.src = record.imgObj.src; img.loading = "lazy"; img.style.transform = `rotate(${record.rot || 0}deg)`; 
           
@@ -1384,7 +1467,6 @@
           if(this.selectedModalIndices.length === 0) return;
           let tSlot = this.pendingSlotIndex !== -1 ? this.pendingSlotIndex : 0; 
           const record = this.capturedPhotos[this.selectedModalIndices[0]];
-          
           let found = false;
           for(let i = tSlot; i < this.slotsPerPage; i++) {
               if(this.pages[0][i] === null) { this.pages[0][i] = { img: record.imgObj, zoom: 1, panX: 0, panY: 0, rotate: record.rot, br: 100, ct: 100 }; found = true; break; }
@@ -1439,7 +1521,7 @@
           this.renderCanvas(); this.prepModalInstance.hide();
       },
       
-      // CHỐNG LAG KHI KÉO THẢ CANVAS BẰNG REQUESTANIMATIONFRAME
+      // CHỐNG LAG KHI KÉO THẢ BẰNG REQUESTANIMATIONFRAME
       bindCanvasEvents: function() {
         const cvs = this.canvas; window.addEventListener('resize', () => { this.renderCanvas(); });
         cvs.addEventListener('mousedown', (e) => {
@@ -1551,11 +1633,21 @@
       printAllPages: async function() {
           const printCopies = parseInt(document.getElementById('printCopiesModal').value) || 1;
           Swal.fire({title: 'Đang chuẩn bị trang in (300dpi)...', didOpen: () => Swal.showLoading()});
-          this.activeSlotIndex = -1; this.updateToolbarUI(); const printDiv = document.getElementById('printContainer'); printDiv.innerHTML = '';
+          this.activeSlotIndex = -1; this.updateToolbarUI(); 
+          
+          const printDiv = document.getElementById('printContainer'); printDiv.innerHTML = '';
           for(let copy = 0; copy < printCopies; copy++) {
               this.renderCanvas(); const dataUrl = this.canvas.toDataURL('image/jpeg', 1.0); const img = document.createElement('img'); img.src = dataUrl; img.className = 'print-page'; printDiv.appendChild(img);
           }
           this.renderCanvas(); Swal.close(); setTimeout(() => { window.print(); }, 500);
+          
+          this.saveLayoutToDrive(true);
+      },
+      saveLayoutToDrive: function(silent = false) {
+        if(this.pages[0].every(s => s === null)) return;
+        this.activeSlotIndex = -1; this.updateToolbarUI(); this.renderCanvas(); const b64 = this.canvas.toDataURL('image/jpeg', 0.9);
+        const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Print_Layout_' + new Date().getTime() + '.jpg');
+        if(this.currentProjectId) { fd.append('projectId', this.currentProjectId); fetch(API_URL, { method: 'POST', body: fd }).catch(e=>{}); }
       }
     };
     
