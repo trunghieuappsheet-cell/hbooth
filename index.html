@@ -43,7 +43,6 @@
     .form-control:focus, .form-select:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(255,107,43,0.1) !important;}
     input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     
-    /* NÚT BẤM DÙNG CHUNG */
     .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 800; border-radius: 12px; transition: 0.2s; box-shadow: var(--accent-glow); display: inline-flex; align-items: center; justify-content: center;}
     .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,43,0.4); }
     .btn-outline-custom { background: transparent; border: 2px solid var(--accent); color: var(--accent); font-weight: 800; border-radius: 10px; transition: 0.2s; }
@@ -55,7 +54,6 @@
     .btn-exit-fs:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
     body.is-fullscreen .btn-exit-fs { display: flex; }
 
-    /* ================= CẤU HÌNH IN (MEDIA PRINT) ================= */
     @media print {
       body * { visibility: hidden !important; }
       #printContainer, #printContainer * { visibility: visible !important; }
@@ -65,7 +63,6 @@
       @page { margin: 0; }
     }
 
-    /* ================= MODAL TẠO/SỬA SỰ KIỆN ================= */
     #createProjectModal .modal-content { border-radius: 20px; border: none; overflow: hidden; background: #fff; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
     .cp-layout { display: flex; flex-direction: row; height: auto; min-height: 400px;}
     .cp-left { width: 40%; background: #f8fafc; padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #e2e8f0; align-items: center; justify-content: center;}
@@ -87,11 +84,10 @@
     .cp-preview-item { background: #e2e8f0; border-radius: 8px; overflow: hidden; position: relative;}
     .cp-preview-item img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease-in-out;}
 
-    .cp-submit-btn { width: 100%; background: #e2e8f0; color: #94a3b8; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; margin-top: 15px; transition: 0.3s; pointer-events: none;}
+    .cp-submit-btn { background: #e2e8f0; color: #94a3b8; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; transition: 0.3s; pointer-events: none;}
     .cp-submit-btn.ready { background: var(--accent); color: #fff; box-shadow: var(--accent-glow); pointer-events: auto;}
     .cp-submit-btn.ready:hover { background: var(--accent-hover); transform: translateY(-2px);}
 
-    /* ================= DASHBOARD UI ================= */
     #dashboardWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); }
     .dash-header { padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; height: 60px;}
     .dash-header img { height: 35px; width: auto; object-fit: contain; } 
@@ -118,7 +114,6 @@
     .btn-view-album { width: 100%; background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 800; transition: 0.2s; box-shadow: var(--accent-glow);}
     .btn-view-album:hover { background: var(--accent-hover); transform: translateY(-2px);}
 
-    /* ================= PHOTO WALL ================= */
     #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main);}
     .wall-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; background: rgba(244, 246, 248, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
     .wall-title-area h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main);}
@@ -128,15 +123,12 @@
     .wall-grid { padding: 40px; min-height: 50vh;}
     .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;}
     .wall-item img, .wall-item video { width: 100%; display: block; object-fit: cover;}
-    
-    /* Icon Play cho video trong lưới Photo Wall */
     .wall-video-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.8); font-size: 3rem; pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
 
     @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
     @media (max-width: 768px) { .wall-item { width: calc(50% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} .wall-grid { padding: 20px; } }
     @media (max-width: 480px) { .wall-item { width: 100%; margin-bottom: 15px;} .wall-top-actions { flex-direction: column; width: 100%;} .wall-top-actions button, .wall-top-actions a { width: 100%; justify-content: center;} }
 
-    /* LIVESHOW (BỎ BONG BÓNG LỜI NHẮN, CHUYỂN THÀNH MODAL) */
     #slideshowWrapper { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: none; overflow: hidden;}
     body.is-fullscreen #slideshowWrapper .slide-controls, body.is-fullscreen #slideshowWrapper .slide-settings-panel { display: none !important; }
     
@@ -147,14 +139,13 @@
     .floating-item { position: absolute; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 4px solid #fff; background: #fff; will-change: transform, opacity;}
     .floating-item img, .floating-item video { width: 100%; height: 100%; object-fit: cover;}
     
-    .slide-center-focus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); opacity: 0; z-index: 100; max-width: 650px; width: 90vw; padding: 15px; background: #fff; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.15); transition: all 0.5s ease-out; display: flex; justify-content: center;}
+    .slide-center-focus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); opacity: 0; z-index: 100; padding: 15px; background: #fff; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.15); transition: all 0.5s ease-out; display: flex; justify-content: center;}
     .slide-center-focus.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    .slide-center-focus img, .slide-center-focus video { width: 100%; border-radius: 10px; object-fit: contain; max-height: 75vh;}
+    .slide-center-focus img, .slide-center-focus video { width: 100%; border-radius: 10px; object-fit: contain; }
 
     .slide-settings-panel { position: absolute; top: 0; right: -380px; width: 380px; height: 100vh; background: #fff; border-left: 1px solid var(--border-color); box-shadow: -10px 0 30px rgba(0,0,0,0.05); z-index: 10002; transition: right 0.3s ease; padding: 25px; overflow-y: auto; display: flex; flex-direction: column;}
     .slide-settings-panel.open { right: 0; }
 
-    /* LIGHTBOX WALL */
     .lb-overlay { position: fixed; inset: 0; background: #ffffff; z-index: 10500; display: none; flex-direction: column;}
     .lb-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #111; z-index: 10510; border-bottom: 1px solid var(--border-color);}
     .lb-title { font-weight: 800; font-size: 1.2rem; margin: 0; color: #111;}
@@ -177,7 +168,6 @@
     .strip-nav:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
     .strip-nav.prev { left: 10px; } .strip-nav.next { right: 10px; }
 
-    /* ================= GUEST UPLOAD (Rút gọn) ================= */
     #uploadWrapper { width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 10000;}
     .upload-modal-new { background: #fff; border-radius: 32px; width: 95%; max-width: 400px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); position: relative; margin: auto; }
     .um-drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 3px; margin: 0 auto 20px; }
@@ -195,7 +185,6 @@
     #uploadLoadingOverlay { position: absolute; inset: 0; background: rgba(255,255,255,0.95); border-radius: 32px; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
     .form-control-upload { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 16px; padding: 15px; width: 100%; font-family: inherit; margin-bottom: 20px; resize: none; font-weight: 500;}
 
-    /* ================= MAIN BOOTH ================= */
     .app-header { background: var(--panel-bg); display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: 60px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.02); z-index: 50;}
     .app-container { display: flex; height: calc(100vh - 60px); position: relative; overflow: hidden;}
     
@@ -231,7 +220,6 @@
     .btn-cam-mode.active { background: var(--accent); color: #fff;}
     .btn-capture-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 3px solid #fff; color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; backdrop-filter: blur(5px);}
     
-    /* ẢNH SỰ KIỆN - CSS GRID TĨNH */
     .gallery-title { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--accent); flex-shrink: 0;}
     .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--grid-size), 1fr)); grid-auto-rows: var(--grid-size); gap: 10px; align-content: start; flex: 1; overflow-y: auto; padding: 10px; }
     .gallery-container::-webkit-scrollbar { width: 6px; }
@@ -245,14 +233,12 @@
     .badge-remote { background: #10b981; } 
     .badge-guest { background: var(--accent); }
     
-    /* KHUNG IN CANVAS */
     .canvas-container { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;}
     #finalCanvas { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; border-radius: 2px; border: 1px solid #cbd5e1;}
     
     .slot-toolbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); padding: 6px 12px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); border: 1px solid var(--border-color); z-index: 100; display: flex; gap: 8px; align-items: center; opacity: 0; visibility: hidden; transition: 0.2s;}
     .slot-toolbar.active { opacity: 1; visibility: visible;}
     
-    /* MODALS & QR */
     .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff; color: #333;}
     .qr-wrapper-box { padding: 15px; background: #fff; border-radius: 16px; border: 2px solid var(--accent); display: inline-block; box-shadow: 0 10px 30px rgba(255,107,43,0.15); cursor: pointer; transition: 0.3s;}
     .qr-wrapper-box:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(255,107,43,0.3); transform: scale(1.02); }
@@ -333,7 +319,12 @@
                 </div>
 
                 <input type="hidden" id="cpEditId" value="">
-                <button class="cp-submit-btn" id="cpSubmitBtn" onclick="app.submitCreateProject()">Lưu sự kiện</button>
+                
+                <!-- THÊM NÚT XÓA SỰ KIỆN -->
+                <div class="d-flex gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-danger fw-bold px-4 d-none" id="cpDeleteBtn" onclick="app.deleteProject()"><i class="bi bi-trash3-fill"></i> Xóa Dự Án</button>
+                    <button class="cp-submit-btn flex-fill" id="cpSubmitBtn" onclick="app.submitCreateProject()">Lưu sự kiện</button>
+                </div>
             </div>
         </div>
       </div>
@@ -371,9 +362,7 @@
           </div>
       </div>
       
-      <div class="wall-grid" id="wallMasonryGrid">
-          <!-- Nếu trống rỗng sẽ hiển thị thông báo JS -->
-      </div>
+      <div class="wall-grid" id="wallMasonryGrid"></div>
 
       <div class="lb-overlay" id="wallLightbox">
           <div class="lb-header">
@@ -399,7 +388,7 @@
       </div>
   </div>
 
-  <!-- LIVESHOW CHỜ BẮT ĐẦU (Tuỳ chọn Mở Slideshow màn hình lớn) -->
+  <!-- LIVESHOW CHỜ BẮT ĐẦU -->
   <div id="slideStartOverlay" style="position: fixed; inset: 0; background: rgba(255,255,255,0.98); z-index: 10005; display: none; flex-direction: column; align-items: center; justify-content: center;">
       <h2 class="fw-bold mb-4 text-accent" style="font-size: 2.5rem;">LIVESHOW SỰ KIỆN</h2>
       <div style="padding: 15px; background: #fff; border: 3px solid var(--accent); border-radius: 16px; margin-bottom: 20px;">
@@ -434,15 +423,23 @@
               <label class="form-check-label small fw-bold">Bật Nhạc Nền (Loop)</label>
           </div>
 
-          <label class="small fw-bold text-muted mb-2 text-uppercase">Tốc độ & Thời gian</label>
+          <label class="small fw-bold text-muted mb-2 text-uppercase">Tốc độ & Kích thước</label>
           <div class="row g-2 mb-4">
               <div class="col-12">
                   <div class="input-group input-group-sm mb-2">
-                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">Ảnh chính (s)</span>
+                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">Cỡ Ảnh Chính</span>
+                      <input type="number" id="slideCenterSize" class="form-control text-center bg-light border-secondary" value="75" title="% chiều cao màn hình (vh)">
+                  </div>
+                  <div class="input-group input-group-sm mb-2">
+                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">Cỡ Ảnh Phụ</span>
+                      <input type="number" id="slideFloatSize" class="form-control text-center bg-light border-secondary" value="200" title="Pixel">
+                  </div>
+                  <div class="input-group input-group-sm mb-2">
+                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">Đổi Ảnh (s)</span>
                       <input type="number" id="slideCenterTime" class="form-control text-center bg-light border-secondary" value="10" min="3" onchange="app.applySlideSettings()">
                   </div>
                   <div class="input-group input-group-sm mb-2">
-                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">Tốc độ bay</span>
+                      <span class="input-group-text bg-white fw-bold border-secondary" style="width: 120px;">Tốc độ bay (s)</span>
                       <input type="number" id="slideFloatTime" class="form-control text-center bg-light border-secondary" value="12" min="5" title="Nhỏ là nhanh">
                   </div>
                   <div class="input-group input-group-sm">
@@ -456,7 +453,7 @@
       </div>
   </div>
 
-  <!-- ================= 3. GUEST UPLOAD (Rút gọn) ================= -->
+  <!-- ================= 3. GUEST UPLOAD (BỎ NÚT THOÁT THỪA) ================= -->
   <div id="uploadWrapper" style="display: none;">
       <div class="upload-modal-new" id="uploadModalBox">
           <div class="um-drag-handle"></div>
@@ -488,11 +485,11 @@
               <button class="btn btn-link text-muted w-100 mt-3 fw-bold text-decoration-none" onclick="app.backToUploadOptions()"><i class="bi bi-arrow-left"></i> Quay lại</button>
           </div>
           
+          <!-- Đã bỏ nút thoát như yêu cầu -->
           <div id="uploadSuccessArea" style="display: none; text-align: center; padding: 20px 0;">
               <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
               <h4 class="mt-3 fw-bold">Gửi thành công!</h4>
-              <p class="text-muted">Khoảnh khắc của bạn đã được lưu.</p>
-              <button class="btn btn-outline-secondary mt-3 rounded-pill px-4 fw-bold" onclick="app.closeUploadModal()"><i class="bi bi-x-lg"></i> Thoát</button>
+              <p class="text-muted">Khoảnh khắc của bạn đã lên màn hình.</p>
           </div>
       </div>
   </div>
@@ -519,7 +516,6 @@
       </div>
 
       <div class="app-container" id="appContainer">
-        <!-- Khối Trái -->
         <div class="left-wrapper" id="leftWrapper">
           <div class="livecam-section" id="livecamSection">
               <div class="camera-setup-row">
@@ -545,10 +541,8 @@
                     <button class="btn-cam-mode" id="btnModeV" onclick="app.setCameraMode('vertical')" title="Xoay Dọc"><i class="bi bi-phone"></i></button>
                   </div>
                   <video id="videoElement" autoplay playsinline></video>
-                  
                   <div id="countdownOverlay">3</div>
                   <div id="fullscreenThumbRow"></div>
-                  
                   <button id="mainCaptureBtn" class="btn-capture-overlay" onclick="app.startCaptureSession()"><i class="bi bi-camera-fill"></i></button>
                 </div>
               </div>
@@ -578,7 +572,6 @@
         
         <div class="resizer-v" id="resizerV"></div>
 
-        <!-- Khối Phải (Canvas In) -->
         <div class="right-wrapper" id="rightWrapper">
           <div class="slot-toolbar active" id="slotToolbar">
             <span class="badge rounded-pill px-2 py-1 fs-6 shadow-sm" style="background: var(--accent);">#<span id="stIndex">1</span></span>
@@ -596,7 +589,6 @@
               <canvas id="finalCanvas"></canvas>
           </div>
           
-          <!-- Thay đổi nút XÓA TRẮNG giống nút IN NGAY -->
           <div class="d-flex gap-3 w-100 mt-3" style="max-width: 600px;">
               <button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.showPrintConfigModal()"><i class="bi bi-printer me-2"></i> IN NGAY</button>
               <button class="btn btn-primary-custom flex-fill py-3 fs-5" onclick="app.clearLayout()"><i class="bi bi-trash me-2"></i> XÓA TRẮNG</button>
@@ -830,9 +822,6 @@
           if(loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 300); }
       },
 
-      /* =========================================
-       * SPLITTERS (RESIZER) THAY ĐỔI KÍCH THƯỚC UI
-       * ========================================= */
       initSplitters: function() {
           const resV = document.getElementById('resizerV');
           const resH = document.getElementById('resizerH');
@@ -865,9 +854,6 @@
           window.addEventListener('mouseup', () => { this.isResizingV = false; this.isResizingH = false; document.body.style.cursor = 'default'; });
       },
 
-      /* =========================================
-       * DASHBOARD
-       * ========================================= */
       initDashboardMode: async function() {
           document.getElementById('dashboardWrapper').style.display = 'block';
           try {
@@ -937,6 +923,7 @@
 
       openCreateModal: function() {
           document.getElementById('cpEditId').value = ""; document.getElementById('cpName').value = ""; document.getElementById('cpLocation').value = ""; document.getElementById('cpDesc').value = "";
+          document.getElementById('cpDeleteBtn').classList.add('d-none');
           if(this.datePicker) this.datePicker.clear(); this.removeCover(); 
           document.getElementById('musicStatus').style.display = 'none'; this.bgMusicB64 = "";
           this.checkCreateForm(); 
@@ -946,6 +933,7 @@
       editProject: function(id) {
           const proj = this.projects.find(p => p.id === id); if(!proj) return;
           document.getElementById('cpEditId').value = proj.id; document.getElementById('cpName').value = proj.name; document.getElementById('cpLocation').value = proj.location || ''; document.getElementById('cpDesc').value = proj.description || '';
+          document.getElementById('cpDeleteBtn').classList.remove('d-none');
           if(proj.date && this.datePicker) { this.datePicker.setDate(proj.date.split(' to ')); }
           if(proj.coverUrl) { document.getElementById('cpCoverPreviewImg').src = proj.coverUrl; document.getElementById('cpCoverPreviewImg').style.display = 'block'; document.getElementById('cpCoverPlaceholder').style.display = 'none'; } else { this.removeCover(); }
           if(proj.musicUrl) { document.getElementById('musicStatus').style.display = 'block'; document.getElementById('cpMusicPreview').src = proj.musicUrl; } else { document.getElementById('musicStatus').style.display = 'none'; }
@@ -965,11 +953,7 @@
       
       handleMusicUpload: function(e) {
           const file = e.target.files[0]; if(!file) return; const r = new FileReader();
-          r.onload = (evt) => { 
-              this.bgMusicB64 = evt.target.result; 
-              document.getElementById('musicStatus').style.display = 'block'; 
-              document.getElementById('cpMusicPreview').src = this.bgMusicB64;
-          }; 
+          r.onload = (evt) => { this.bgMusicB64 = evt.target.result; document.getElementById('musicStatus').style.display = 'block'; document.getElementById('cpMusicPreview').src = this.bgMusicB64; }; 
           r.readAsDataURL(file);
       },
 
@@ -984,9 +968,27 @@
           
           try { const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()); if(res.success) { Swal.close(); if(editId) { window.location.reload(); } else { window.location.href = '?booth=' + res.id; } } } catch(e) { Swal.fire('Lỗi', 'Không thể lưu sự kiện', 'error'); }
       },
+      
+      deleteProject: function() {
+          const editId = document.getElementById('cpEditId').value;
+          if(!editId) return;
+          Swal.fire({
+              title: 'Xóa sự kiện này?', text: "Dữ liệu sẽ bị xóa khỏi Google Drive.", icon: 'warning',
+              showCancelButton: true, confirmButtonText: 'Xóa ngay', cancelButtonText: 'Hủy', confirmButtonColor: '#dc3545'
+          }).then((result) => {
+              if(result.isConfirmed) {
+                  this.closeCreateModal();
+                  Swal.fire({title: 'Đang xóa...', didOpen: () => Swal.showLoading()});
+                  const fd = new URLSearchParams(); fd.append('action', 'deleteProject'); fd.append('projectId', editId);
+                  fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(res => {
+                      if(res.success) { Swal.close(); window.location.reload(); }
+                  }).catch(() => Swal.fire('Lỗi', 'Không thể xóa sự kiện', 'error'));
+              }
+          });
+      },
 
       /* =========================================
-       * GUEST UPLOAD (RÚT GỌN - CHỈ CÒN ẢNH VÀ VIDEO)
+       * GUEST UPLOAD 
        * ========================================= */
       initUploadMode: async function(projectId) { document.getElementById('uploadWrapper').style.display = 'flex'; this.currentProjectId = projectId; this.hideGlobalLoading(); },
       closeUploadModal: function() { window.location.href = '?wall=' + this.currentProjectId; },
@@ -995,7 +997,6 @@
           const file = e.target.files[0]; if(!file) return; 
           this.guestUploadIsVideo = file.type.startsWith('video/');
           const r = new FileReader();
-          
           r.onload = (evt) => { 
               this.guestUploadBase64 = evt.target.result; 
               document.getElementById('uploadOptions').style.display = 'none'; 
@@ -1030,8 +1031,6 @@
           
           setTimeout(async () => {
               let finalB64 = this.guestUploadBase64; 
-              
-              // Nén ảnh nếu là ảnh, Video thì gửi thẳng nguyên gốc (Base64)
               if(!this.guestUploadIsVideo) {
                   const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
                   const img = new Image(); img.crossOrigin = "anonymous"; await new Promise(r => { img.onload = r; img.src = this.guestUploadBase64; });
@@ -1087,7 +1086,6 @@
           let fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', this.currentProjectId);
           fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
               if(r.success && r.data) {
-                  // Thông báo rỗng
                   if(r.data.length === 0 && this.wallImagesList.length === 0) {
                       document.getElementById('wallMasonryGrid').innerHTML = '<div class="w-100 text-center text-muted p-5" style="grid-column: 1/-1;"><i class="bi bi-images fs-1 text-secondary opacity-50"></i><br><h5 class="mt-3 fw-bold">Chưa có khoảnh khắc nào.</h5><p>Hãy là người đầu tiên chia sẻ!</p></div>';
                       return;
@@ -1096,7 +1094,7 @@
                   let isNewPhotoAdded = false; let newElements = [];
                   r.data.reverse().forEach((item, index) => {
                       if(!this.wallRenderedIds.has(item.id)) {
-                          if (document.querySelector('#wallMasonryGrid .text-center')) { document.getElementById('wallMasonryGrid').innerHTML = ''; } // Xóa text trống
+                          if (document.querySelector('#wallMasonryGrid .text-center')) { document.getElementById('wallMasonryGrid').innerHTML = ''; }
                           
                           this.wallRenderedIds.add(item.id); this.wallImagesList.unshift(item);
                           let div = document.createElement('div'); div.className = 'wall-item';
@@ -1109,7 +1107,6 @@
                               item.type = 'image';
                           }
                           
-                          // Badge cho Nguồn
                           if (item.name && item.name.includes('RemoteCam')) { 
                               div.innerHTML += '<div style="position: absolute; top: 10px; left: 10px; width: 14px; height: 14px; border-radius: 50%; background: #10b981; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>'; 
                           } 
@@ -1130,7 +1127,7 @@
       },
 
       /* =========================================
-       * LIVESHOW ĐỘC LẬP (QUA MÃ QR)
+       * LIVESHOW
        * ========================================= */
       initSlideshowMode: async function(projectId) {
           document.getElementById('dashboardWrapper').style.display = 'none';
@@ -1206,6 +1203,11 @@
           const centerVid = document.getElementById('slideCenterVid'); 
           center.classList.remove('active');
           
+          // Áp dụng độ lớn ảnh chính theo config
+          const sizeVH = parseInt(document.getElementById('slideCenterSize').value) || 75;
+          centerImg.style.maxHeight = sizeVH + 'vh';
+          centerVid.style.maxHeight = sizeVH + 'vh';
+
           setTimeout(() => { 
               if(itemData.type === 'video' || (itemData.name && itemData.name.endsWith('.mp4'))) {
                   centerImg.style.display = 'none'; centerVid.src = itemData.url; centerVid.style.display = 'block'; centerVid.play().catch(()=>{});
@@ -1221,13 +1223,16 @@
           
           const floatCount = parseInt(document.getElementById('slideFloatCount').value) || 3;
           const speedInput = parseInt(document.getElementById('slideFloatTime').value) || 12;
+          const baseSizePx = parseInt(document.getElementById('slideFloatSize').value) || 200;
 
           for(let i=0; i<floatCount; i++) {
               setTimeout(() => {
                   const el = document.createElement('div');
                   const item = this.wallImagesList[Math.floor(Math.random() * this.wallImagesList.length)];
                   el.className = 'floating-item show';
-                  const size = Math.random() * 120 + 150; 
+                  
+                  // Kích thước có dao động nhẹ xung quanh baseSizePx
+                  const size = Math.random() * (baseSizePx * 0.5) + (baseSizePx * 0.8); 
                   
                   let left = Math.random() * 100;
                   if(left > 25 && left < 75) { left = (Math.random() > 0.5) ? (Math.random() * 20) : (80 + Math.random() * 15); }
@@ -1349,8 +1354,8 @@
               if(res.success && res.data) {
                   let isUpdated = false;
                   res.data.reverse().forEach(item => {
-                      if (!this.capturedPhotos.some(p => p.driveId === item.id)) {
-                          // Với Booth chỉ hiển thị và kéo thả Hình Ảnh vào Canvas in (Video bỏ qua)
+                      // Logic mới: Chống trùng cả ID lẫn Tên File
+                      if (!this.capturedPhotos.some(p => p.driveId === item.id || p.name === item.name)) {
                           if(item.type !== 'video' && !item.name.endsWith('.mp4')) {
                               const img = new Image(); img.crossOrigin = "anonymous";
                               img.onload = () => { 
@@ -1360,6 +1365,10 @@
                               img.src = item.url;
                               isUpdated = true;
                           }
+                      } else {
+                          // Nếu ảnh local chưa có driveId nhưng name đã khớp, gán driveId vào để có thể xóa
+                          let existing = this.capturedPhotos.find(p => p.name === item.name);
+                          if(existing && !existing.driveId) { existing.driveId = item.id; }
                       }
                   });
                   if (isInitial && !isUpdated) this.renderCapturedGallery();
@@ -1437,6 +1446,7 @@
           this.peer.on('open', (id) => { this.peerId = id; this.generateQRCode(); });
           this.peer.on('connection', (conn) => {
               conn.on('open', () => {
+                  conn.send('PROJECT_ID:' + this.currentProjectId); // Gửi project ID cho Remote
                   const checkTransport = async () => {
                       let isRelay = false;
                       if(conn.peerConnection) {
@@ -1462,72 +1472,105 @@
       },
       generateQRCode: function() { if (!this.peerId) return; const qrContainer = document.getElementById('qrcode'); qrContainer.innerHTML = ""; new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?remote=" + this.peerId, width: 180, height: 180, colorDark : "#000000", colorLight : "#ffffff" }); },
       processRemotePhoto: function(b64) {
-          const img = new Image(); img.crossOrigin = "anonymous"; const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0, name: 'RemoteCam_1.jpg' };
+          const img = new Image(); img.crossOrigin = "anonymous"; 
+          const uniqueName = 'RemoteCam_' + new Date().getTime() + '.jpg';
+          const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0, name: uniqueName };
           img.onload = () => { 
               this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery(); 
               if(API_URL && this.currentProjectId) {
-                const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'RemoteCam_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
+                const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', uniqueName); fd.append('projectId', this.currentProjectId);
                 fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; } }).catch(()=>{});
               }
           }; img.src = b64; 
       },
       
+      /* REMOTE CAM UI ĐÃ BỎ GYRO CẢM BIẾN LỖI THỜI */
       initRemoteMode: async function(targetId) {
           document.body.innerHTML = `
           <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
-              <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
-              <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:15;"></canvas>
+              <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:contain; transform: scaleX(-1); transition: 0.3s;"></video>
+              <canvas id="remotePreview" style="display:none; width:100%; height:100%; object-fit:contain; position:absolute; inset:0; z-index:15; transition: 0.3s;"></canvas>
               
-              <div id="remoteStatus" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
+              <div id="remoteStatus" style="position:absolute; top:80px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:20px; font-family:sans-serif; font-size:14px; z-index:30; white-space:nowrap; transition: 0.3s;">Đang kết nối tới PC...</div>
               
-              <div id="captureControls" style="position:absolute; bottom:40px; left:0; width:100%; display:flex; justify-content:space-evenly; align-items:center; z-index:20; padding:0 20px;">
-                  <button id="btnGallery" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-images rotatable-icon"></i></button>
-                  <button id="remoteCaptureBtn" style="width:75px; height:75px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; transition:0.2s; box-shadow: 0 0 15px rgba(255,255,255,0.5); backdrop-filter:blur(5px);"></button>
-                  <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);"><i class="bi bi-arrow-repeat rotatable-icon"></i></button>
+              <div style="position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; z-index:20;">
+                 <button id="btnRemoteGallery" style="width:45px; height:45px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:18px; cursor:pointer;"><i class="bi bi-images"></i></button>
+                 <label id="btnRemoteUpload" style="width:45px; height:45px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="bi bi-upload"></i><input type="file" accept="image/*" hidden id="remoteFileInput"></label>
               </div>
-              <div id="reviewControls" style="position:absolute; bottom:40px; left:0; width:100%; display:none; justify-content:center; gap:40px; align-items:center; z-index:20; padding:0 20px;">
-                  <button id="btnRetake" style="width:70px; height:70px; border-radius:50%; background:rgba(0,0,0,0.6); border:2px solid #fff; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><i class="bi bi-x-lg rotatable-icon"></i></button>
-                  <button id="btnSend" style="width:70px; height:70px; border-radius:50%; background:var(--accent); border:none; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(255,107,43,0.5);"><i class="bi bi-send-fill rotatable-icon"></i></button>
+
+              <div id="captureControls" style="position:absolute; bottom:40px; left:0; width:100%; display:flex; justify-content:space-evenly; align-items:center; z-index:20; padding:0 20px;">
+                  <button id="btnSwitchCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer;"><i class="bi bi-arrow-repeat"></i></button>
+                  <button id="remoteCaptureBtn" style="width:75px; height:75px; border-radius:50%; background:rgba(255,255,255,0.3); border:4px solid white; cursor:pointer; box-shadow: 0 0 15px rgba(255,255,255,0.5);"></button>
+                  <button id="btnRotateCam" style="width:50px; height:50px; border-radius:50%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.5); color:white; font-size:22px; cursor:pointer;"><i class="bi bi-phone-landscape"></i></button>
+              </div>
+              <div id="reviewControls" style="position:absolute; bottom:40px; left:0; width:100%; display:none; justify-content:center; gap:30px; align-items:center; z-index:20; padding:0 20px;">
+                  <button id="btnRetake" style="width:60px; height:60px; border-radius:50%; background:rgba(0,0,0,0.6); border:2px solid #fff; color:white; font-size:24px;"><i class="bi bi-x-lg"></i></button>
+                  <button id="btnRotatePhoto" style="width:60px; height:60px; border-radius:50%; background:rgba(0,0,0,0.6); border:2px solid #fff; color:white; font-size:24px;"><i class="bi bi-arrow-clockwise"></i></button>
+                  <button id="btnSend" style="width:60px; height:60px; border-radius:50%; background:var(--accent); border:none; color:white; font-size:24px; box-shadow: 0 4px 15px rgba(255,107,43,0.5);"><i class="bi bi-send-fill"></i></button>
               </div>
               
               <div id="remoteProgress" style="position:absolute; top:0; left:0; height:4px; background:var(--accent); width:0%; transition: width 0.3s; z-index:100;"></div>
           </div>`;
           const status = document.getElementById('remoteStatus'); const video = document.getElementById('remoteVideo'); const previewCanvas = document.getElementById('remotePreview');
-          let remoteStream = null; let useFrontCam = false; let deviceRotation = 0;
+          let remoteStream = null; let useFrontCam = false; 
+          let camRotation = 0; let photoRotation = 0; let remoteProjectId = '';
           
           function getDeviceType() { let ua = navigator.userAgent; if(/iPhone/i.test(ua)) return "iPhone"; if(/iPad/i.test(ua)) return "iPad"; if(/Android/i.test(ua)) return "Android"; return "Điện thoại"; }
           let localRemoteId = localStorage.getItem('hama_remote_uid'); let localDeviceName = localStorage.getItem('hama_remote_name');
           if(!localRemoteId) { localRemoteId = 'R_' + Math.random().toString(36).substr(2, 9); localDeviceName = getDeviceType() + ' ' + Math.floor(Math.random() * 9000 + 1000); localStorage.setItem('hama_remote_uid', localRemoteId); localStorage.setItem('hama_remote_name', localDeviceName); }
-
-          function setupSensors() { window.addEventListener('deviceorientation', (e) => { let beta = e.beta; let gamma = e.gamma; let angle = 0; if (Math.abs(beta) < 45) { if (gamma > 45) angle = -90; else if (gamma < -45) angle = 90; } else if (beta > 135 || beta < -135) { angle = 180; } if (angle !== deviceRotation) { deviceRotation = angle;} }); }
-          setupSensors();
 
           const peer = new Peer(localRemoteId, { config: { 'iceServers': [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun.cloudflare.com:3478' } ] } });
           let conn = null;
           peer.on('open', (id) => {
               conn = peer.connect(targetId, { reliable: true }); 
               conn.on('open', () => { status.innerText = "Đã kết nối PC!"; status.style.background = "rgba(40, 167, 69, 0.8)"; conn.send('INIT_DEVICE:' + localDeviceName); setTimeout(() => { status.style.opacity = '0'; }, 2000); });
+              conn.on('data', (data) => { if(typeof data === 'string' && data.startsWith('PROJECT_ID:')) { remoteProjectId = data.split(':')[1]; } });
               conn.on('error', (err) => { status.innerText = "Lỗi: " + err.message; status.style.background = "rgba(220, 53, 69, 0.8)"; status.style.opacity = '1'; });
           });
           peer.on('error', (err) => { if (err.type === 'unavailable-id') { localStorage.removeItem('hama_remote_uid'); window.location.reload(); } else { status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; if (err.type === 'peer-unavailable') status.innerText = "Lỗi: PC tắt (Quét lại mã!)"; else status.innerText = "Lỗi mạng"; } });
 
-          const startRemoteCamera = async () => { if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); } try { remoteStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFrontCam ? "user" : "environment", width: { ideal: 4096 }, height: { ideal: 4096 } }, audio: false }); video.srcObject = remoteStream; video.style.transform = useFrontCam ? 'scaleX(-1)' : 'scaleX(1)'; } catch (err) { status.innerText = "Lỗi Camera!"; status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; } };
+          const startRemoteCamera = async () => { if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop()); } try { remoteStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFrontCam ? "user" : "environment", width: { ideal: 4096 }, height: { ideal: 4096 } }, audio: false }); video.srcObject = remoteStream; video.style.transform = `rotate(${camRotation}deg) scaleX(${useFrontCam ? -1 : 1})`; } catch (err) { status.innerText = "Lỗi Camera!"; status.style.opacity = '1'; status.style.background = "rgba(220, 53, 69, 0.8)"; } };
           await startRemoteCamera(); document.getElementById('btnSwitchCam').onclick = () => { useFrontCam = !useFrontCam; startRemoteCamera(); };
+
+          document.getElementById('btnRotateCam').onclick = () => {
+              camRotation = (camRotation === 0) ? 90 : 0;
+              document.getElementById('btnRotateCam').innerHTML = (camRotation === 0) ? '<i class="bi bi-phone-landscape"></i>' : '<i class="bi bi-phone"></i>';
+              video.style.transform = `rotate(${camRotation}deg) scaleX(${useFrontCam ? -1 : 1})`;
+          };
+
+          document.getElementById('btnRotatePhoto').onclick = () => {
+              photoRotation = (photoRotation + 90) % 360;
+              previewCanvas.style.transform = `rotate(${photoRotation}deg)`;
+          };
 
           document.getElementById('remoteCaptureBtn').onclick = async () => {
               if (!conn || !conn.open) return alert("Chưa kết nối PC! Vui lòng chờ tín hiệu xanh.");
               previewCanvas.width = video.videoWidth; previewCanvas.height = video.videoHeight; const ctx = previewCanvas.getContext('2d');
               try { const track = remoteStream.getVideoTracks()[0]; const ic = new ImageCapture(track); const blob = await ic.takePhoto(); const bmp = await createImageBitmap(blob); previewCanvas.width = bmp.width; previewCanvas.height = bmp.height; if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(bmp, 0, 0); } catch(e) { if (useFrontCam) { ctx.translate(previewCanvas.width, 0); ctx.scale(-1, 1); } ctx.drawImage(video, 0, 0); }
               video.style.display = 'none'; previewCanvas.style.display = 'block'; document.getElementById('captureControls').style.display = 'none'; document.getElementById('reviewControls').style.display = 'flex';
+              photoRotation = camRotation; previewCanvas.style.transform = `rotate(${photoRotation}deg)`; // Kế thừa góc nhìn hiện tại
           };
+
+          document.getElementById('remoteFileInput').onchange = (e) => {
+              const file = e.target.files[0]; if(!file) return; const r = new FileReader();
+              r.onload = (evt) => {
+                  const img = new Image(); img.onload = () => {
+                      previewCanvas.width = img.width; previewCanvas.height = img.height; const ctx = previewCanvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+                      video.style.display = 'none'; previewCanvas.style.display = 'block'; document.getElementById('captureControls').style.display = 'none'; document.getElementById('reviewControls').style.display = 'flex';
+                      photoRotation = 0; previewCanvas.style.transform = `rotate(0deg)`;
+                  }; img.src = evt.target.result;
+              }; r.readAsDataURL(file);
+          };
+
+          document.getElementById('btnRemoteGallery').onclick = () => { if(remoteProjectId) window.open('?wall=' + remoteProjectId, '_blank'); else alert("Chưa nhận được ID dự án từ PC!"); };
           document.getElementById('btnRetake').onclick = () => { previewCanvas.style.display = 'none'; video.style.display = 'block'; document.getElementById('captureControls').style.display = 'flex'; document.getElementById('reviewControls').style.display = 'none'; };
           
           document.getElementById('btnSend').onclick = () => {
               document.getElementById('reviewControls').style.display = 'none'; const prog = document.getElementById('remoteProgress'); prog.style.width = '30%'; 
               setTimeout(() => {
                   const finalCvs = document.createElement('canvas'); const fCtx = finalCvs.getContext('2d'); let sw = previewCanvas.width; let sh = previewCanvas.height;
-                  if (deviceRotation === 90 || deviceRotation === -90) { finalCvs.width = sh; finalCvs.height = sw; } else { finalCvs.width = sw; finalCvs.height = sh; }
-                  fCtx.translate(finalCvs.width/2, finalCvs.height/2); fCtx.rotate(-deviceRotation * Math.PI / 180); fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
+                  if (photoRotation === 90 || photoRotation === 270) { finalCvs.width = sh; finalCvs.height = sw; } else { finalCvs.width = sw; finalCvs.height = sh; }
+                  fCtx.translate(finalCvs.width/2, finalCvs.height/2); fCtx.rotate(photoRotation * Math.PI / 180); fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
                   const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0); conn.send(finalB64);
                   prog.style.width = '100%'; setTimeout(() => { prog.style.width = '0%'; status.innerText = "Gửi xong!"; status.style.opacity = '1'; status.style.background = "rgba(40, 167, 69, 0.8)"; setTimeout(() => status.style.opacity = '0', 2000); document.getElementById('btnRetake').click(); }, 400);
               }, 100);
@@ -1561,10 +1604,11 @@
                   newFiles.sort((a, b) => a.lastModified - b.lastModified);
                   for(let file of newFiles) {
                       const b64 = await this.readFileAsDataURL(file); const img = new Image(); img.crossOrigin = "anonymous"; img.src = b64; await new Promise(r => img.onload = r);
-                      const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0 }; this.capturedPhotos.unshift(photoRecord); newFilesFound = true;
+                      const uniqueName = 'FolderSync_' + new Date().getTime() + '.jpg';
+                      const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0, name: uniqueName }; this.capturedPhotos.unshift(photoRecord); newFilesFound = true;
                       
                       if(API_URL && this.currentProjectId) {
-                          const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'FolderSync_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
+                          const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', uniqueName); fd.append('projectId', this.currentProjectId);
                           fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; } }).catch(()=>{});
                       }
                   }
@@ -1615,12 +1659,14 @@
         const tCanvas = document.createElement('canvas'); const tCtx = tCanvas.getContext('2d');
         if (this.cameraMode === 'vertical') { tCanvas.width = this.video.videoHeight; tCanvas.height = this.video.videoWidth; tCtx.translate(tCanvas.width/2, tCanvas.height/2); tCtx.rotate(Math.PI/2); tCtx.drawImage(this.video, -this.video.videoWidth/2, -this.video.videoHeight/2);
         } else { tCanvas.width = this.video.videoWidth; tCanvas.height = this.video.videoHeight; tCtx.drawImage(this.video, 0, 0); }
-        const b64 = tCanvas.toDataURL('image/jpeg', 1.0); const imgObj = new Image(); imgObj.crossOrigin = "anonymous"; const photoRecord = { imgObj: imgObj, driveId: null, date: Date.now(), rot: 0, name: 'Booth_1.jpg' }; 
+        const b64 = tCanvas.toDataURL('image/jpeg', 1.0); const imgObj = new Image(); imgObj.crossOrigin = "anonymous"; 
+        const uniqueName = 'Booth_' + new Date().getTime() + '.jpg';
+        const photoRecord = { imgObj: imgObj, driveId: null, date: Date.now(), rot: 0, name: uniqueName }; 
         imgObj.onload = () => {
           this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery();
           if(targetSlot !== -1) { this.pages[0][targetSlot] = { img: imgObj, zoom: 1, panX: 0, panY: 0, rotate: 0, br: 100, ct: 100 }; this.activeSlotIndex = targetSlot; this.updateToolbarUI(); this.renderCanvas(); } 
           if(API_URL && this.currentProjectId) {
-            const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Booth_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
+            const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', uniqueName); fd.append('projectId', this.currentProjectId);
             fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r=>{ if(r.success) { photoRecord.driveId = r.id; } }).catch(()=>{});
           }
         }; imgObj.src = b64; return b64;
@@ -1631,11 +1677,13 @@
           if(!file.type.startsWith('image/')) continue;
           const r = new FileReader();
           r.onload = (evt) => { 
-            const b64 = evt.target.result; const img = new Image(); img.crossOrigin = "anonymous"; const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0 };
+            const b64 = evt.target.result; const img = new Image(); img.crossOrigin = "anonymous"; 
+            const uniqueName = 'Local_' + new Date().getTime() + '.jpg';
+            const photoRecord = { imgObj: img, driveId: null, date: Date.now(), rot: 0, name: uniqueName };
             img.onload = () => { 
               this.capturedPhotos.unshift(photoRecord); this.renderCapturedGallery(); 
               if(API_URL && this.currentProjectId) {
-                const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', 'Local_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
+                const fd = new URLSearchParams(); fd.append('image', b64); fd.append('fileName', uniqueName); fd.append('projectId', this.currentProjectId);
                 fetch(API_URL, { method: 'POST', body: fd }).then(res=>res.json()).then(res=>{ if(res.success) { photoRecord.driveId = res.id; } }).catch(()=>{});
               }
             }; img.src = b64; 
@@ -1655,7 +1703,6 @@
               ctx.translate(cvs.width/2, cvs.height/2); ctx.rotate(record.rot * Math.PI / 180); ctx.drawImage(record.imgObj, -record.imgObj.width/2, -record.imgObj.height/2);
               const b64 = cvs.toDataURL('image/jpeg', 0.9);
               
-              // Ghi đè file cũ theo code.gs mới
               const fd = new URLSearchParams(); fd.append('action', 'updateImageContent'); fd.append('fileId', record.driveId); fd.append('image', b64);
               fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(res=>{
                  if(res.success) { record.driveId = res.id; record.rot = 0; record.imgObj.src = b64; this.renderCapturedGallery(); }
@@ -1679,7 +1726,6 @@
 
           const img = document.createElement('img'); img.src = record.imgObj.src; img.loading = "lazy"; img.style.transform = `rotate(${record.rot || 0}deg)`; 
           
-          // Hỗ trợ thả ảnh vào khung
           wrapper.draggable = true;
           wrapper.ondragstart = (e) => { this.dragPayload = { img: record.imgObj, rot: record.rot }; e.dataTransfer.setData('text/plain', index); };
           wrapper.onclick = () => { this.openPrepModal(record); };
@@ -1881,6 +1927,4 @@
     };
     
     window.addEventListener('DOMContentLoaded', () => app.init());
-</script>
-</body>
-</html>  
+</script>  
