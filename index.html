@@ -26,7 +26,7 @@
   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
   <style>
-    /* ================= HỆ THỐNG GIAO DIỆN SÁNG (MÀU CAM CHỦ ĐẠO) ================= */
+    /* ================= HỆ THỐNG GIAO DIỆN SÁNG ================= */
     :root {
       --bg-color: #f4f6f8; --panel-bg: #ffffff; --card-bg: #ffffff;
       --accent: #ff6b2b; --accent-hover: #e85d1f; --text-main: #111111; 
@@ -43,7 +43,6 @@
     .form-control:focus, .form-select:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(255,107,43,0.1) !important;}
     input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     
-    /* NÚT BẤM DÙNG CHUNG */
     .btn-primary-custom { background: var(--accent); color: #fff; border: none; font-weight: 800; border-radius: 12px; transition: 0.2s; box-shadow: var(--accent-glow); display: inline-flex; align-items: center; justify-content: center;}
     .btn-primary-custom:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,43,0.4); }
     .btn-outline-custom { background: transparent; border: 2px solid var(--accent); color: var(--accent); font-weight: 800; border-radius: 10px; transition: 0.2s; }
@@ -51,12 +50,10 @@
     .btn-circle-custom { width: 38px; height: 38px; border-radius: 50% !important; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: 0.2s; border: 1px solid var(--border-color); background: var(--panel-bg); color: var(--text-main);}
     .btn-circle-custom:hover { transform: scale(1.1); background: var(--accent); color: #fff; border-color: var(--accent);}
 
-    /* NÚT THOÁT FULLSCREEN */
     .btn-exit-fs { position: fixed; top: 15px; right: 15px; z-index: 10050; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3); color: #fff; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px);}
     .btn-exit-fs:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
     body.is-fullscreen .btn-exit-fs { display: flex; }
 
-    /* ================= CẤU HÌNH IN (MEDIA PRINT) ================= */
     @media print {
       body * { visibility: hidden !important; }
       #printContainer, #printContainer * { visibility: visible !important; }
@@ -144,7 +141,6 @@
     .slide-center-focus.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     .slide-center-focus img { width: 100%; height: 100%; border-radius: 10px; object-fit: contain; }
 
-    /* Hiệu ứng Pop-in chấn động khi có ảnh mới */
     @keyframes popInNew {
         0% { transform: translate(-50%, -50%) scale(0.2) rotate(-10deg); opacity: 0; filter: brightness(2) blur(10px); }
         70% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 1; filter: brightness(1) blur(0); }
@@ -178,9 +174,11 @@
     .lb-strip-container { position: relative; display: flex; align-items: center; padding: 0 60px; background: #fff; border-top: 1px solid var(--border-color);}
     .lb-strip { height: 140px; display: flex; gap: 15px; padding: 15px 0; overflow-x: auto; scroll-behavior: smooth; flex: 1; -ms-overflow-style: none; scrollbar-width: none;}
     .lb-strip::-webkit-scrollbar { display: none; }
-    .lb-thumb { flex-shrink: 0; width: 110px; height: 110px; border-radius: 8px; opacity: 0.4; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #f8fafc;}
+    
+    /* CHỈNH SỬA LẠI ĐỘ MỜ CỦA ẢNH BÊN DƯỚI */
+    .lb-thumb { flex-shrink: 0; width: 110px; height: 110px; border-radius: 8px; opacity: 1; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #f8fafc;}
     .lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px;}
-    .lb-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.05);}
+    .lb-thumb.active { border-color: var(--accent); transform: scale(1.05);}
     
     .strip-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 1px solid var(--border-color); color: #111; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
     .strip-nav:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -281,10 +279,8 @@
   <input type="file" id="slotFileInput" accept="image/*" onchange="app.handleSlotFile(event)" hidden>
   <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none" onchange="app.loadFromFolder(event)">
   <input type="file" id="coverUploadInput" accept="image/*" onchange="app.handleCoverUpload(event)" hidden>
-  <input type="file" id="musicUploadInput" accept="audio/mp3, audio/wav" onchange="app.handleMusicUpload(event)" hidden>
   
   <div id="printContainer" class="d-none"></div>
-  <audio id="slideAudioPlayer" loop style="display: none;"></audio>
 
   <!-- ================= MODAL TẠO/SỬA SỰ KIỆN ================= -->
   <div class="modal fade" id="createProjectModal" tabindex="-1" data-bs-backdrop="static">
@@ -298,11 +294,6 @@
                 </div>
                 <div class="d-flex gap-2 w-100 justify-content-center mb-3">
                     <button class="btn btn-outline-secondary btn-sm rounded-pill fw-bold px-3" onclick="app.removeCover()">Xóa ảnh</button>
-                    <button class="btn btn-outline-custom btn-sm rounded-pill fw-bold px-3" onclick="document.getElementById('musicUploadInput').click()"><i class="bi bi-music-note"></i> Thêm Nhạc</button>
-                </div>
-                <div id="musicStatus" class="w-100" style="display:none;">
-                    <audio id="cpMusicPreview" controls style="width: 100%; height: 35px; outline: none;"></audio>
-                    <p class="small fw-bold text-success text-center mt-1"><i class="bi bi-check-circle-fill"></i> Đã có nhạc nền</p>
                 </div>
             </div>
             <div class="cp-right" style="width: 55%; position: relative;">
@@ -311,7 +302,11 @@
                         <i class="bi bi-calendar-event text-muted me-2 fs-5"></i>
                         <input type="text" id="cpDateRange" class="form-control form-control-sm border-secondary fw-bold text-center rounded-0 flatpickr-date flatpickr-input" placeholder="dd/mm/yyyy" style="width: 200px; background:#fff !important; cursor:pointer;">
                     </div>
-                    <button class="btn btn-light rounded-pill fw-bold border text-muted px-4" onclick="app.closeCreateModal()"><i class="bi bi-x-lg"></i> Đóng</button>
+                    <div class="d-flex gap-2">
+                        <!-- ICON XÓA DỰ ÁN NẰM CẠNH NÚT ĐÓNG -->
+                        <button id="btnDeleteProject" class="btn btn-outline-danger rounded-pill fw-bold border px-3" style="display: none;" onclick="app.deleteCurrentProject()"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-light rounded-pill fw-bold border text-muted px-4" onclick="app.closeCreateModal()"><i class="bi bi-x-lg"></i> Đóng</button>
+                    </div>
                 </div>
                 
                 <input type="text" id="cpName" class="form-control cp-input-huge" placeholder="Tên sự kiện..." oninput="app.checkCreateForm()">
@@ -334,8 +329,6 @@
 
                 <input type="hidden" id="cpEditId" value="">
                 <button class="cp-submit-btn" id="cpSubmitBtn" onclick="app.submitCreateProject()">Lưu sự kiện</button>
-                
-                <button id="btnDeleteProject" class="btn btn-link text-danger position-absolute" style="bottom: 10px; right: 10px; display: none;" onclick="app.deleteCurrentProject()"><i class="bi bi-trash fs-5"></i></button>
             </div>
         </div>
       </div>
@@ -429,11 +422,6 @@
           <div class="form-check form-switch mb-3 p-2 bg-light rounded border border-secondary text-dark">
               <input class="form-check-input ms-1 me-2" type="checkbox" id="toggleSlideQR" onchange="app.toggleSlideQR()">
               <label class="form-check-label small fw-bold">Hiện QR nổi góc trái</label>
-          </div>
-
-          <div class="form-check form-switch mb-4 p-2 bg-light rounded border border-secondary text-dark">
-              <input class="form-check-input ms-1 me-2" type="checkbox" id="toggleSlideMusic" onchange="app.toggleSlideMusic()" checked>
-              <label class="form-check-label small fw-bold">Bật Nhạc Nền (Loop)</label>
           </div>
 
           <label class="small fw-bold text-muted mb-2 text-uppercase">Kích thước</label>
@@ -629,7 +617,7 @@
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content p-4 text-center">
             <h6 class="fw-bold mb-3 text-dark">LIVESHOW SỰ KIỆN</h6>
-            <div class="qr-wrapper-box mb-3 mx-auto">
+            <div class="qr-wrapper-box mb-3 mx-auto" onclick="app.copyQRLink('liveshow')">
                 <div id="liveshowQRCode" class="qr-container" style="width: 180px; height: 180px;"></div>
             </div>
             <button class="btn-primary-custom w-100 py-2 fs-6" onclick="app.openLiveshowOnDevice()"><i class="bi bi-display fs-5 me-1"></i> Phát trên máy này</button>
@@ -793,8 +781,6 @@
       peerId: null,
 
       currentCoverB64: "",
-      bgMusicB64: "",
-      currentMusicUrl: "",
       
       wallMasonry: null,
       wallRenderedIds: new Set(),
@@ -810,7 +796,7 @@
       
       guestUploadImageB64: null,
       datePicker: null,
-init: async function() {
+  init: async function() {
         if (document.getElementById('cpDateRange')) {
             this.datePicker = flatpickr("#cpDateRange", { mode: "range", dateFormat: "d/m/Y", locale: "vn" });
         }
@@ -821,7 +807,9 @@ init: async function() {
         
         const wallId = urlParams.get('wall'); if (wallId) { this.initWallMode(wallId); return; }
         const uploadId = urlParams.get('upload'); if (uploadId) { this.initUploadMode(uploadId); return; }
-        const liveshowId = urlParams.get('liveshow'); if (liveshowId) { this.currentProjectId = liveshowId; this.beginSlideshowPlayback(); return; }
+        
+        // SỬ DỤNG TÊN MIỀN NGẮN GỌN CHO LIVESHOW: ?live=...
+        const liveshowId = urlParams.get('live'); if (liveshowId) { this.currentProjectId = liveshowId; this.beginSlideshowPlayback(); return; }
         
         const boothId = urlParams.get('booth');
         if (boothId) { 
@@ -949,7 +937,6 @@ init: async function() {
       openCreateModal: function() {
           document.getElementById('cpEditId').value = ""; document.getElementById('cpName').value = ""; document.getElementById('cpLocation').value = ""; document.getElementById('cpDesc').value = "";
           if(this.datePicker) this.datePicker.clear(); this.removeCover(); 
-          document.getElementById('musicStatus').style.display = 'none'; this.bgMusicB64 = "";
           this.checkCreateForm(); 
           document.getElementById('btnDeleteProject').style.display = 'none'; 
           this.createModalInstance.show();
@@ -959,13 +946,11 @@ init: async function() {
           document.getElementById('cpEditId').value = proj.id; document.getElementById('cpName').value = proj.name; document.getElementById('cpLocation').value = proj.location || ''; document.getElementById('cpDesc').value = proj.description || '';
           if(proj.date && this.datePicker) { this.datePicker.setDate(proj.date.split(' to ')); }
           if(proj.coverUrl) { document.getElementById('cpCoverPreviewImg').src = proj.coverUrl; document.getElementById('cpCoverPreviewImg').style.display = 'block'; document.getElementById('cpCoverPlaceholder').style.display = 'none'; } else { this.removeCover(); }
-          if(proj.musicUrl) { document.getElementById('musicStatus').style.display = 'block'; document.getElementById('cpMusicPreview').src = proj.musicUrl; } else { document.getElementById('musicStatus').style.display = 'none'; }
-          this.bgMusicB64 = "";
           this.checkCreateForm(); 
           document.getElementById('btnDeleteProject').style.display = 'block'; 
           this.createModalInstance.show();
       },
-      closeCreateModal: function() { document.getElementById('cpMusicPreview').pause(); this.createModalInstance.hide(); },
+      closeCreateModal: function() { this.createModalInstance.hide(); },
       updateTags: function(radio) { document.querySelectorAll('.cp-tag').forEach(lbl => lbl.classList.remove('active')); radio.parentElement.classList.add('active'); },
       checkCreateForm: function() { const name = document.getElementById('cpName').value.trim(); const btn = document.getElementById('cpSubmitBtn'); if(name.length > 0) btn.classList.add('ready'); else btn.classList.remove('ready'); },
 
@@ -974,16 +959,6 @@ init: async function() {
           r.onload = (evt) => { this.currentCoverB64 = evt.target.result; document.getElementById('cpCoverPreviewImg').src = this.currentCoverB64; document.getElementById('cpCoverPreviewImg').style.display = 'block'; document.getElementById('cpCoverPlaceholder').style.display = 'none'; }; r.readAsDataURL(file);
       },
       removeCover: function() { this.currentCoverB64 = ""; document.getElementById('coverUploadInput').value = ""; document.getElementById('cpCoverPreviewImg').src = ""; document.getElementById('cpCoverPreviewImg').style.display = 'none'; document.getElementById('cpCoverPlaceholder').style.display = 'flex'; },
-      
-      handleMusicUpload: function(e) {
-          const file = e.target.files[0]; if(!file) return; const r = new FileReader();
-          r.onload = (evt) => { 
-              this.bgMusicB64 = evt.target.result; 
-              document.getElementById('musicStatus').style.display = 'block'; 
-              document.getElementById('cpMusicPreview').src = this.bgMusicB64;
-          }; 
-          r.readAsDataURL(file);
-      },
 
       submitCreateProject: async function() {
           const name = document.getElementById('cpName').value.trim(); if(!name) return;
@@ -992,7 +967,6 @@ init: async function() {
           const fd = new URLSearchParams(); fd.append('action', editId ? 'updateProjectInfo' : 'createProject'); if(editId) fd.append('projectId', editId);
           fd.append('projectName', name); fd.append('eventDate', dateVal); fd.append('eventLocation', locVal); fd.append('eventCategory', catVal); fd.append('eventDesc', descVal); 
           if(this.currentCoverB64) fd.append('coverImage', this.currentCoverB64);
-          if(this.bgMusicB64) fd.append('bgMusic', this.bgMusicB64);
           
           try { const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()); if(res.success) { Swal.close(); if(editId) { window.location.reload(); } else { window.location.href = '?booth=' + res.id; } } } catch(e) { Swal.fire('Lỗi', 'Không thể lưu sự kiện', 'error'); }
       },
@@ -1051,7 +1025,6 @@ init: async function() {
                   document.getElementById('wallEventName').innerText = r.meta.name || "Sự kiện";
                   document.getElementById('wallDate').innerText = r.meta.date || new Date().toLocaleDateString('vi-VN');
                   document.getElementById('wallLocation').innerText = r.meta.location || "Chưa cập nhật";
-                  if(r.meta.musicUrl) { this.currentMusicUrl = r.meta.musicUrl; document.getElementById('slideAudioPlayer').src = this.currentMusicUrl; }
               }
           }).catch(()=>{});
 
@@ -1099,7 +1072,7 @@ init: async function() {
       },
 
       showLiveshowQRModal: function() {
-          const url = window.location.origin + window.location.pathname + "?liveshow=" + this.currentProjectId;
+          const url = window.location.origin + window.location.pathname + "?live=" + this.currentProjectId;
           const qrContainer = document.getElementById('liveshowQRCode'); qrContainer.innerHTML = "";
           new QRCode(qrContainer, { text: url, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" });
           this.liveshowQRModalInstance.show();
@@ -1124,13 +1097,6 @@ init: async function() {
               document.documentElement.requestFullscreen().catch(e => console.log(e)); 
               document.body.classList.add('is-fullscreen'); 
           }
-          
-          if(document.getElementById('toggleSlideMusic').checked && this.currentMusicUrl) {
-              const player = document.getElementById('slideAudioPlayer');
-              player.src = this.currentMusicUrl;
-              player.play().catch(e=>console.log("Audio Policy block:", e));
-          }
-          
           this.startSlideshow();
       },
 
@@ -1150,7 +1116,7 @@ init: async function() {
           this.applySlideSettings();
 
           const urlParams = new URLSearchParams(window.location.search);
-          if (urlParams.get('liveshow') && !this.wallFetchInterval) {
+          if (urlParams.get('live') && !this.wallFetchInterval) {
              this.fetchWallImagesData(true); 
              this.wallFetchInterval = setInterval(() => this.fetchWallImagesData(false), 4000); 
           }
@@ -1160,15 +1126,13 @@ init: async function() {
           
           const urlParams = new URLSearchParams(window.location.search);
           if (urlParams.get('wall')) { document.getElementById('wallWrapper').style.display = 'block'; }
-          else if (urlParams.get('liveshow')) { window.location.href = '?'; } 
+          else if (urlParams.get('live')) { window.location.href = '?'; } 
           else { document.getElementById('mainAppWrapper').style.display = 'block'; }
 
           if (document.fullscreenElement) { document.exitFullscreen().catch(err => {}); document.body.classList.remove('is-fullscreen'); }
 
           clearInterval(this.slideInterval); clearInterval(this.slideCenterInterval); 
           document.getElementById('slideItemsContainer').innerHTML = ''; document.getElementById('slideCenterFocus').classList.remove('active'); document.getElementById('slideSettingsPanel').classList.remove('open');
-          
-          document.getElementById('slideAudioPlayer').pause(); 
       },
       toggleSlideshowSettings: function() {
           const panel = document.getElementById('slideSettingsPanel');
@@ -1177,13 +1141,6 @@ init: async function() {
       toggleSlideQR: function() { 
           const box = document.getElementById('slideQRFloating'); 
           box.style.display = document.getElementById('toggleSlideQR').checked ? 'block' : 'none'; 
-      },
-      toggleSlideMusic: function() { 
-          const player = document.getElementById('slideAudioPlayer');
-          if(document.getElementById('toggleSlideMusic').checked && this.currentMusicUrl) { 
-              if(player.src !== this.currentMusicUrl) player.src = this.currentMusicUrl;
-              player.play().catch(e=>console.log(e)); 
-          } else { player.pause(); }
       },
       updateSlideCenterSize: function() {
           const val = document.getElementById('slideCenterSize').value;
@@ -1217,7 +1174,7 @@ init: async function() {
           setTimeout(() => {
               centerImg.src = item.url;
               center.classList.add('active');
-              center.classList.add('pop-effect'); // CSS keyframes đã định nghĩa
+              center.classList.add('pop-effect'); 
               
               // Sinh ra 4 ảnh bay phụ giống hệt bức ảnh này
               for(let i=0; i<4; i++) {
@@ -1354,7 +1311,6 @@ init: async function() {
                 const proj = this.projects.find(p => p.id === this.currentProjectId);
                 if(proj) {
                     document.getElementById('currentProjectBadge').innerText = proj.name;
-                    if(proj.musicUrl) { this.currentMusicUrl = proj.musicUrl; }
                 }
             }
         } catch(e) {}
@@ -1414,7 +1370,7 @@ init: async function() {
           let url = ""; let baseUrl = window.location.origin + window.location.pathname;
           if(!this.currentProjectId) return Swal.fire('Lỗi', 'Chưa có dự án nào!', 'error');
           if (type === 'wall') url = baseUrl + "?wall=" + this.currentProjectId;
-          else if (type === 'liveshow') url = baseUrl + "?liveshow=" + this.currentProjectId;
+          else if (type === 'liveshow') url = baseUrl + "?live=" + this.currentProjectId;
           else if (type === 'remote') { if(!this.peerId) return Swal.fire('Lỗi', 'Mạng đang khởi tạo...', 'info'); url = baseUrl + "?remote=" + this.peerId + "&pid=" + this.currentProjectId; }
           if(url) { window.open(url, '_blank'); }
       },
@@ -1591,7 +1547,6 @@ init: async function() {
               fCtx.translate(finalCvs.width/2, finalCvs.height/2); fCtx.rotate(-deviceRotation * Math.PI / 180); fCtx.drawImage(previewCanvas, -sw/2, -sh/2, sw, sh);
               const finalB64 = finalCvs.toDataURL('image/jpeg', 1.0); 
 
-              // Logic ưu tiên gửi qua WebRTC (nhanh nhất). Nếu rớt mạng/chặn port thì Fallback thẳng lên API_URL (Cloud Mode)
               if (conn && conn.open) {
                   conn.send(finalB64);
                   prog.style.width = '100%'; 
@@ -1757,8 +1712,6 @@ init: async function() {
           }; r.readAsDataURL(file);
         }
       },
-      
-      // ĐÃ XÓA TÍNH NĂNG XOAY TRONG GALLERY THEO YÊU CẦU
 
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); 
@@ -1772,7 +1725,15 @@ init: async function() {
         const fragment = document.createDocumentFragment();
 
         this.capturedPhotos.forEach((record, index) => {
-          const wrapper = document.createElement('div'); wrapper.className = 'thumb-wrapper'; 
+          const wrapper = document.createElement('div'); 
+          wrapper.className = 'thumb-wrapper'; 
+          
+          // KÍCH HOẠT KÉO THẢ TỪNG ẢNH
+          wrapper.setAttribute('draggable', 'true');
+          wrapper.ondragstart = (e) => { 
+             this.dragPayload = { img: record.imgObj, rot: record.rot }; 
+             e.dataTransfer.setData('text/plain', index); 
+          };
           
           let badgeHtml = '';
           if (record.name && record.name.includes('RemoteCam')) { badgeHtml = '<div class="source-badge badge-remote" title="Remote"></div>'; } 
@@ -1780,17 +1741,10 @@ init: async function() {
 
           const img = document.createElement('img'); img.src = record.imgObj.src; img.loading = "lazy"; img.style.transform = `rotate(${record.rot || 0}deg)`; 
           
-          wrapper.ondragstart = (e) => { 
-             this.dragPayload = { img: record.imgObj, rot: record.rot }; 
-             e.dataTransfer.setData('text/plain', index); 
-          };
-          
           wrapper.onclick = () => { this.openPrepModal(record); };
           
           const btnDel = document.createElement('button'); btnDel.className = 'btn-circle-custom border-danger text-danger bg-white'; btnDel.style.position = 'absolute'; btnDel.style.top = '5px'; btnDel.style.right = '5px'; btnDel.style.width = '24px'; btnDel.style.height = '24px'; btnDel.style.fontSize = '12px'; btnDel.innerHTML = '<i class="bi bi-trash"></i>';
           btnDel.onclick = (e) => { e.stopPropagation(); this.deleteSessionPhoto(index); };
-          
-          // BỎ NÚT XOAY Ở ĐÂY
           
           wrapper.innerHTML = badgeHtml; wrapper.appendChild(img); wrapper.appendChild(btnDel); 
           fragment.appendChild(wrapper);
@@ -2045,4 +1999,4 @@ init: async function() {
     window.addEventListener('DOMContentLoaded', () => app.init());
 </script>
 </body>
-</html>      
+</html>    
