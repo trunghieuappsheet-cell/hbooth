@@ -1032,60 +1032,62 @@
           this.hideGlobalLoading();
       },
 
-      fetchWallImagesData: function(isInitialLoad) {
-          let fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', this.currentProjectId);
-          fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
-              if(r.success && r.data) {
-                  let isNewPhotoAdded = false; 
-                  let hasChanges = false;
-                  
-                  // API trả về ảnh gần nhất -> xa nhất. 
-                  // Ta đảo ngược lại (cũ -> mới) rồi dùng prepend để đẩy từng ảnh lên đầu, đảm bảo ảnh mới nhất luôn nằm trên cùng.
-                  r.data.reverse().forEach((item) => {
-                      if(!this.wallRenderedIds.has(item.id)) {
-                          this.wallRenderedIds.add(item.id); 
-                          this.wallImagesList.unshift(item); // Lưu vào danh sách (để Lightbox dùng)
-                          
-                          let div = document.createElement('div'); 
-                          div.className = 'wall-item';
-                          
-                          let badgeHtml = '';
-                          if (item.name && item.name.includes('RemoteCam')) { 
-                              badgeHtml = '<div class="source-badge badge-remote" style="top:10px;left:10px;"></div>'; 
-                          } else if (item.name && item.name.includes('Guest_Moment')) { 
-                              badgeHtml = '<div class="source-badge badge-guest" style="top:10px;left:10px;"></div>'; 
-                          }
-                          
-                          // Khởi tạo nội dung DOM an toàn
-                          div.innerHTML = `${badgeHtml}<img src="${item.url}" style="width: 100%; display: block; border-radius: 12px;">`;
-                          
-                          // Gán sự kiện click động dựa vào id thay vì index cứng
-                          div.onclick = () => { 
-                              let currentIdx = this.wallImagesList.findIndex(x => x.id === item.id);
-                              this.openWallLightbox(currentIdx); 
-                          };
-                          
-                          // Đẩy ảnh lên đầu tiên
-                          document.getElementById('wallMasonryGrid').prepend(div); 
-                          hasChanges = true;
-                          isNewPhotoAdded = true;
-                      }
-                  });
-                  
-                  if(hasChanges) { 
-                      // Chờ ảnh load xong, sau đó ra lệnh làm mới toàn bộ cấu trúc lưới để tránh lỗi đè ảnh
-                      imagesLoaded(document.getElementById('wallMasonryGrid'), () => { 
-                          this.wallMasonry.reloadItems(); 
-                          this.wallMasonry.layout(); 
-                      }); 
-                  }
-                  
-                  if(isNewPhotoAdded && !isInitialLoad && document.getElementById('slideshowWrapper').style.display === 'block') { 
-                      if(this.wallImagesList.length > 0) this.updateSlideCenter(this.wallImagesList[0]); 
-                  }
+fetchWallImagesData: function(isInitialLoad) {
+      let fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', this.currentProjectId);
+      fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
+          if(r.success && r.data) {
+              // Xử lý trường hợp chưa có ảnh nào
+              if(r.data.length === 0 && isInitialLoad) {
+                  document.getElementById('wallMasonryGrid').innerHTML = '<div class="w-100 text-center text-muted py-5 fw-bold">Chưa có hình ảnh nào trong sự kiện này.</div>';
+                  return;
               }
-          }).catch(err => console.log('Lỗi tải ảnh Wall:', err));
-      },
+
+              let isNewPhotoAdded = false; 
+              let newElements = [];
+              
+              r.data.reverse().forEach((item) => {
+                  if(!this.wallRenderedIds.has(item.id)) {
+                      this.wallRenderedIds.add(item.id); 
+                      this.wallImagesList.unshift(item); 
+                      
+                      let div = document.createElement('div'); 
+                      div.className = 'wall-item';
+                      
+                      let badgeHtml = '';
+                      if (item.name && item.name.includes('RemoteCam')) { 
+                          badgeHtml = '<div class="source-badge badge-remote" style="top:10px;left:10px;"></div>'; 
+                      } else if (item.name && item.name.includes('Guest_Moment')) { 
+                          badgeHtml = '<div class="source-badge badge-guest" style="top:10px;left:10px;"></div>'; 
+                      }
+                      
+                      div.innerHTML = `${badgeHtml}<img src="${item.url}" style="width: 100%; display: block; border-radius: 12px;">`;
+                      
+                      div.onclick = () => { 
+                          let currentIdx = this.wallImagesList.findIndex(x => x.id === item.id);
+                          this.openWallLightbox(currentIdx); 
+                      };
+                      
+                      document.getElementById('wallMasonryGrid').prepend(div); 
+                      newElements.push(div);
+                      isNewPhotoAdded = true;
+                  }
+              });
+              
+              if(newElements.length > 0) { 
+                  // Đăng ký phần tử mới vào Masonry
+                  this.wallMasonry.prepended(newElements);
+                  // Kích hoạt tính toán lại layout khi toàn bộ ảnh đã tải xong
+                  imagesLoaded(document.getElementById('wallMasonryGrid'), () => { 
+                      this.wallMasonry.layout(); 
+                  }); 
+              }
+              
+              if(isNewPhotoAdded && !isInitialLoad && document.getElementById('slideshowWrapper').style.display === 'block') { 
+                  if(this.wallImagesList.length > 0) this.updateSlideCenter(this.wallImagesList[0]); 
+              }
+          }
+      }).catch(err => console.log('Lỗi tải ảnh Wall:', err));
+  },
       
       initLiveshowDirectly: function() {
           document.getElementById('dashboardWrapper').style.display = 'none';
