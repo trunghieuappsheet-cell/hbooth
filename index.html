@@ -1001,34 +1001,7 @@
           });
       },
 
-      /* =========================================
-       * GUEST UPLOAD (CHỈ GỬI ẢNH)
-       * ========================================= */
-      initUploadMode: async function(projectId) { document.getElementById('uploadWrapper').style.display = 'flex'; this.currentProjectId = projectId; this.hideGlobalLoading(); },
-      closeUploadModal: function() { window.location.href = '?wall=' + this.currentProjectId; },
-      handleGuestFileSelect: function(e) {
-          const file = e.target.files[0]; if(!file) return; const r = new FileReader();
-          r.onload = (evt) => { this.guestUploadImageB64 = evt.target.result; document.getElementById('uploadPreview').src = this.guestUploadImageB64; document.getElementById('uploadPreview').style.display = 'block'; document.getElementById('uploadOptions').style.display = 'none'; document.getElementById('uploadFormArea').style.display = 'block'; }; r.readAsDataURL(file);
-      },
-      backToUploadOptions: function() { document.getElementById('uploadOptions').style.display = 'block'; document.getElementById('uploadFormArea').style.display = 'none'; document.getElementById('uploadPreview').src = ''; },
-      
-      submitGuestUploadPhoto: async function() {
-          if(!this.guestUploadImageB64) return;
-          document.getElementById('uploadLoadingOverlay').style.display = 'flex';
-          
-          setTimeout(async () => {
-              let finalB64 = ""; const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-              const img = new Image(); img.crossOrigin = "anonymous"; await new Promise(r => { img.onload = r; img.src = this.guestUploadImageB64; });
-              let maxDim = 1200; let scale = 1; if(img.width > maxDim || img.height > maxDim) { scale = Math.min(maxDim/img.width, maxDim/img.height); } let drawW = img.width * scale; let drawH = img.height * scale;
-              canvas.width = drawW; canvas.height = drawH; ctx.drawImage(img, 0, 0, drawW, drawH);
-              finalB64 = canvas.toDataURL('image/jpeg', 0.8);
-              
-              const fd = new URLSearchParams(); fd.append('image', finalB64); fd.append('fileName', 'Guest_Moment_' + new Date().getTime() + '.jpg'); fd.append('projectId', this.currentProjectId);
-              try { const res = await fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()); document.getElementById('uploadLoadingOverlay').style.display = 'none'; if(res.success) { Swal.fire('Thành công!', 'Khoảnh khắc đã lên màn hình!', 'success').then(()=>{ this.closeUploadModal(); }); } else throw new Error(); } catch(e) { document.getElementById('uploadLoadingOverlay').style.display = 'none'; Swal.fire('Lỗi', 'Có lỗi mạng!', 'error'); }
-          }, 100);
-      },
-
-      /* =========================================
+/* =========================================
        * PHOTO WALL & LIVESHOW
        * ========================================= */
       initWallMode: async function(projectId) {
@@ -1045,7 +1018,13 @@
               }
           }).catch(()=>{});
 
-          this.wallMasonry = new Masonry(document.getElementById('wallMasonryGrid'), { itemSelector: '.wall-item', columnWidth: '.wall-item', percentPosition: true, transitionDuration: '0.4s' });
+          // Lược bỏ columnWidth mặc định để Masonry tự đo kích thước, tránh lỗi lưới trống ban đầu
+          this.wallMasonry = new Masonry(document.getElementById('wallMasonryGrid'), { 
+              itemSelector: '.wall-item', 
+              percentPosition: true, 
+              transitionDuration: '0.4s' 
+          });
+          
           this.bindWallLightboxEvents();
 
           this.fetchWallImagesData(true); 
@@ -1057,34 +1036,55 @@
           let fd = new URLSearchParams(); fd.append('action', 'getProjectImages'); fd.append('projectId', this.currentProjectId);
           fetch(API_URL, { method: 'POST', body: fd }).then(r=>r.json()).then(r => {
               if(r.success && r.data) {
-                  let isNewPhotoAdded = false; let newElements = [];
-                  // API trả về ảnh gần nhất đứng trước (descending). Loop ngược (reverse) và dùng unshift (chèn đầu) 
-                  // để đảm bảo mảng wallImagesList luôn có ảnh mới nhất ở vị trí index 0.
+                  let isNewPhotoAdded = false; 
+                  let hasChanges = false;
+                  
+                  // API trả về ảnh gần nhất -> xa nhất. 
+                  // Ta đảo ngược lại (cũ -> mới) rồi dùng prepend để đẩy từng ảnh lên đầu, đảm bảo ảnh mới nhất luôn nằm trên cùng.
                   r.data.reverse().forEach((item) => {
                       if(!this.wallRenderedIds.has(item.id)) {
-                          this.wallRenderedIds.add(item.id); this.wallImagesList.unshift(item);
-                          let div = document.createElement('div'); div.className = 'wall-item';
-                          let img = document.createElement('img'); img.src = item.url; div.appendChild(img);
+                          this.wallRenderedIds.add(item.id); 
+                          this.wallImagesList.unshift(item); // Lưu vào danh sách (để Lightbox dùng)
                           
+                          let div = document.createElement('div'); 
+                          div.className = 'wall-item';
+                          
+                          let badgeHtml = '';
                           if (item.name && item.name.includes('RemoteCam')) { 
-                              div.innerHTML += '<div style="position: absolute; top: 10px; left: 10px; width: 14px; height: 14px; border-radius: 50%; background: #10b981; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>'; 
-                          } 
-                          else if (item.name && item.name.includes('Guest_Moment')) { 
-                              div.innerHTML += '<div style="position: absolute; top: 10px; left: 10px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>'; 
+                              badgeHtml = '<div class="source-badge badge-remote" style="top:10px;left:10px;"></div>'; 
+                          } else if (item.name && item.name.includes('Guest_Moment')) { 
+                              badgeHtml = '<div class="source-badge badge-guest" style="top:10px;left:10px;"></div>'; 
                           }
-
-                          div.onclick = () => { this.openWallLightbox(this.wallImagesList.indexOf(item)); };
                           
-                          // Đưa ảnh mới nhất lên đầu của masonry container
-                          document.getElementById('wallMasonryGrid').prepend(div); newElements.push(div); isNewPhotoAdded = true;
+                          // Khởi tạo nội dung DOM an toàn
+                          div.innerHTML = `${badgeHtml}<img src="${item.url}" style="width: 100%; display: block; border-radius: 12px;">`;
+                          
+                          // Gán sự kiện click động dựa vào id thay vì index cứng
+                          div.onclick = () => { 
+                              let currentIdx = this.wallImagesList.findIndex(x => x.id === item.id);
+                              this.openWallLightbox(currentIdx); 
+                          };
+                          
+                          // Đẩy ảnh lên đầu tiên
+                          document.getElementById('wallMasonryGrid').prepend(div); 
+                          hasChanges = true;
+                          isNewPhotoAdded = true;
                       }
                   });
-                  if(newElements.length > 0) { imagesLoaded(document.getElementById('wallMasonryGrid'), () => { this.wallMasonry.prepended(newElements); this.wallMasonry.layout(); }); }
+                  
+                  if(hasChanges) { 
+                      // Chờ ảnh load xong, sau đó ra lệnh làm mới toàn bộ cấu trúc lưới để tránh lỗi đè ảnh
+                      imagesLoaded(document.getElementById('wallMasonryGrid'), () => { 
+                          this.wallMasonry.reloadItems(); 
+                          this.wallMasonry.layout(); 
+                      }); 
+                  }
+                  
                   if(isNewPhotoAdded && !isInitialLoad && document.getElementById('slideshowWrapper').style.display === 'block') { 
                       if(this.wallImagesList.length > 0) this.updateSlideCenter(this.wallImagesList[0]); 
                   }
               }
-          }).catch(()=>{});
+          }).catch(err => console.log('Lỗi tải ảnh Wall:', err));
       },
       
       initLiveshowDirectly: function() {
