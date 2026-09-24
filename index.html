@@ -1343,13 +1343,59 @@
           } 
       },
 
-      bindWallLightboxEvents: function() {
+bindWallLightboxEvents: function() {
           const wlContainer = document.getElementById('wlImgContainer');
-          wlContainer.addEventListener('wheel', (e) => { e.preventDefault(); this.zoomWallLightbox(e.deltaY > 0 ? -0.1 : 0.1); }, { passive: false });
+          
+          // --- LĂN CHUỘT ---
+          wlContainer.addEventListener('wheel', (e) => { 
+              e.preventDefault(); 
+              this.zoomWallLightbox(e.deltaY > 0 ? -0.1 : 0.1); 
+          }, { passive: false });
+
+          // --- CHUỘT (KÉO THẢ) ---
           wlContainer.addEventListener('mousedown', (e) => { this.isWlPanning = true; this.wlStartX = e.clientX; this.wlStartY = e.clientY; });
           window.addEventListener('mouseup', () => { this.isWlPanning = false; });
           wlContainer.addEventListener('mousemove', (e) => {
-              if(!this.isWlPanning) return; this.wlPanX += (e.clientX - this.wlStartX); this.wlPanY += (e.clientY - this.wlStartY); this.wlStartX = e.clientX; this.wlStartY = e.clientY; this.updateWallLightboxTransform();
+              if(!this.isWlPanning) return; 
+              this.wlPanX += (e.clientX - this.wlStartX); this.wlPanY += (e.clientY - this.wlStartY); 
+              this.wlStartX = e.clientX; this.wlStartY = e.clientY; 
+              this.updateWallLightboxTransform();
+          });
+
+          // --- CẢM ỨNG (PAN & PINCH ZOOM) ---
+          let initialWlPinchDist = null;
+          let initialWlZoomVal = 1;
+
+          wlContainer.addEventListener('touchstart', (e) => {
+              if (e.touches.length === 1) {
+                  this.isWlPanning = true;
+                  this.wlStartX = e.touches[0].clientX;
+                  this.wlStartY = e.touches[0].clientY;
+              } else if (e.touches.length === 2) {
+                  e.preventDefault();
+                  initialWlPinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+                  initialWlZoomVal = this.wlZoom;
+              }
+          }, {passive: false});
+
+          wlContainer.addEventListener('touchmove', (e) => {
+              if (e.touches.length === 1 && this.isWlPanning) {
+                  this.wlPanX += (e.touches[0].clientX - this.wlStartX);
+                  this.wlPanY += (e.touches[0].clientY - this.wlStartY);
+                  this.wlStartX = e.touches[0].clientX;
+                  this.wlStartY = e.touches[0].clientY;
+                  this.updateWallLightboxTransform();
+              } else if (e.touches.length === 2 && initialWlPinchDist) {
+                  e.preventDefault();
+                  const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+                  this.wlZoom = Math.max(0.5, Math.min(5, initialWlZoomVal * (currentDistance / initialWlPinchDist)));
+                  this.updateWallLightboxTransform();
+              }
+          }, {passive: false});
+
+          wlContainer.addEventListener('touchend', (e) => {
+              if (e.touches.length < 2) initialWlPinchDist = null;
+              if (e.touches.length === 0) this.isWlPanning = false;
           });
       },
       openWallLightbox: function(index) {
