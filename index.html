@@ -118,22 +118,16 @@
     .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.85rem; margin: 0;}
     .wall-top-actions { display: flex; gap: 10px; align-items: center;}
     
-
-/* Tối ưu .wall-item thêm box-sizing để border không làm tràn width */
-    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; box-sizing: border-box;}
+    .wall-grid { padding: 40px; }
+    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;}
     .wall-item img { width: 100%; display: block; object-fit: cover;}
 
-    /* Chia cột an toàn cho Masonry không bị rớt dòng */
-    @media (max-width: 1200px) { .wall-item { width: 23%; } }
-    @media (max-width: 768px) { 
-        .wall-item { width: 31%; } 
-        .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} 
-        .wall-grid { padding: 20px; } 
-    }
+    @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
+    @media (max-width: 768px) { .wall-item { width: calc(33.33% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} .wall-grid { padding: 20px; } }
+    /* Mobile Photo Wall 2 Columns */
     @media (max-width: 480px) { 
-        /* Fix cứng 48% giúp điện thoại luôn hiển thị chuẩn 2 cột khít nhau */
-        .wall-item { width: 48%; margin-bottom: 12px;} 
-        .wall-grid { padding: 10px; min-height: 50vh;}
+        .wall-item { width: calc(50% - 5px); margin-bottom: 10px;} 
+        .wall-grid { padding: 10px; }
         .wall-top-actions { flex-direction: column; width: 100%;} 
         .wall-top-actions button, .wall-top-actions a { width: 100%; justify-content: center;} 
     }
