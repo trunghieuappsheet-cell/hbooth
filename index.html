@@ -124,9 +124,10 @@
 
     @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
     @media (max-width: 768px) { .wall-item { width: calc(33.33% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} .wall-grid { padding: 20px; } }
-    /* Mobile Photo Wall 2 Columns */
+    
+    /* MOBILE PHOTO WALL (2 COLUMNS, NO GAPS) */
     @media (max-width: 480px) { 
-        .wall-item { width: calc(50% - 5px); margin-bottom: 10px;} 
+        .wall-item { width: 48%; margin-bottom: 15px;} 
         .wall-grid { padding: 10px; }
         .wall-top-actions { flex-direction: column; width: 100%;} 
         .wall-top-actions button, .wall-top-actions a { width: 100%; justify-content: center;} 
@@ -181,7 +182,6 @@
     .lb-strip { height: 140px; display: flex; gap: 15px; padding: 15px 0; overflow-x: auto; scroll-behavior: smooth; flex: 1; -ms-overflow-style: none; scrollbar-width: none;}
     .lb-strip::-webkit-scrollbar { display: none; }
     
-    /* CHỈNH SỬA LẠI ĐỘ MỜ CỦA ẢNH BÊN DƯỚI -> 100% RÕ NÉT */
     .lb-thumb { flex-shrink: 0; width: 110px; height: 110px; border-radius: 8px; opacity: 1; cursor: pointer; transition: 0.2s; border: 3px solid transparent; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #f8fafc;}
     .lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px;}
     .lb-thumb.active { border-color: var(--accent); transform: scale(1.05);}
@@ -207,7 +207,6 @@
     
     #uploadLoadingOverlay { position: absolute; inset: 0; background: rgba(255,255,255,0.95); border-radius: 32px; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10;}
     
-    /* Style cho lưới Preview nhiều ảnh */
     #uploadPreviewContainer { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
     .upload-preview-thumb { height: 120px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0; }
 
@@ -487,13 +486,11 @@
                   <i class="bi bi-camera" style="font-size: 3rem;"></i>
                   <div class="um-btn-title fs-5 mt-2">Gửi hình ảnh</div>
                   <div class="um-btn-sub">Góp mặt trên màn hình lớn của sự kiện</div>
-                  <!-- THÊM THUỘC TÍNH MULTIPLE -->
                   <input type="file" accept="image/*" multiple hidden onchange="app.handleGuestFileSelect(event)">
               </label>
           </div>
 
           <div id="uploadFormArea" style="display: none;">
-              <!-- Container cho cuộn nhiều ảnh -->
               <div id="uploadPreviewContainer"></div>
               <button class="btn-primary-custom w-100 py-3 fs-6" onclick="app.submitGuestUploadPhotos()"><i class="bi bi-send-fill me-2"></i> Gửi lên màn hình</button>
               <button class="btn btn-link text-muted w-100 mt-3 fw-bold text-decoration-none" onclick="app.backToUploadOptions()"><i class="bi bi-arrow-left"></i> Quay lại</button>
@@ -625,7 +622,6 @@
     </div>
   </div>
 
-  <!-- MODAL LIVESHOW RÚT GỌN CHỈ CÓ QR & PHÁT -->
   <div class="modal fade" id="liveshowQRModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content p-4 text-center">
@@ -807,9 +803,12 @@
       wallFetchInterval: null,
       boothSyncInterval: null, 
       
-      guestUploadImageB64s: [], // Chứa nhiều ảnh upload
+      slideQueue: [], // Hàng đợi ảnh mới cho Liveshow
+      isPopEffectActive: false, // Flag cờ kiểm tra đang có hiệu ứng pop-in hay không
+      
+      guestUploadImageB64s: [], 
       datePicker: null,
-      init: async function() {
+init: async function() {
         if (document.getElementById('cpDateRange')) {
             this.datePicker = flatpickr("#cpDateRange", { mode: "range", dateFormat: "d/m/Y", locale: "vn" });
         }
@@ -822,7 +821,13 @@
         const uploadId = urlParams.get('upload'); if (uploadId) { this.initUploadMode(uploadId); return; }
         
         // SỬ DỤNG TÊN MIỀN NGẮN GỌN CHO LIVESHOW: ?live=...
-        const liveshowId = urlParams.get('live'); if (liveshowId) { this.currentProjectId = liveshowId; this.beginSlideshowPlayback(); return; }
+        const liveshowId = urlParams.get('live'); 
+        if (liveshowId) { 
+            this.currentProjectId = liveshowId; 
+            this.beginSlideshowPlayback(); 
+            this.hideGlobalLoading(); // ĐÃ KHẮC PHỤC LỖI TREO KHI TRUY CẬP THẲNG LINK NÀY
+            return; 
+        }
         
         const boothId = urlParams.get('booth');
         if (boothId) { 
@@ -1006,7 +1011,7 @@
           const files = e.target.files;
           if(!files || files.length === 0) return;
           
-          this.guestUploadImageB64s = []; // Reset mảng ảnh
+          this.guestUploadImageB64s = []; 
           const container = document.getElementById('uploadPreviewContainer');
           container.innerHTML = '';
           
@@ -1044,7 +1049,6 @@
           
           let successCount = 0;
           
-          // Xử lý từng ảnh một để tránh quá tải
           for (let i = 0; i < this.guestUploadImageB64s.length; i++) {
               statusText.innerText = `Đang xử lý ${i + 1}/${this.guestUploadImageB64s.length}...`;
               
@@ -1135,9 +1139,9 @@
                   });
                   if(newElements.length > 0) { imagesLoaded(document.getElementById('wallMasonryGrid'), () => { this.wallMasonry.prepended(newElements); this.wallMasonry.layout(); }); }
                   
-                  // Kích hoạt hiệu ứng Liveshow rực rỡ khi có ảnh mới
+                  // Đẩy ảnh mới vào hàng đợi thay vì gọi chiếu ngay lập tức làm ngắt quãng ảnh cũ
                   if(isNewPhotoAdded && !isInitialLoad && document.getElementById('slideshowWrapper').style.display === 'block') { 
-                      this.triggerNewPhotoEffect(newPhotosForEffect[0]);
+                      newPhotosForEffect.forEach(p => this.slideQueue.push(p));
                   }
               }
           }).catch(()=>{});
@@ -1223,9 +1227,19 @@
       applySlideSettings: function() {
           if(this.slideCenterInterval) clearInterval(this.slideCenterInterval);
           const timeVal = parseInt(document.getElementById('slideCenterTime').value) || 10;
+          
           this.slideCenterInterval = setInterval(() => {
-              if(this.wallImagesList.length > 0) { let ranIdx = Math.floor(Math.random() * this.wallImagesList.length); this.updateSlideCenter(this.wallImagesList[ranIdx]); }
+              if (this.isPopEffectActive) return; // Bỏ qua nếu đang chạy hiệu ứng để không bị chồng chéo
+              
+              if (this.slideQueue.length > 0) {
+                  const nextItem = this.slideQueue.shift(); // Lấy ảnh mới từ hàng đợi ra chiếu
+                  this.triggerNewPhotoEffect(nextItem);
+              } else if (this.wallImagesList.length > 0) {
+                  let ranIdx = Math.floor(Math.random() * this.wallImagesList.length); 
+                  this.updateSlideCenter(this.wallImagesList[ranIdx]); 
+              }
           }, timeVal * 1000);
+          
           this.updateSlideCenterSize();
       },
       updateSlideCenter: function(itemData) {
@@ -1233,11 +1247,11 @@
           setTimeout(() => { centerImg.src = itemData.url || itemData; center.classList.add('active'); }, 400); 
       },
 
+      // HIỆU ỨNG RỰC RỠ KHI CHIẾU ẢNH MỚI TỪ HÀNG ĐỢI
       triggerNewPhotoEffect: function(item) {
+          this.isPopEffectActive = true;
           const center = document.getElementById('slideCenterFocus');
           const centerImg = document.getElementById('slideCenterImg');
-          
-          if(this.slideCenterInterval) clearInterval(this.slideCenterInterval);
           
           center.classList.remove('active');
           center.classList.remove('pop-effect');
@@ -1253,7 +1267,7 @@
               
               setTimeout(() => {
                   center.classList.remove('pop-effect');
-                  this.applySlideSettings(); 
+                  this.isPopEffectActive = false; // Trả lại cờ để tiếp tục vòng lặp
               }, 4000);
           }, 300);
       },
@@ -1429,7 +1443,7 @@
                   if (isInitial && !isUpdated) this.renderCapturedGallery();
                   
                   if (isUpdated && !isInitial && document.getElementById('slideshowWrapper').style.display === 'block') {
-                      this.triggerNewPhotoEffect(newPhotosForEffect[0]);
+                      newPhotosForEffect.forEach(p => this.slideQueue.push(p));
                   }
               }
           } catch(e) { if(isInitial) this.renderCapturedGallery(); }
@@ -1498,7 +1512,6 @@
       },
       showConnectionModal: function() { this.refreshConnectionListUI(); this.connectionModalInstance.show(); },
       
-      // REMOTE CAM SETUP KẾT HỢP TURN SERVER VÀ FALLBACK CLOUD NẾU KHÁC MẠNG
       setupPeerJS: function() {
           if (this.peer) return;
           this.peer = new Peer({ config: { 'iceServers': [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" } ] } }); 
@@ -1531,7 +1544,6 @@
       generateQRCode: function() { 
           if (!this.peerId) return; 
           const qrContainer = document.getElementById('qrcode'); qrContainer.innerHTML = ""; 
-          // Link Remote kèm theo ID dự án để Fallback sang chế độ Cloud 3G/4G
           new QRCode(qrContainer, { text: window.location.origin + window.location.pathname + "?remote=" + this.peerId + "&pid=" + this.currentProjectId, width: 180, height: 180, colorDark : "#000000", colorLight : "#ffffff" }); 
       },
       processRemotePhoto: function(b64) {
@@ -1546,7 +1558,7 @@
       },
       
       initRemoteMode: async function(targetId, projectId) {
-          this.currentProjectId = projectId; // Lưu lại ID dự án để phòng hờ rớt WebRTC
+          this.currentProjectId = projectId; 
           document.body.innerHTML = `
           <div style="width:100vw; height:100vh; background:#000; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center; flex-direction:column;">
               <video id="remoteVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);"></video>
@@ -1782,6 +1794,7 @@
         }
       },
 
+      // XÓA VÒNG LẶP XOAY ẢNH TRONG GALLERY NHƯ YÊU CẦU
       renderCapturedGallery: function() {
         const cap = document.getElementById('capturedGallery'); 
         cap.innerHTML = ''; 
@@ -2067,4 +2080,4 @@
     window.addEventListener('DOMContentLoaded', () => app.init());
 </script>
 </body>
-</html>
+</html>      
