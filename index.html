@@ -113,21 +113,43 @@
 
     /* ================= PHOTO WALL ================= */
     #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main);}
-    .wall-header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; background: rgba(244, 246, 248, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
-    .wall-title-area h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main);}
-    .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.85rem; margin: 0;}
-    .wall-top-actions { display: flex; gap: 10px; align-items: center;}
-    
-    .wall-grid { padding: 40px; }
-    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;}
+/* Thêm box-sizing để viền (border) không làm phình chiều rộng gây rớt cột */
+    .wall-item { 
+        width: calc(20% - 16px); 
+        margin-bottom: 20px; 
+        border-radius: 12px; 
+        overflow: hidden; 
+        cursor: pointer; 
+        border: 1px solid var(--border-color); 
+        transition: 0.2s; 
+        background: #fff; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        position: relative; 
+        box-sizing: border-box !important; 
+    }
     .wall-item img { width: 100%; display: block; object-fit: cover;}
 
-    @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px); } }
-    @media (max-width: 768px) { .wall-item { width: calc(33.33% - 10px); } .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} .wall-grid { padding: 20px; } }
-    /* Mobile Photo Wall 2 Columns */
+    /* Cấu hình chia cột an toàn cho từng loại màn hình với !important */
+    @media (max-width: 1200px) { 
+        .wall-item { width: calc(25% - 15px) !important; } 
+    }
+    
+    @media (max-width: 768px) { 
+        .wall-item { width: calc(33.33% - 10px) !important; } 
+        .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} 
+        .wall-grid { padding: 20px; } 
+    }
+    
+    /* FIX CHUẨN 2 CỘT KHÍT NHAU CHO MOBILE */
     @media (max-width: 480px) { 
-        .wall-item { width: calc(50% - 5px); margin-bottom: 10px;} 
-        .wall-grid { padding: 10px; }
+        .wall-item { 
+            width: calc(50% - 6px) !important; /* Trừ hao an toàn 6px để đảm bảo luôn nhét vừa 2 cột */
+            margin-bottom: 12px !important;
+        } 
+        .wall-grid { 
+            padding: 4px !important; 
+            min-height: 50vh;
+        }
         .wall-top-actions { flex-direction: column; width: 100%;} 
         .wall-top-actions button, .wall-top-actions a { width: 100%; justify-content: center;} 
     }
