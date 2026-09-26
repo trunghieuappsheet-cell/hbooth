@@ -1374,9 +1374,50 @@
           });
       },
       scrollStrip: function(dir) { const strip = document.getElementById('lbStrip'); strip.scrollBy({ left: dir * 300, behavior: 'smooth' }); },
-      downloadCurrentLightboxImage: function() {
+downloadCurrentLightboxImage: function() {
           const item = this.wallImagesList[this.wallLightboxIndex];
-          if(item && item.downloadUrl) { window.location.href = item.downloadUrl; } else if(item && item.url) { window.open(item.url, '_blank'); }
+          if(!item) return;
+
+          // Hiển thị màn hình chờ tải
+          Swal.fire({
+              title: 'Đang tải ảnh xuống...',
+              allowOutsideClick: false,
+              didOpen: () => Swal.showLoading()
+          });
+
+          // Lấy dữ liệu ảnh trực tiếp từ link hiển thị chất lượng cao (bỏ qua Google Drive)
+          fetch(item.url)
+              .then(response => {
+                  if (!response.ok) throw new Error("Network response was not ok");
+                  return response.blob();
+              })
+              .then(blob => {
+                  // Dùng thư viện saveAs (FileSaver.js) để ép trình duyệt lưu file về máy
+                  saveAs(blob, item.name || `Hama_KhoanhKhac_${new Date().getTime()}.jpg`);
+                  Swal.close();
+              })
+              .catch(err => {
+                  // Fallback: Dùng Canvas để lấy ảnh nếu bị trình duyệt chặn CORS Fetch
+                  const img = new Image();
+                  img.crossOrigin = "anonymous"; // Ép tải dạng ẩn danh
+                  img.onload = () => {
+                      const canvas = document.createElement('canvas');
+                      canvas.width = img.width;
+                      canvas.height = img.height;
+                      canvas.getContext('2d').drawImage(img, 0, 0);
+                      canvas.toBlob((b) => {
+                          saveAs(b, item.name || `Hama_KhoanhKhac_${new Date().getTime()}.jpg`);
+                          Swal.close();
+                      }, 'image/jpeg', 1.0);
+                  };
+                  img.onerror = () => {
+                      // Fallback cuối cùng: Mở ảnh trực tiếp sang tab mới
+                      Swal.close();
+                      window.open(item.url, '_blank');
+                  };
+                  // Thêm tham số nocache để tránh lỗi cache trình duyệt
+                  img.src = item.url + (item.url.includes('?') ? '&' : '?') + 'nocache=' + new Date().getTime();
+              });
       },
 
       /* =========================================
