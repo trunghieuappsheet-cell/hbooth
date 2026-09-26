@@ -111,33 +111,40 @@
     .btn-view-album { width: 100%; background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 800; transition: 0.2s; box-shadow: var(--accent-glow);}
     .btn-view-album:hover { background: var(--accent-hover); transform: translateY(-2px);}
 
-    /* ================= PHOTO WALL ================= */
+/* ================= PHOTO WALL ================= */
     #wallWrapper { width: 100vw; height: 100vh; overflow-y: auto; background: var(--bg-color); color: var(--text-main);}
-/* Thêm box-sizing để viền (border) không làm phình chiều rộng gây rớt cột */
-    .wall-item { 
-        width: calc(20% - 16px); 
-        margin-bottom: 20px; 
-        border-radius: 12px; 
-        overflow: hidden; 
-        cursor: pointer; 
-        border: 1px solid var(--border-color); 
-        transition: 0.2s; 
-        background: #fff; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-        position: relative; 
-        box-sizing: border-box !important; 
-    }
+    
+    /* Ép buộc hiển thị nằm ngang (row), nút bị đẩy về bên phải (space-between) */
+    .wall-header { padding: 20px 40px; display: flex; flex-direction: row !important; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; background: rgba(244, 246, 248, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+    
+    /* Giới hạn tiêu đề không được đẩy nút rơi xuống dòng */
+    .wall-title-area { flex: 1; min-width: 0; padding-right: 20px;}
+    .wall-title-area h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    .wall-title-area p { color: #64748b; font-weight: 600; font-size: 0.85rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    
+    /* Khóa cứng kích thước nút, không cho phép co lại hoặc rớt dòng */
+    .wall-top-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; margin-left: auto;}
+    
+    .wall-grid { padding: 40px; min-height: 50vh; position: relative;}
+    .wall-item { width: calc(20% - 16px); margin-bottom: 20px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; box-sizing: border-box !important;}
     .wall-item img { width: 100%; display: block; object-fit: cover;}
 
-    /* Cấu hình chia cột an toàn cho từng loại màn hình với !important */
-    @media (max-width: 1200px) { 
-        .wall-item { width: calc(25% - 15px) !important; } 
-    }
+    @media (max-width: 1200px) { .wall-item { width: calc(25% - 15px) !important; } }
     
+    /* Đã xóa lệnh flex-direction: column ở đây để nút không bị rớt trên iPad/Laptop nhỏ */
     @media (max-width: 768px) { 
         .wall-item { width: calc(33.33% - 10px) !important; } 
-        .wall-header { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;} 
+        .wall-header { padding: 15px 20px;} 
         .wall-grid { padding: 20px; } 
+    }
+    
+    @media (max-width: 480px) { 
+        .wall-item { width: calc(50% - 6px) !important; margin-bottom: 12px !important;} 
+        .wall-grid { padding: 10px !important; min-height: 50vh;}
+        /* Chỉ rớt dòng đối với điện thoại quá nhỏ */
+        .wall-header { flex-direction: column !important; align-items: flex-start;}
+        .wall-top-actions { flex-direction: column; width: 100%; margin-left: 0;} 
+        .wall-top-actions button, .wall-top-actions a { width: 100%; justify-content: center;} 
     }
     
     /* FIX CHUẨN 2 CỘT KHÍT NHAU CHO MOBILE */
